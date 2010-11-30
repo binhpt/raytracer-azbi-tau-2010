@@ -1,5 +1,5 @@
 #include "Sphere.h"
-
+#include <cmath>
 
 Sphere::Sphere(void)
 {

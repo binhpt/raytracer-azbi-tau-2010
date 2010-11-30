@@ -1,7 +1,7 @@
 #ifndef SPHERE_H
 #define SPHERE_H
 
-#include "surface.h"
+#include "Surface.h"
 #include "common.h"
 class Sphere :
 	public Surface

@@ -17,13 +17,6 @@ vector<Surface*>* surfaces;
 Scene* scene;
 Camera* camera;
 
-/*
- * gets "param" from a string of the form ...=<param>. useful for float, bool, int, double
- */
-template<class T>
-T GetSingleParam(const string& line) { 
-	return fromString<T>(line.substr(line.find('='), line.length())); 
-}
 
 /* 
  * gets a float/int/double from a string of the form "<number>"
@@ -36,6 +29,14 @@ T fromString(const string& s)
 	T t;
 	stream >> t;
 	return t;
+}
+
+/*
+ * gets "param" from a string of the form ...=<param>. useful for float, bool, int, double
+ */
+template<class T>
+T GetSingleParam(const string& line) { 
+	return fromString<T>(line.substr(line.find('='), line.length())); 
 }
 
 color GetColorParam(const string &line)
@@ -100,7 +101,7 @@ void ReadInput(vector<Surface*>* surfaces, Scene* scene, Camera* camera, string 
 	string line;
 	string param;
 
-	ifstream f(config_path);
+	ifstream f(config_path.c_str(), ifstream::in);
 	
 	while (!f.eof())
 	{

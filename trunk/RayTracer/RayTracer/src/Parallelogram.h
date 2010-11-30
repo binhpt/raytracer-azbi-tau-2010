@@ -2,7 +2,7 @@
 #define PARALLELOGRAM_H
 
 
-#include "surface.h"
+#include "Surface.h"
 #include "common.h"
 
 class Parallelogram :
