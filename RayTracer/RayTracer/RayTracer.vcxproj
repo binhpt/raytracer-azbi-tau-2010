@@ -11,20 +11,20 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\Graphics class\shared Raytracer\Raytracer\Camera.h" />
-    <ClInclude Include="..\..\Graphics class\shared Raytracer\Raytracer\common.h" />
-    <ClInclude Include="..\..\Graphics class\shared Raytracer\Raytracer\Parallelogram.h" />
-    <ClInclude Include="..\..\Graphics class\shared Raytracer\Raytracer\Scene.h" />
-    <ClInclude Include="..\..\Graphics class\shared Raytracer\Raytracer\Sphere.h" />
-    <ClInclude Include="..\..\Graphics class\shared Raytracer\Raytracer\Surface.h" />
+    <ClCompile Include="src\Camera.cpp" />
+    <ClCompile Include="src\common.cpp" />
+    <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\Parallelogram.cpp" />
+    <ClCompile Include="src\Scene.cpp" />
+    <ClCompile Include="src\Sphere.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\Graphics class\shared Raytracer\Raytracer\Camera.cpp" />
-    <ClCompile Include="..\..\Graphics class\shared Raytracer\Raytracer\common.cpp" />
-    <ClCompile Include="..\..\Graphics class\shared Raytracer\Raytracer\main.cpp" />
-    <ClCompile Include="..\..\Graphics class\shared Raytracer\Raytracer\Parallelogram.cpp" />
-    <ClCompile Include="..\..\Graphics class\shared Raytracer\Raytracer\Scene.cpp" />
-    <ClCompile Include="..\..\Graphics class\shared Raytracer\Raytracer\Sphere.cpp" />
+    <ClInclude Include="src\Camera.h" />
+    <ClInclude Include="src\common.h" />
+    <ClInclude Include="src\Parallelogram.h" />
+    <ClInclude Include="src\Scene.h" />
+    <ClInclude Include="src\Sphere.h" />
+    <ClInclude Include="src\Surface.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{9EDA846D-C41D-481C-B7BC-28145DC67415}</ProjectGuid>
