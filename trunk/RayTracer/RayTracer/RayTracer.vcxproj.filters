@@ -20,47 +20,47 @@
       <UniqueIdentifier>{b78f7753-64b1-4b11-b8d4-c8e897b8972d}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\Surfaces">
-      <UniqueIdentifier>{541e852b-ce09-4ec0-ae0c-b7530d277bcb}</UniqueIdentifier>
+      <UniqueIdentifier>{51c67052-8eaf-4a85-a854-3f693e5b2829}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\Graphics class\shared Raytracer\Raytracer\Camera.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Graphics class\shared Raytracer\Raytracer\common.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Graphics class\shared Raytracer\Raytracer\Scene.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Graphics class\shared Raytracer\Raytracer\Surface.h">
-      <Filter>Header Files\Surfaces</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Graphics class\shared Raytracer\Raytracer\Sphere.h">
-      <Filter>Header Files\Surfaces</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Graphics class\shared Raytracer\Raytracer\Parallelogram.h">
-      <Filter>Header Files\Surfaces</Filter>
-    </ClInclude>
+    <ClCompile Include="src\Camera.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\common.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Scene.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Sphere.cpp">
+      <Filter>Source Files\Surfaces</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Parallelogram.cpp">
+      <Filter>Source Files\Surfaces</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\Graphics class\shared Raytracer\Raytracer\Camera.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Graphics class\shared Raytracer\Raytracer\common.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Graphics class\shared Raytracer\Raytracer\main.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Graphics class\shared Raytracer\Raytracer\Scene.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Graphics class\shared Raytracer\Raytracer\Sphere.cpp">
-      <Filter>Source Files\Surfaces</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Graphics class\shared Raytracer\Raytracer\Parallelogram.cpp">
-      <Filter>Source Files\Surfaces</Filter>
-    </ClCompile>
+    <ClInclude Include="src\Camera.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\common.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Scene.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Sphere.h">
+      <Filter>Header Files\Surfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Surface.h">
+      <Filter>Header Files\Surfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Parallelogram.h">
+      <Filter>Header Files\Surfaces</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
