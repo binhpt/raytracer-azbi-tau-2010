@@ -142,6 +142,8 @@ void ReadInput(vector<Surface*>* surfaces, Scene* scene, Camera* camera, string 
 
 		if (line == "camera:")
 		{
+			bool lookat = false;
+
 			while (line != "")
 			{
 				getline(f, line);
@@ -154,7 +156,10 @@ void ReadInput(vector<Surface*>* surfaces, Scene* scene, Camera* camera, string 
 					camera->direction = GetVectorParam(line);
 				
 				else if (param == "look-at" || param == "look-at ")
+				{
 					camera->look_at = GetVectorParam(line);
+					lookat = true;
+				}
 
 				else if (param == "up-direction" || param == "up-direction ")
 					camera->up_direction = GetVectorParam(line);
@@ -165,6 +170,9 @@ void ReadInput(vector<Surface*>* surfaces, Scene* scene, Camera* camera, string 
 				else if (param == "screen-width" || param == "screen-width ")
 					camera->screen_width = GetSingleParam<float>(line);
 			}
+
+			if (lookat)
+				camera->direction = camera->look_at - camera->eye;
 		}
 
 		if (line == "sphere:")
@@ -213,6 +221,12 @@ color ShootRay(ray r)
 	return c;
 }
 
+ray CreateRay(int x, int y)
+{
+	//double angle = camera->screen_width
+
+}
+
 int main(int args, const char *argc[])
 {
 	scene = new Scene();
@@ -226,12 +240,9 @@ int main(int args, const char *argc[])
 
 	/****ROUGH DRAFT of how it should go:***/
 
-	//create view and perspective matrices
-	//PROBABLY use these matrices on all the existing classes and insert TransformedPos/TransformedDirection/etc (need to add these fields to the classes)
 
 	//iterate every pixel of the screen
 	//multithreading should go here
-	
 	int height = 50, width = 50;
 	for (int i = 0; i < height; i++)
 		for (int j = 0; j < width; j++)
