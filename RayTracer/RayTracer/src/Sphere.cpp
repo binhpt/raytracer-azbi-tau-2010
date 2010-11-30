@@ -5,6 +5,10 @@ Sphere::Sphere(void)
 {
 }
 
+Sphere::~Sphere(void)
+{
+}
+
 bool Sphere::Intersection(ray r, intersection_data* intersect)
 {
 	Vector3 result;
