@@ -1,4 +1,4 @@
-#include "parallelogram.h"
+#include "Parallelogram.h"
 
 
 Parallelogram::Parallelogram(void)
