@@ -1,7 +1,6 @@
 #ifndef PARALLELOGRAM_H
 #define PARALLELOGRAM_H
 
-
 #include "Surface.h"
 #include "common.h"
 
