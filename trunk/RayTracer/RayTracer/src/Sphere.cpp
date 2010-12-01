@@ -17,10 +17,10 @@ bool Sphere::Intersection(ray r, intersection_data* intersect)
 
 
 	L = center - r.origin;
-	Tca = L * r.direction;
+	Tca = InnerProduct(L, r.direction);
 	if (Tca < 0) return false;
 
-	d = L * L + Tca * Tca;
+	d = InnerProduct(L, L) + Tca * Tca;
 	if (d > radius * radius) return false;
 
 	Thc = sqrt(radius * radius - d);
