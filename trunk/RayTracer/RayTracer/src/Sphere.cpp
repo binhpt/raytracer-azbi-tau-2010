@@ -1,4 +1,5 @@
 #include "Sphere.h"
+#include <cmath>
 
 Sphere::Sphere(void)
 {
@@ -26,7 +27,7 @@ bool Sphere::Intersection(const ray& r, intersection_data& intersect)
 	T = min(Tca - Thc, Tca + Thc);
 
 	intersect.point = (Vector3)r.direction * T;
-	intersect.color = this->mtl_diffuse; //change to something more complex next submission
+	intersect.col = this->mtl_diffuse; //change to something more complex next submission
 	intersect.normal = intersect.point - this->center;
 	intersect.T = T;
 

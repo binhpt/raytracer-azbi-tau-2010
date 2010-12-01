@@ -228,7 +228,7 @@ color ShootRay(ray r)
 	//surface and point are saved for later implementations of bouncing
 	//we'll also need the normal later on, either on collision or we'll get it on its own function using the intersection vector
 	//for this excersize they want plain color, angles don't matter
-	c = closest_intersect.color;
+	c = closest_intersect.col;
 	return c;
 }
 
