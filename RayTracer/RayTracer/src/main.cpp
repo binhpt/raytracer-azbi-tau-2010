@@ -77,6 +77,11 @@ Vector3 GetVectorParam(const string &line)
 	Vector3 v;
 	
 	found = line.find('=');
+
+	//take care of the " = " case
+	if (line[found + 1] == ' ')
+		found++;
+
 	buf = line.substr(found + 1, line.find(' ', found + 1) - found - 1);
 	v.x = fromString<float>(buf);
 
@@ -265,9 +270,8 @@ int main(int args, const char *argc[])
 	for (int i = 0; i < height; i++)
 		for (int j = 0; j < width; j++)
 		{
-			CreateRay(i / height, j / width);
+			r = CreateRay(i / height, j / width);
 			//UI related- image[i, j] = ShootRay(ray);
-			
 			ShootRay(r);
 			//1 ray for now, anti aliasing later
 		}

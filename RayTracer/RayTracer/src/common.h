@@ -77,12 +77,6 @@ struct ray {
 	Vector3 direction;
 };
 
-struct intersection_data {
-	Vector3 point;
-	Vector3 normal;
-	//Surface surface;
-};
-
 struct bounding_box {
 	Vector3 p1;
 	Vector3 p2;
