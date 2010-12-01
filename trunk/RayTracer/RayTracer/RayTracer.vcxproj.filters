@@ -42,6 +42,9 @@
     <ClCompile Include="src\Parallelogram.cpp">
       <Filter>Source Files\Surfaces</Filter>
     </ClCompile>
+    <ClCompile Include="src\Gui.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Camera.h">
@@ -62,5 +65,8 @@
     <ClInclude Include="src\Parallelogram.h">
       <Filter>Header Files\Surfaces</Filter>
     </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="src\RenderWindow.glade" />
   </ItemGroup>
 </Project>

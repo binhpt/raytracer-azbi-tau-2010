@@ -13,6 +13,7 @@
   <ItemGroup>
     <ClCompile Include="src\Camera.cpp" />
     <ClCompile Include="src\common.cpp" />
+    <ClCompile Include="src\Gui.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\Parallelogram.cpp" />
     <ClCompile Include="src\Scene.cpp" />
@@ -25,6 +26,9 @@
     <ClInclude Include="src\Scene.h" />
     <ClInclude Include="src\Sphere.h" />
     <ClInclude Include="src\Surface.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="src\RenderWindow.glade" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{9EDA846D-C41D-481C-B7BC-28145DC67415}</ProjectGuid>
