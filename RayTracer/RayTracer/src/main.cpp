@@ -244,7 +244,7 @@ ray CreateRay(float xratio, float yratio)
 	return r;
 }
 
-int main(int args, const char *argc[])
+int main2(int args, const char *argc[])
 {
 	scene = new Scene();
 	surfaces = new vector<Surface*>();
