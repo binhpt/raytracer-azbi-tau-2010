@@ -36,7 +36,8 @@ T fromString(const string& s)
  */
 template<class T>
 T GetSingleParam(const string& line) { 
-	return fromString<T>(line.substr(line.find('='), line.length())); 
+	int find = line.find('=');
+	return fromString<T>(line.substr(line.find(' ', find) + 1, line.length())); 
 }
 
 color GetColorParam(const string &line)
@@ -144,8 +145,6 @@ void ReadInput(vector<Surface*>* surfaces, Scene* scene, Camera* camera, string 
 		if (line == "camera:")
 		{
 			bool lookat = false;
-			bool direction = false;
-			Vector3 v;
 
 			while (line != "")
 			{
@@ -176,15 +175,6 @@ void ReadInput(vector<Surface*>* surfaces, Scene* scene, Camera* camera, string 
 
 			if (lookat)
 				camera->direction = camera->look_at - camera->eye;
-			
-//			camera->right_direction = CrossProduct(camera->up_direction, camera->direction);
-
-			camera->P1 = camera->direction * camera->screen_dist;
-			v = camera->right_direction * (camera->screen_width / 2);
-			camera->P1 -= v;
-			v = camera->up_direction * (camera->screen_width / 2);
-			camera->P1 -= v;
-
 		}
 
 		if (line == "sphere:")
@@ -233,11 +223,16 @@ color ShootRay(ray r)
 	return c;
 }
 
-ray CreateRay(int x, int y)
+ray CreateRay(float xratio, float yratio)
 {
-	//double angle = camera->screen_width
-	ray a;
-	return a;
+	ray r;
+	r.origin = camera->eye;
+	Vector3 p;
+	p = camera->P1 + camera->right_direction * ((xratio + 0.5) * camera->screen_width)
+		+ camera->up_direction * ((yratio + 0.5) * camera->screen_width);
+
+	r.direction = Normalize(p - camera->eye); //if we don't need to normalize, remove this
+	return r;
 }
 
 int main(int args, const char *argc[])
@@ -257,15 +252,22 @@ int main(int args, const char *argc[])
 
 	/****ROUGH DRAFT of how it should go:***/
 
+	camera->right_direction = CrossProduct(camera->up_direction, camera->direction);
+	camera->P1 = (camera->direction * camera->screen_dist) - (camera->right_direction * (camera->screen_width / 2)) - (camera->up_direction * (camera->screen_width / 2));
 
-	//iterate every pixel of the screen
+	int height = 50, width = 50; // or whatever amount of pixels
+
+
+	ray r;
+
+	//iterate every pixel of the display screen
 	//multithreading should go here
-	int height = 50, width = 50;
 	for (int i = 0; i < height; i++)
 		for (int j = 0; j < width; j++)
 		{
+			CreateRay(i / height, j / width);
 			//UI related- image[i, j] = ShootRay(ray);
-			ray r;
+			
 			ShootRay(r);
 			//1 ray for now, anti aliasing later
 		}
