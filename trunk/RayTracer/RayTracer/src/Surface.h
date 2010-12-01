@@ -6,6 +6,12 @@
 
 using namespace std;
 
+struct intersection_data {
+	Vector3 point;
+	Vector3 normal;
+	Surface surface;
+};
+
 class Surface
 {
 public:

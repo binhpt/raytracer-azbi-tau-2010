@@ -15,7 +15,6 @@ bool Sphere::Intersection(ray r, intersection_data* intersect)
 	Vector3 L;
 	float Tca, Thc, d, T;
 
-
 	L = center - r.origin;
 	Tca = InnerProduct(L, r.direction);
 	if (Tca < 0) return false;
@@ -28,9 +27,8 @@ bool Sphere::Intersection(ray r, intersection_data* intersect)
 	T = min(Tca - Thc, Tca + Thc);
 
 	intersect->point = r.direction * T;
-	//intersect->surface = this;
-	//next homework
-	//intersect->normal = null;
+	intersect->surface = this;
+	intersect->normal = intersect->point - this->center;
 
 	return true;
 }
