@@ -144,6 +144,8 @@ void ReadInput(vector<Surface*>* surfaces, Scene* scene, Camera* camera, string 
 		if (line == "camera:")
 		{
 			bool lookat = false;
+			bool direction = false;
+			Vector3 v;
 
 			while (line != "")
 			{
@@ -174,6 +176,15 @@ void ReadInput(vector<Surface*>* surfaces, Scene* scene, Camera* camera, string 
 
 			if (lookat)
 				camera->direction = camera->look_at - camera->eye;
+			
+//			camera->right_direction = CrossProduct(camera->up_direction, camera->direction);
+
+			camera->P1 = camera->direction * camera->screen_dist;
+			v = camera->right_direction * (camera->screen_width / 2);
+			camera->P1 -= v;
+			v = camera->up_direction * (camera->screen_width / 2);
+			camera->P1 -= v;
+
 		}
 
 		if (line == "sphere:")
@@ -235,7 +246,11 @@ int main(int args, const char *argc[])
 	surfaces = new vector<Surface*>();
 	camera = new Camera();
 	
-	if (args < 2) cout << "must be given config file" << endl;
+	if (args < 2)
+	{
+		cout << "must be given config file" << endl;
+		return -1;
+	}
 
 	string config_path (argc[1]);
 	ReadInput(surfaces, scene, camera, config_path);
@@ -249,7 +264,6 @@ int main(int args, const char *argc[])
 	for (int i = 0; i < height; i++)
 		for (int j = 0; j < width; j++)
 		{
-			//make ray using some kind of inverse of world/view/perspective
 			//UI related- image[i, j] = ShootRay(ray);
 			ray r;
 			ShootRay(r);

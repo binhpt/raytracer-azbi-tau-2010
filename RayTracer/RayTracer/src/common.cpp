@@ -14,26 +14,6 @@ Vector3::Vector3(float x, float y, float z)
 	this->z = z;
 }
 
-Vector3 Vector3::operator+(const Vector3 &a)
-{
-	return Vector3(x + a.x, y + a.y, z + a.z);
-}
-
-Vector3 Vector3::operator-(const Vector3 &a)
-{
-	return Vector3(x - a.x, y - a.y, z - a.z);
-}
-
-float Vector3::operator*(const Vector3 &a)
-{
-	return (x * a.x + y * a.y + z * a.z);
-}
-
-Vector3 Vector3::operator*(const float &t)
-{
-	return Vector3(t * x, t * y, t * z);
-}
-
 float& Vector3::operator[](const int &i)
 {
 	switch (i)
@@ -45,4 +25,20 @@ float& Vector3::operator[](const int &i)
 		case 2:
 			return z;
 	}
+}
+
+Vector3 CrossProduct(const Vector3& a, const Vector3& b)
+{
+	Vector3 result;
+
+	result.x = a.y * b.z - a.z * b.y;
+	result.y = a.z * b.x - a.x * b.z;
+	result.z = a.x * b.y - a.y * b.x;
+
+	return result;
+}
+
+float InnerProduct(const Vector3& a, const Vector3& b)
+{
+	return a.x * b.x + a.y * b.y + a.z * b.z;
 }

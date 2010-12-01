@@ -16,8 +16,12 @@ public:
 	Vector3 direction;
 	Vector3 look_at;
 	Vector3 up_direction;
+	Vector3 right_direction;
 	float screen_dist;
 	float screen_width;
+
+	/* bottom-left point */
+	Vector3 P1;
 };
 
 
