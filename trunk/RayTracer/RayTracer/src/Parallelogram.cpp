@@ -10,7 +10,7 @@ Parallelogram::~Parallelogram(void)
 {
 }
 
-bool Intersection(const ray& r, intersection_data& intersect)
+bool Parallelogram::Intersection(const ray& r, intersection_data& intersect)
 {
 	return false;
 }
