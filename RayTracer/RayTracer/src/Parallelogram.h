@@ -12,8 +12,8 @@ public:
 	Parallelogram(void);
 	~Parallelogram(void);
 
-	Vector3 Intersection(ray r);
-	void BoundingBox(bounding_box* b);
+	bool Intersection(const ray& r, intersection_data& intersect);
+	void BoundingBox(bounding_box& b);
 
 	Vector3 p0;
 	Vector3 p1;
