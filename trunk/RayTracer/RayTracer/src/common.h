@@ -12,7 +12,7 @@ public:
 	Vector3();
 	Vector3(float x, float y, float z);
 
-	Vector3& operator+=(const Vector3 &a){
+	inline Vector3& operator+=(const Vector3 &a){
 		this->x += a.x;
 		this->y += a.y;
 		this->z += a.z;
@@ -20,8 +20,7 @@ public:
 		return *this;
 	}
 
-	/*** returns an instance! remember to release ***/
-	Vector3 operator+(const Vector3 &a) { return Vector3(*this) += a; }
+	inline Vector3 operator+(const Vector3 &a) { return Vector3(*this) += a; }
 
 	inline Vector3& operator-=(const Vector3 &a){
 		this->x -= a.x;
@@ -31,29 +30,40 @@ public:
 		return *this;
 	}
 
-	/*** returns an instance! remember to release ***/
 	inline Vector3 operator-(const Vector3 &a){ return Vector3(*this) += a;	}
 	
-	Vector3& operator*=(const float &t){
+	inline Vector3& operator*=(const float &t){
 		this->x *= t;
 		this->y *= t;
 		this->z *= t;
 
 		return *this;
 	}
-	/* Annoying that you can only write vec * float and not float * vec, but oh well */
-	Vector3 operator*(const float &t) { return Vector3(t * x, t * y, t * z); }
+
+	/* note that you can only write vec * float and not float * vec */
+	inline Vector3 operator*(const float &t) { return Vector3(t * x, t * y, t * z); }
 
 	float& operator[](const int &i);
-
-	/* WARNING: inner product attached to * for ease of use and code readability. But with great power.. */
-	//float operator*(const Vector3 &a);
-
-	//friend Vector3 CrossProduct(const Vector3& a, const Vector3& b);
 };
 
-Vector3 CrossProduct(const Vector3& a, const Vector3& b);
-float InnerProduct(const Vector3& a, const Vector3& b);
+inline Vector3 CrossProduct(const Vector3& a, const Vector3& b)
+{
+	Vector3 result;
+
+	result.x = a.y * b.z - a.z * b.y;
+	result.y = a.z * b.x - a.x * b.z;
+	result.z = a.x * b.y - a.y * b.x;
+
+	return result;
+}
+
+inline float InnerProduct(const Vector3& a, const Vector3& b) {	return a.x * b.x + a.y * b.y + a.z * b.z; }
+
+inline Vector3 Normalize(const Vector3& a) { 
+	Vector3 v(a);
+	v *= (1 / InnerProduct(a, a));
+	return v; 
+}
 
 struct color {
 	float r;

@@ -26,19 +26,3 @@ float& Vector3::operator[](const int &i)
 			return z;
 	}
 }
-
-Vector3 CrossProduct(const Vector3& a, const Vector3& b)
-{
-	Vector3 result;
-
-	result.x = a.y * b.z - a.z * b.y;
-	result.y = a.z * b.x - a.x * b.z;
-	result.z = a.x * b.y - a.y * b.x;
-
-	return result;
-}
-
-float InnerProduct(const Vector3& a, const Vector3& b)
-{
-	return a.x * b.x + a.y * b.y + a.z * b.z;
-}
