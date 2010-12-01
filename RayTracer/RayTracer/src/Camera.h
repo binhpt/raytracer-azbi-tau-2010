@@ -19,6 +19,7 @@ public:
 	Vector3 right_direction;
 	float screen_dist;
 	float screen_width;
+	float screen_height;
 
 	/* bottom-left point */
 	Vector3 P1;

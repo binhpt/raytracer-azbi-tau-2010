@@ -160,7 +160,10 @@ void ReadInput(vector<Surface*>* surfaces, Scene* scene, Camera* camera, string 
 					camera->eye = GetVectorParam(line);
 
 				else if (param == "direction" || param == "direction ")
+				{
 					camera->direction = GetVectorParam(line);
+					camera->direction = Normalize(camera->direction);
+				}
 				
 				else if (param == "look-at" || param == "look-at ")
 				{
@@ -179,7 +182,10 @@ void ReadInput(vector<Surface*>* surfaces, Scene* scene, Camera* camera, string 
 			}
 
 			if (lookat)
+			{
 				camera->direction = camera->look_at - camera->eye;
+				camera->direction = Normalize(camera->direction);
+			}
 		}
 
 		if (line == "sphere:")
@@ -208,23 +214,21 @@ void ReadInput(vector<Surface*>* surfaces, Scene* scene, Camera* camera, string 
 
 color ShootRay(ray r)
 {
-	//500 - max distance. maybe make macro, maybe get from scene - need find out
-	float closest_collision = 500;
-	Vector3* v_closest_collision;
-	Surface* s_closest_collision;
+	color c;
+	intersection_data closest_intersect, temp;
+	closest_intersect.T = -1;//500 - max distance. maybe make macro, maybe get from scene
+
 	for (vector<Surface*>::iterator i = surfaces->begin(); i != surfaces->end(); ++i)
-	{
-		//(*i)->Intersection(r);
-		//check if it's the closest so far
-		//remember the surface and position
-	}
+		//if there is a collision, and its T is smaller, this is the new closest collision
+		if ((*i)->Intersection(r, temp) && (closest_intersect.T == -1 || temp.T < closest_intersect.T))
+			closest_intersect = temp;
 
 	//we now have the closest surface and point on the surface
 	//obviously enough to get the color
 	//surface and point are saved for later implementations of bouncing
 	//we'll also need the normal later on, either on collision or we'll get it on its own function using the intersection vector
 	//for this excersize they want plain color, angles don't matter
-	color c = s_closest_collision->mtl_diffuse;
+	c = closest_intersect.color;
 	return c;
 }
 
@@ -236,7 +240,7 @@ ray CreateRay(float xratio, float yratio)
 	p = camera->P1 + camera->right_direction * ((xratio + 0.5) * camera->screen_width)
 		+ camera->up_direction * ((yratio + 0.5) * camera->screen_width);
 
-	r.direction = Normalize(p - camera->eye); //if we don't need to normalize, remove this
+	r.direction = Normalize(p - camera->eye); //if we don't need to normalize, remove the normalize
 	return r;
 }
 
@@ -253,17 +257,20 @@ int main(int args, const char *argc[])
 	}
 
 	string config_path (argc[1]);
+	ray r;
+
 	ReadInput(surfaces, scene, camera, config_path);
 
 	/****ROUGH DRAFT of how it should go:***/
-
+	//additional camera initializations
 	camera->right_direction = CrossProduct(camera->up_direction, camera->direction);
+	camera->up_direction = CrossProduct(camera->right_direction, camera->direction);
 	camera->P1 = (camera->direction * camera->screen_dist) - (camera->right_direction * (camera->screen_width / 2)) - (camera->up_direction * (camera->screen_width / 2));
 
+	float ASPECT_RATIO = 1.0f;
+	camera->screen_height = camera->screen_width * ASPECT_RATIO; //BARAK - set this!
+
 	int height = 50, width = 50; // or whatever amount of pixels
-
-
-	ray r;
 
 	//iterate every pixel of the display screen
 	//multithreading should go here
