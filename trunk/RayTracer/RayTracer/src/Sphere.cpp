@@ -1,5 +1,4 @@
 #include "Sphere.h"
-#include <cmath>
 
 Sphere::Sphere(void)
 {
@@ -9,7 +8,7 @@ Sphere::~Sphere(void)
 {
 }
 
-bool Sphere::Intersection(ray r, intersection_data* intersect)
+bool Sphere::Intersection(const ray& r, intersection_data& intersect)
 {
 	Vector3 result;
 	Vector3 L;
@@ -26,20 +25,21 @@ bool Sphere::Intersection(ray r, intersection_data* intersect)
 	/* assuming T won't be negative, which should never happen in cases that matter (either we're inside the sphere and so we have bigger problems, or it's behind us)*/
 	T = min(Tca - Thc, Tca + Thc);
 
-	intersect->point = r.direction * T;
-	intersect->surface = this;
-	intersect->normal = intersect->point - this->center;
+	intersect.point = (Vector3)r.direction * T;
+	intersect.color = this->mtl_diffuse; //change to something more complex next submission
+	intersect.normal = intersect.point - this->center;
+	intersect.T = T;
 
 	return true;
 }
 
-void Sphere::BoundingBox(bounding_box* b)
+void Sphere::BoundingBox(bounding_box& b)
 {
-	b->p1.x = this->center.x - radius;
-	b->p1.y = this->center.y - radius;
-	b->p1.y = this->center.z - radius;
+	b.p1.x = this->center.x - radius;
+	b.p1.y = this->center.y - radius;
+	b.p1.y = this->center.z - radius;
 
-	b->p2.x = this->center.x + radius;
-	b->p2.y = this->center.y + radius;
-	b->p2.y = this->center.z + radius;
+	b.p2.x = this->center.x + radius;
+	b.p2.y = this->center.y + radius;
+	b.p2.y = this->center.z + radius;
 }

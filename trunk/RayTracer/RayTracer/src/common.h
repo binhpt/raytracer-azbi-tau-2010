@@ -82,4 +82,11 @@ struct bounding_box {
 	Vector3 p2;
 };
 
+struct intersection_data {
+	Vector3 point;
+	Vector3 normal;
+	color color;
+	float T;
+};
+
 #endif
