@@ -27,9 +27,6 @@
     <ClInclude Include="src\Sphere.h" />
     <ClInclude Include="src\Surface.h" />
   </ItemGroup>
-  <ItemGroup>
-    <None Include="src\RenderWindow.glade" />
-  </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{9EDA846D-C41D-481C-B7BC-28145DC67415}</ProjectGuid>
     <RootNamespace>RayTracer</RootNamespace>
@@ -55,6 +52,7 @@
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="..\..\..\..\gtkmm\MSVC\gtkmm-vc100-d-2_4.props" />
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
@@ -68,6 +66,7 @@
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <TargetMachine>MachineX86</TargetMachine>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">

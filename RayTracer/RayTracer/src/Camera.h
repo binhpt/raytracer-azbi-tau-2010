@@ -1,7 +1,6 @@
 #ifndef CAMERA_H
 #define CAMERA_H
 
-#include <vector>
 #include "common.h"
 
 using namespace std;
