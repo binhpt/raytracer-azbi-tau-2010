@@ -1,8 +1,6 @@
 #ifndef COMMON_H
 #define COMMON_H
 
-
-
 class Vector3 {
 public:
 	float x;

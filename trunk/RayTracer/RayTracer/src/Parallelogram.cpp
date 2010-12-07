@@ -1,5 +1,6 @@
 #include "Parallelogram.h"
 
+using namespace std;
 
 Parallelogram::Parallelogram(void)
 {

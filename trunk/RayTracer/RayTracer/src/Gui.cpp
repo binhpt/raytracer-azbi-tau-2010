@@ -1,5 +1,6 @@
 #include <string>
 #include <iostream>
+#include <fstream>
 #include <gtkmm.h>
 #include <cairo.h>
 #include <cairomm/surface.h>
@@ -7,6 +8,9 @@
 #include "common.h"
 #include "Image.h"
 //#include "Window.h"
+
+using namespace std;
+using namespace Glib;
 
 Image* render (int screenWidth, int screenHeight, std::string config);
 
@@ -26,14 +30,29 @@ protected:
 
   void LoadText ()
   {
-    Glib::ustring fileName = FileChooseButton->get_filename ();
+	char c;
+	string buf;
     // You can treat this file name as a regular c++ string
-    std::string buf;
-    // TODO: Read the file here, to the string buf
+	ifstream f(FileChooseButton->get_filename(), ios::in);
+
+	if (f.is_open())
+	{
+		while (f.good())
+		{
+			f.get(c);
+			buf.push_back(c);
+		}
+		f.close();
+
+	}
+	else
+	{
+		//BARAK - file wouldn't open, print some kind of error message
+		cout << "could not open file";
+	}
 
     // This code will put the text in the area
-    Glib::RefPtr<Gtk::TextBuffer> TextBufferP = TextArea->get_buffer ();
-    TextBufferP->set_text (buf);
+	TextArea->get_buffer()->set_text(buf);
   }
 
   void RenderClick ()
@@ -41,7 +60,7 @@ protected:
     Image *im;
     /* When you have the size, do */
     setImageSize ();
-
+	
     Glib::RefPtr<Gtk::TextBuffer> TextBufferP = TextArea->get_buffer ();
 
     /* Do some parsing here! */
@@ -56,7 +75,7 @@ protected:
     imgWidth = Scroll->get_width ();
     imgHeight = Scroll->get_height ();
     ImageView->set_size (imgWidth, imgHeight);
-//    std::cout << "Width is " << imgWidth << "and height is " << imgHeight << "\n";
+//    cout << "Width is " << imgWidth << "and height is " << imgHeight << "\n";
     ImageView->queue_draw ();
   }
 

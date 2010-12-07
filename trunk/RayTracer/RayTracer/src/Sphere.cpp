@@ -24,7 +24,7 @@ bool Sphere::Intersection(const ray& r, intersection_data& intersect)
 
 	Thc = sqrt(radius * radius - d);
 	/* assuming T won't be negative, which should never happen in cases that matter (either we're inside the sphere and so we have bigger problems, or it's behind us)*/
-	T = min(Tca - Thc, Tca + Thc);
+	T = std::min(Tca - Thc, Tca + Thc);
 
 	intersect.point = (Vector3)r.direction * T;
 	intersect.col = this->mtl_diffuse; //change to something more complex next submission
