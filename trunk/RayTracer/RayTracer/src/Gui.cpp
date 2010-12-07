@@ -1,12 +1,19 @@
-#include <string.h>
+#include <string>
 #include <iostream>
 #include <gtkmm.h>
 #include <cairo.h>
+#include <cairomm/surface.h>
+
+#include "common.h"
+#include "Image.h"
 //#include "Window.h"
+
+Image* render (int screenWidth, int screenHeight, std::string config);
 
 class UI
 {
 protected:
+  Cairo::RefPtr <Cairo::ImageSurface> im;
   Gtk::Window* RenderWindow;
   Gtk::TextView* TextArea;
   Gtk::FileChooserButton* FileChooseButton;
@@ -29,12 +36,17 @@ protected:
     TextBufferP->set_text (buf);
   }
 
-  void Render ()
+  void RenderClick ()
   {
-    /* Do some parsing here! */
-
+    Image *im;
     /* When you have the size, do */
     setImageSize ();
+
+    Glib::RefPtr<Gtk::TextBuffer> TextBufferP = TextArea->get_buffer ();
+
+    /* Do some parsing here! */
+    im = render (imgWidth, imgHeight, TextBufferP->get_text ());
+    this->im = im->getCairoSurface();
   }
 
   void setImageSize ()
@@ -66,19 +78,27 @@ protected:
     yOff = (ImageView->get_height() > imgHeight) ? int((ImageView->get_height() - imgHeight) / 2.0) : 0;
     myContext->translate (xOff, yOff);
 */
-    /* TODO: Draw something on the canvas here! */
-    Cairo::RefPtr<Cairo::LinearGradient> lg = Cairo::LinearGradient::create(0, 0, imgWidth, imgHeight);
+      Cairo::RefPtr<Cairo::LinearGradient> lg = Cairo::LinearGradient::create(0, 0, imgWidth, imgHeight);
+    if (imgWidth == -1)
+      myContext->set_source (lg);
+    else
+      myContext->set_source (im, 0, 0);
+      myContext->rectangle (0, 0, imgWidth, imgHeight);
+      myContext->fill ();
+/*
     lg->add_color_stop_rgb (1, 1, 0, 0);
     lg->add_color_stop_rgb (0, 0, 0, 1);
     myContext->set_source (lg);
     myContext->rectangle (0, 0, imgWidth, imgHeight);
     myContext->fill ();
+*/
 
     return true;
   }
 public:
   UI ()
   {
+    imgWidth = imgHeight = -1;
     Glib::RefPtr<Gtk::Builder> builder = Gtk::Builder::create_from_file("RenderWindow.glade");
 
     builder->get_widget("RenderWindow", RenderWindow);
@@ -91,7 +111,7 @@ public:
     /* Temporary size untill we have something real */
 //    setImageSize ();
     FileChooseButton->signal_selection_changed ().connect( sigc::mem_fun(*this, &UI::LoadText) );
-    RenderButton->signal_clicked ().connect( sigc::mem_fun(*this, &UI::Render) );
+    RenderButton->signal_clicked ().connect( sigc::mem_fun(*this, &UI::RenderClick) );
     ImageView->signal_expose_event().connect( sigc::mem_fun(*this, &UI::UpdateImageView ), false );
     
  //   TextWindow::show();

@@ -9,6 +9,7 @@
 #include "Surface.h"
 #include "Camera.h"
 #include "Sphere.h"
+#include "Image.h"
 
 using namespace std;
 
@@ -244,22 +245,30 @@ ray CreateRay(float xratio, float yratio)
 	return r;
 }
 
-int main2(int args, const char *argc[])
+/* void putColor (int screenX, int screenY, color c); */
+/* config = path! for now */
+void render (int screenWidth, int screenHeight, string config)
 {
+	color pixel;
+	Image *image = new Image (screenWidth, screenHeight);
+	if (scene != NULL) delete scene;
+	if (surfaces != NULL) delete surfaces;
+	if (camera != NULL) delete camera;
+
 	scene = new Scene();
 	surfaces = new vector<Surface*>();
 	camera = new Camera();
 	
-	if (args < 2)
+	/*if (args < 2)
 	{
 		cout << "must be given config file" << endl;
 		return -1;
-	}
+	}*/
 
-	string config_path (argc[1]);
 	ray r;
 
-	ReadInput(surfaces, scene, camera, config_path);
+	//edit later to use text
+	ReadInput(surfaces, scene, camera, config);
 
 	/****ROUGH DRAFT of how it should go:***/
 	//additional camera initializations
@@ -267,19 +276,17 @@ int main2(int args, const char *argc[])
 	camera->up_direction = CrossProduct(camera->right_direction, camera->direction);
 	camera->P1 = (camera->direction * camera->screen_dist) - (camera->right_direction * (camera->screen_width / 2)) - (camera->up_direction * (camera->screen_width / 2));
 
-	float ASPECT_RATIO = 1.0f;
-	camera->screen_height = camera->screen_width * ASPECT_RATIO; //BARAK - set this!
-
-	int height = 50, width = 50; // or whatever amount of pixels
+	camera->screen_height = camera->screen_width * (screenWidth / screenHeight); //BARAK - set this!
 
 	//iterate every pixel of the display screen
 	//multithreading should go here
-	for (int i = 0; i < height; i++)
-		for (int j = 0; j < width; j++)
+	for (int i = 0; i < screenHeight; i++)
+		for (int j = 0; j < screenWidth; j++)
 		{
-			r = CreateRay(i / height, j / width);
+			r = CreateRay(i / screenHeight, j / screenWidth);
 			//UI related- image[i, j] = ShootRay(ray);
-			ShootRay(r);
+			pixel = ShootRay(r);
+			image->putPixel (j,i,&pixel);
 			//1 ray for now, anti aliasing later
 		}
 
