@@ -247,7 +247,7 @@ ray CreateRay(float xratio, float yratio)
 
 /* void putColor (int screenX, int screenY, color c); */
 /* config = path! for now */
-void render (int screenWidth, int screenHeight, string config)
+Image* render (int screenWidth, int screenHeight, string config)
 {
 	color pixel;
 	Image *image = new Image (screenWidth, screenHeight);
@@ -293,4 +293,5 @@ void render (int screenWidth, int screenHeight, string config)
 	delete surfaces;
 	delete scene;
 	delete camera;
+  return image;
 }

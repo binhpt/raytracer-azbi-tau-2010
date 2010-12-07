@@ -45,7 +45,9 @@ protected:
     Glib::RefPtr<Gtk::TextBuffer> TextBufferP = TextArea->get_buffer ();
 
     /* Do some parsing here! */
-    im = render (imgWidth, imgHeight, TextBufferP->get_text ());
+    //im = render (20, 20, TextBufferP->get_text ());
+    // Small tests for now
+    im = render (20, 20, TextBufferP->get_text ());
     this->im = im->getCairoSurface();
   }
 
