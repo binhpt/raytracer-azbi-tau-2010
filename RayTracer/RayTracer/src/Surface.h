@@ -1,10 +1,8 @@
-#ifndef SURFACE_H
-#define SURFACE_H
+#ifndef _SURFACE_H_
+#define _SURFACE_H_
 
 #include "common.h"
 #include <string>
-
-using namespace std;
 
 class Surface
 {
@@ -15,7 +13,7 @@ public:
 	virtual bool Intersection(const ray& r, intersection_data& intersect) = 0;
 	virtual void BoundingBox(bounding_box& b) = 0;
 
-	string mtl_type;
+	std::string mtl_type;
 	color mtl_diffuse;
 	color mtl_specular;
 	color mtl_ambient;
@@ -23,7 +21,7 @@ public:
 	int checkers_size;
 	color checkers_diffuse1;
 	color checkers_diffuse2;
-	string texture;
+	std::string texture;
 	int reflectence;
 };
 

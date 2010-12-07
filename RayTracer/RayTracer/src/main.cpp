@@ -103,22 +103,26 @@ Vector3 GetVectorParam(const string &line)
 
 	it should also be noted that you are horrible people for allowing there to be spaces or not be before and after the =
 */
-void ReadInput(vector<Surface*>* surfaces, Scene* scene, Camera* camera, string config_path)
+void SetScene(vector<Surface*>* surfaces, Scene* scene, Camera* camera, string config)
 {
 	string line;
 	string param;
+	istringstream iss(config, stringstream::in);
 
-	ifstream f(config_path.c_str(), ifstream::in);
+	//ifstream f(config_path.c_str(), ifstream::in);
+
 	
-	while (!f.eof())
+	while (!iss.eof())
 	{
-		getline(f, line);
+		//iss >> line;
+		getline(iss, line);
 
 		if (line == "scene:")
 		{
 			while (line != "")
 			{
-				getline(f, line);
+				//iss >> line;
+				getline(iss, line);
 				param = line.substr(0, line.find('='));
 
 				if (param == "background-col" || param == "background-col ")
@@ -154,7 +158,7 @@ void ReadInput(vector<Surface*>* surfaces, Scene* scene, Camera* camera, string 
 
 			while (line != "")
 			{
-				getline(f, line);
+				getline(iss, line);
 				param = line.substr(0, line.find('='));
 
 				if (param == "eye" || param == "eye ")
@@ -195,7 +199,7 @@ void ReadInput(vector<Surface*>* surfaces, Scene* scene, Camera* camera, string 
 
 			while (line != "")
 			{
-				getline(f, line);
+				getline(iss, line);
 				param = line.substr(0, line.find('='));
 
 				if (param == "center" || param == "center ")
@@ -268,7 +272,7 @@ Image* render (int screenWidth, int screenHeight, string config)
 	ray r;
 
 	//edit later to use text
-	ReadInput(surfaces, scene, camera, config);
+	SetScene(surfaces, scene, camera, config);
 
 	/****ROUGH DRAFT of how it should go:***/
 	//additional camera initializations
