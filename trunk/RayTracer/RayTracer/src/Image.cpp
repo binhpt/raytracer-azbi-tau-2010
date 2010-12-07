@@ -1,3 +1,4 @@
+#include <iostream>
 #include <cairomm/surface.h>
 #include "Image.h"
 #include "common.h"
@@ -13,6 +14,7 @@
 
   void Image::putPixel (int screenX, int screenY, color *c)
   {
+    std::cout << "Progress\n";
     unsigned char* px = &(imData [((screenY*width+stride) + screenX)*4]);
     px[0] = int(c->a * 255);
     px[1] = int(c->r * 255);
