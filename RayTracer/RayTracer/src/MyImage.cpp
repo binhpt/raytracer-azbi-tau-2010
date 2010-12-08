@@ -1,6 +1,6 @@
 #include <iostream>
 #include <cairomm/surface.h>
-#include "Image.h"
+#include "MyImage.h"
 #include "common.h"
 
   MyImage::MyImage (int width, int height)
