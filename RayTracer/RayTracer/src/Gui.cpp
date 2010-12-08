@@ -35,7 +35,7 @@ protected:
     // You can treat this file name as a regular c++ string
 	string str = FileChooseButton->get_filename();
 	
-	ifstream* myfile = new ifstream(str, ifstream::in);
+	ifstream* myfile = new ifstream(str.c_str(), ifstream::in);
 
 	if (myfile->is_open())
 	{
@@ -70,6 +70,8 @@ protected:
     // Small tests for now
     im = render (20, 20, TextBufferP->get_text ());
     this->im = im->getCairoSurface();
+    this->im->write_to_png ("Render.png");
+    std::cout << "Written PNG\n";
   }
 
   void setImageSize ()
