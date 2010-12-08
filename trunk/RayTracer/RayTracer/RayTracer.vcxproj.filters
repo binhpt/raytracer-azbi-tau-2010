@@ -45,7 +45,7 @@
     <ClCompile Include="src\Gui.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Image.cpp">
+    <ClCompile Include="src\MyImage.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -68,7 +68,7 @@
     <ClInclude Include="src\Parallelogram.h">
       <Filter>Header Files\Surfaces</Filter>
     </ClInclude>
-    <ClInclude Include="src\Image.h">
+    <ClInclude Include="src\MyImage.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
