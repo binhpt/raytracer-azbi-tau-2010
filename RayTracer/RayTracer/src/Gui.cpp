@@ -6,7 +6,7 @@
 #include <cairomm/surface.h>
 
 #include "common.h"
-#include "Image.h"
+#include "MyImage.h"
 //#include "Window.h"
 
 //see main.cpp
@@ -14,19 +14,20 @@
 
 using namespace std;
 using namespace Glib;
+using namespace Gtk;
 
-Image* render (int screenWidth, int screenHeight, std::string config);
+extern MyImage* render (int screenWidth, int screenHeight, std::string config);
 
 class UI
 {
 protected:
   Cairo::RefPtr <Cairo::ImageSurface> im;
-  Gtk::Window* RenderWindow;
-  Gtk::TextView* TextArea;
-  Gtk::FileChooserButton* FileChooseButton;
-  Gtk::Layout* ImageView;
-  Gtk::ToolButton* RenderButton;
-  Gtk::ScrolledWindow* Scroll;
+  Window* RenderWindow;
+  TextView* TextArea;
+  FileChooserButton* FileChooseButton;
+  Layout* ImageView;
+  ToolButton* RenderButton;
+  ScrolledWindow* Scroll;
 
   int imgWidth;
   int imgHeight;
@@ -68,15 +69,19 @@ protected:
     /* When you have the size, do */
     setImageSize ();
 	
-    Glib::RefPtr<Gtk::TextBuffer> TextBufferP = TextArea->get_buffer ();
+    Glib::RefPtr<TextBuffer> TextBufferP = TextArea->get_buffer ();
 
     /* Do some parsing here! */
     //im = render (20, 20, TextBufferP->get_text ());
     // Small tests for now
-    im = render (20, 20, TextBufferP->get_text ());
-    this->im = im->getCairoSurface();
-    this->im->write_to_png ("Render.png");
-    std::cout << "Written PNG\n";
+
+	//removed to see how many errors we'll get now
+    //im = render (20, 20, TextBufferP->get_text ());
+	render (20, 20, TextBufferP->get_text ());
+	
+    //this->im = im->getCairoSurface();
+    //this->im->write_to_png ("Render.png");
+    //std::cout << "Written PNG\n";
   }
 
   void setImageSize ()
@@ -129,7 +134,7 @@ public:
   UI ()
   {
     imgWidth = imgHeight = -1;
-    Glib::RefPtr<Gtk::Builder> builder = Gtk::Builder::create_from_file("RenderWindow.glade");
+    Glib::RefPtr<Builder> builder = Builder::create_from_file("RenderWindow.glade");
 
     builder->get_widget("RenderWindow", RenderWindow);
     builder->get_widget("TextArea", TextArea);
@@ -146,7 +151,7 @@ public:
     
  //   TextWindow::show();
     // gtkmm main loop
-    Gtk::Main::run( *RenderWindow );
+    Main::run( *RenderWindow );
 
   }
 };
@@ -154,7 +159,7 @@ public:
 int main( int argc, char *argv[] )/* Hello World in Gtkmm */ 
 {
     // Initialization
-    Gtk::Main kit( argc, argv );
+    Main kit( argc, argv );
 
     UI ui;
  

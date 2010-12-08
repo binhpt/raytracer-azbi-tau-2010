@@ -9,7 +9,7 @@
 #include "Surface.h"
 #include "Camera.h"
 #include "Sphere.h"
-#include "Image.h"
+#include "MyImage.h"
 
 using namespace std;
 
@@ -268,10 +268,10 @@ ray CreateRay(float xratio, float yratio)
 
 /* void putColor (int screenX, int screenY, color c); */
 /* config = path! for now */
-Image* render (int screenWidth, int screenHeight, string config)
+MyImage* render (int screenWidth, int screenHeight, string config)
 {
 	color pixel;
-	Image *image = new Image (screenWidth, screenHeight);
+	MyImage *image = new MyImage (screenWidth, screenHeight);
 	if (scene != NULL) delete scene;
 	if (surfaces != NULL) delete surfaces;
 	if (camera != NULL) delete camera;
