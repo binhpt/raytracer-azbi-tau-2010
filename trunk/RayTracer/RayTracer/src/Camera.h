@@ -4,8 +4,6 @@
 
 #include "common.h"
 
-using namespace std;
-
 class Camera
 {
 public:
