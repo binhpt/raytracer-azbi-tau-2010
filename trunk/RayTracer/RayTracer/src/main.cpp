@@ -18,6 +18,13 @@ vector<Surface*>* surfaces;
 Scene* scene;
 Camera* camera;
 
+/******
+ *SET TO 0 IF YOU LIKE MEMORY
+ I'll try and remember to set it to 0 every time before committing, but just incase
+ also, remove before submitting
+*******/
+#define HORRIBLE_MEMLEAK 0
+
 
 /* 
  * gets a float/int/double from a string of the form "<number>"
@@ -26,9 +33,15 @@ Camera* camera;
 template<class T>
 T fromString(const string& s) 
 {
-	istringstream stream(s);
+	
+	istringstream* stream = new istringstream(s);
 	T t;
-	stream >> t;
+	(*stream) >> t;
+	
+#if !HORRIBLE_MEMLEAK
+	delete stream;
+#endif
+
 	return t;
 }
 
@@ -107,22 +120,21 @@ void SetScene(vector<Surface*>* surfaces, Scene* scene, Camera* camera, string c
 {
 	string line;
 	string param;
-	istringstream iss(config, stringstream::in);
 
-	//ifstream f(config_path.c_str(), ifstream::in);
+	istringstream* iss = new istringstream(config, stringstream::in);
 
 	
-	while (!iss.eof())
+	while (!iss->eof())
 	{
 		//iss >> line;
-		getline(iss, line);
+		getline(*iss, line);
 
 		if (line == "scene:")
 		{
 			while (line != "")
 			{
 				//iss >> line;
-				getline(iss, line);
+				getline(*iss, line);
 				param = line.substr(0, line.find('='));
 
 				if (param == "background-col" || param == "background-col ")
@@ -158,7 +170,7 @@ void SetScene(vector<Surface*>* surfaces, Scene* scene, Camera* camera, string c
 
 			while (line != "")
 			{
-				getline(iss, line);
+				getline(*iss, line);
 				param = line.substr(0, line.find('='));
 
 				if (param == "eye" || param == "eye ")
@@ -199,7 +211,7 @@ void SetScene(vector<Surface*>* surfaces, Scene* scene, Camera* camera, string c
 
 			while (line != "")
 			{
-				getline(iss, line);
+				getline(*iss, line);
 				param = line.substr(0, line.find('='));
 
 				if (param == "center" || param == "center ")
@@ -215,6 +227,10 @@ void SetScene(vector<Surface*>* surfaces, Scene* scene, Camera* camera, string c
 			surfaces->push_back(sphere);
 		}
 	}
+
+#if !HORRIBLE_MEMLEAK
+	delete iss;
+#endif
 }
 
 color ShootRay(ray r)
