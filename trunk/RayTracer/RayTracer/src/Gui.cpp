@@ -9,6 +9,9 @@
 #include "Image.h"
 //#include "Window.h"
 
+//see main.cpp
+#define HORRIBLE_MEMLEAK 0
+
 using namespace std;
 using namespace Glib;
 
@@ -54,7 +57,9 @@ protected:
 
     // This code will put the text in the area
 	TextArea->get_buffer()->set_text(buf);
-	//delete myfile;
+#if !HORRIBLE_MEMLEAK
+	delete myfile;
+#endif
   }
 
   void RenderClick ()
