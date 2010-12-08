@@ -21,7 +21,8 @@ Camera* camera;
 /******
  *SET TO 0 IF YOU LIKE MEMORY
  I'll try and remember to set it to 0 every time before committing, but just incase
- also, remove before submitting
+ visual studio won't agree to release stream memory for some reason because of gtk. so this prevents deleting of streams (causing quite a memory leak)
+ also, remove this whole nonesense before submitting
 *******/
 #define HORRIBLE_MEMLEAK 0
 
@@ -278,16 +279,8 @@ Image* render (int screenWidth, int screenHeight, string config)
 	scene = new Scene();
 	surfaces = new vector<Surface*>();
 	camera = new Camera();
-	
-	/*if (args < 2)
-	{
-		cout << "must be given config file" << endl;
-		return -1;
-	}*/
-
 	ray r;
 
-	//edit later to use text
 	SetScene(surfaces, scene, camera, config);
 
 	/****ROUGH DRAFT of how it should go:***/
@@ -296,7 +289,7 @@ Image* render (int screenWidth, int screenHeight, string config)
 	camera->up_direction = CrossProduct(camera->right_direction, camera->direction);
 	camera->P1 = (camera->direction * camera->screen_dist) - (camera->right_direction * (camera->screen_width / 2)) - (camera->up_direction * (camera->screen_width / 2));
 
-	camera->screen_height = camera->screen_width * (screenWidth / screenHeight); //BARAK - set this!
+	camera->screen_height = camera->screen_width * (screenWidth / screenHeight);
 
 	//iterate every pixel of the display screen
 	//multithreading should go here
@@ -313,5 +306,5 @@ Image* render (int screenWidth, int screenHeight, string config)
 	delete surfaces;
 	delete scene;
 	delete camera;
-  return image;
+	return image;
 }
