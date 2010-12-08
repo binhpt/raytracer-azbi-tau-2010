@@ -33,17 +33,18 @@ protected:
 	char c;
 	string buf;
     // You can treat this file name as a regular c++ string
-	ifstream f(FileChooseButton->get_filename(), ios::in);
+	string str = FileChooseButton->get_filename();
+	
+	ifstream* myfile = new ifstream(str, ifstream::in);
 
-	if (f.is_open())
+	if (myfile->is_open())
 	{
-		while (f.good())
+		while (myfile->good())
 		{
-			f.get(c);
+			myfile->get(c);
 			buf.push_back(c);
 		}
-		f.close();
-
+		myfile->close();
 	}
 	else
 	{
@@ -53,6 +54,7 @@ protected:
 
     // This code will put the text in the area
 	TextArea->get_buffer()->set_text(buf);
+	//delete myfile;
   }
 
   void RenderClick ()
