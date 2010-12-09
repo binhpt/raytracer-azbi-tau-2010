@@ -1,4 +1,3 @@
-
 package AZBIrenderer;
 
 /**
@@ -8,8 +7,8 @@ public class Scene {
 
     public Scene() {
     }
-
-    public Color background_Color;
+    
+    public Color background_col;
     public String background_tex;
     public Color ambient_light;
     public int super_sample_width;
