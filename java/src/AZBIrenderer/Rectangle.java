@@ -1,14 +1,18 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package AZBIrenderer;
 
 import static AZBIrenderer.Vector3.*;
 /**
- *
- * @author user
+ * A class for representing planar parallelograms in 3D space
+ * <pre>
+ *     p2         p3
+ *     X----------X
+ *    /          /
+ *   /          /
+ *  /          /
+ * X----------X
+ * p0         p1
+ * </pre>
+ * @author Adam Zeira & Barak Itkin
  */
 public class Rectangle extends Surface {
 
@@ -17,10 +21,33 @@ public class Rectangle extends Surface {
     public Point3 p2;
     public Point3 p3;
 
+    /**
+     * The vector from p0 to p1
+     */
     public Vector3 u;
+    /**
+     * The vector from p0 to p2
+     */
     public Vector3 v;
+    /**
+     * The surface's normal
+     */
     public Vector3 normal;
-    public float d, unormSquare, vnormSquare;
+    /**
+     * The variable d in the surface's equation:
+     * <pre>Ax + By + Cz + d = 0</pre>
+     */
+    public float d;
+    /**
+     * A value cached for performance reasons
+     * <pre>Innerproduct(u,u)</pre>
+     */
+    public float unormSquare;
+    /**
+     * A value cached for performance reasons
+     * <pre>Innerproduct(v,v)</pre>
+     */
+    public float vnormSquare;
 
     @Override
     public boolean Intersection(Ray r, IntersectionData intersect) {
@@ -33,21 +60,16 @@ public class Rectangle extends Surface {
         intersect.point = add(r.origin, mul (intersect.T, r.direction));
 
         Vector3 M = sub(intersect.point, p0);
-        float temp1 = InnerProduct(M, u), temp2 = InnerProduct(M, u);
-        temp1 *= temp1;
-        temp2 *= temp2;
-        if (! (0 <= temp1 && temp1 <= unormSquare && 0 <= temp2 && temp2 <= vnormSquare))
+        float temp1 = InnerProduct(M, u), temp2 = InnerProduct(M, v);
+        if (temp1 < 0 || temp2 < 0)
+            return false;
+//        temp1 *= temp1;
+//        temp2 *= temp2;
+        if (temp1 > unormSquare || temp2 > vnormSquare)
             return false;
         intersect.col = Debug.getFromNormal(this,normal);
         intersect.normal = new Vector3(normal);
-/*
-        Debug.print("*****************************************");
-        Debug.print(this);
-        Debug.print(r);
-        Debug.print("Intersection at " + Debug.makeString(intersect.point));
-        Debug.print("The distance is " + Debug.makeString(intersect.T));
-        Debug.print("*****************************************");
-*/
+
         return true;
 
     }

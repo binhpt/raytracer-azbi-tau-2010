@@ -1,17 +1,15 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package AZBIrenderer;
 
+import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
 import static AZBIrenderer.Vector3.*;
 
 /**
- *
- * @author user
+ * This class has all the data needed to produce a render from a config file.
+ * The actual rendering happens here!
+ * @author Barak Itkin & Adam Zeira
  */
 public class Render {
 
@@ -38,18 +36,21 @@ public class Render {
         hitCount = 0;
         Color pixel;
         Ray r;
+        Graphics g;
 
         ConfigParser parser = new ConfigParser(this);
         parser.Parse(config);
 
         render = new BufferedImage(screenWidth, screenHeight, BufferedImage.TYPE_INT_ARGB);
-        render.getGraphics().setColor(new java.awt.Color(scene.background_col.getRGB()));
-        render.getGraphics().fillRect(0, 0, screenWidth, screenHeight);
+        g = render.getGraphics();
+        g.setColor(new java.awt.Color(scene.background_col.r, scene.background_col.g, scene.background_col.b));
+        g.fillRect(0, 0, screenWidth, screenHeight);;
 
 	/****ROUGH DRAFT of how it should go:***/
 	//additional camera initializations
 
-	camera.screen_height = camera.screen_width * (((float)screenWidth) / screenHeight);
+        // Inverted because of the right hand coordinate system
+	camera.screen_height = camera.screen_width * (1/(((float)screenWidth) / screenHeight));
 
 	//iterate every pixel of the display screen
 	//multithreading should go here
@@ -57,7 +58,7 @@ public class Render {
 	for (int i = 0; i < screenHeight; i++)
 		for (int j = 0; j < screenWidth; j++)
 		{
-			r = CreateRay(((float)i) / screenHeight, ((float)j) / screenWidth);
+			r = camera.CreateRay(((float)i) / screenHeight, ((float)j) / screenWidth);
 //                        Debug.print("\n\n\nShooting a ray!");
 //                        Debug.print(r);
 			//UI related- image[i, j] = ShootRay(ray);
@@ -98,17 +99,5 @@ public class Render {
         return c;
     }
 
-    Ray CreateRay(float xratio, float yratio) {
-        Ray r = new Ray();
-        r.origin = camera.eye;
-
-        Vector3 dest = new Vector3(camera.eye);
-        dest = add(dest, mul(camera.screen_dist, camera.direction));
-        dest = add(dest, mul((0.5f - xratio) * camera.screen_width, camera.right_direction));
-        dest = add(dest, mul((0.5f - yratio) * camera.screen_height, camera.up_direction));
-
-        r.direction = Normalize(sub(dest, camera.eye));
-        return r;
-    }
 
 }

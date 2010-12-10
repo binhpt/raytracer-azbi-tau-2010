@@ -1,14 +1,21 @@
-
 package AZBIrenderer;
 
 import static AZBIrenderer.Vector3.*;
 import static AZBIrenderer.Math3D.*;
+
 /**
- *
+ * A class for representing sphere sufraces
+ * @author Adam Zeira & Barak Itkin
  */
 public class Sphere extends Surface {
 
+    /**
+     * The spheres center
+     */
     public Point3 center;
+    /**
+     * The radius of the sphere
+     */
     public float radius;
 
     @Override
@@ -21,10 +28,6 @@ public class Sphere extends Surface {
         /* Now, make sure there is an intersection */
         if (L_P2_P3_square < 0 || L_P2_P3_square == Float.NaN)
         {
-//            intersect.point = null;
-//            intersect.col = null; //change to something more complex next submission
-//            intersect.normal = null;
-//            intersect.T = Float.POSITIVE_INFINITY;
             return false;
         }
 
@@ -34,15 +37,8 @@ public class Sphere extends Surface {
 	intersect.point = add(r.origin, mul (intersect.T, r.direction));
 	intersect.normal = Normalize (sub (intersect.point, this.center));
         intersect.col = Debug.getFromNormal(this,intersect.normal); //change to something more complex next submission
-/*
-        Debug.print("*****************************************");
-        Debug.print(this);
-        Debug.print(r);
-        Debug.print("Intersection at " + Debug.makeString(intersect.point));
-        Debug.print("The distance is " + Debug.makeString(intersect.T));
-        Debug.print("*****************************************");
-*/
-	return true;
+
+        return true;
     }
 
     @Override

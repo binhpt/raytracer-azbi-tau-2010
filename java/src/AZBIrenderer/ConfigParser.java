@@ -14,8 +14,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- *
- * @author user
+ * A parser for the scene config files
+ * @author Adam Zeira & Barak Itkin
  */
 public class ConfigParser {
 
@@ -23,13 +23,22 @@ public class ConfigParser {
     protected HashMap<String, String> props;
     protected String className;
 
+    /**
+     * Create a parser for a config file, for a specified Render object
+     * @param render The Render object to parse into
+     */
     public ConfigParser(Render render) {
         this.render = render;
         this.props = new HashMap<String, String>(15);
         this.className = "";
     }
 
-    public void pushProp(String key, String val) {
+    /**
+     * Called when a line declaring an object property was found
+     * @param key The property name
+     * @param val The property value
+     */
+    protected void pushProp(String key, String val) {
         if (className.isEmpty()) {
             System.err.println("Can't define properties without an object...");
             System.err.println(key + " = " + val);
@@ -38,7 +47,11 @@ public class ConfigParser {
         }
     }
 
-    public void pushObject(String className) {
+    /**
+     * Called when a line declaring a new object was found
+     * @param objType The type of the object
+     */
+    protected void pushObject(String objType) {
         /* Ignore empty definitions or the empty before the first object */
         if (!this.className.isEmpty() && !this.props.isEmpty()) {
             Object obj = ReflectionParse(this.className, props);
@@ -53,9 +66,13 @@ public class ConfigParser {
             }
             props.clear();
         }
-        this.className = className;
+        this.className = objType;
     }
 
+    /**
+     * Parse a config file and add it's definitions to the Render object
+     * @param config A string containing the actual content of the config file
+     */
     public void Parse(String config) {
         String line;
         int splitLocation;
@@ -74,9 +91,15 @@ public class ConfigParser {
         } catch (IOException ex) {
             Logger.getLogger(ConfigParser.class.getName()).log(Level.SEVERE, null, ex);
         }
+        /* Add the last object! */
         pushObject("");
     }
 
+    /**
+     * Parse a color property
+     * @param line A string containing the color property
+     * @return The matching Color
+     */
     public static Color GetColorParam(String line) {
         Color c = new Color();
 
@@ -89,9 +112,12 @@ public class ConfigParser {
         return c;
     }
 
-    /* "parameters that are of type "vector" must be normalized to be of length
-     *  1 by your code".
-     * OK, makes sense - this means we won't need to normalize vectors later!
+    /**
+     * Parse a vector property, and return a normalized vector!
+     * "parameters that are of type "vector" must be normalized to be of length
+     *  1 by your code"
+     * @param line A string containing the vector property
+     * @return The matching normalized Vector3
      */
     public static Vector3 GetVectorParam(String line) {
         Vector3 v = new Vector3();
@@ -104,9 +130,10 @@ public class ConfigParser {
         return Vector3.Normalize(v);
     }
 
-    /* Unlike the vector parameter, this shouldn't be normalized!!
-     * And I figured the mistake of auto normalizing points (which were
-     * represented as vectors, only after a lot of debugging :P)
+    /**
+     * Parse a point property
+     * @param line A string containing the point property
+     * @return The matching Point3
      */
     public static Point3 GetPointParam(String line) {
         Point3 v = new Point3();
@@ -119,19 +146,43 @@ public class ConfigParser {
         return v;
     }
 
+    /**
+     * Parse an integer property.
+     * Provided for completness only.
+     * @param line A string containing the integer property
+     * @return The matching int
+     */
     public int GetIntParam(String line) {
         return Integer.parseInt(line);
     }
 
+    /**
+     * Parse a float property.
+     * Provided for completness only.
+     * @param line A string containing the float property
+     * @return The matching float
+     */
     public float GetFloatParam(String line) {
         return Float.parseFloat(line);
     }
 
-    /* Booleans are specified as 0 or 1 */
+    /**
+     * Parse a boolean property (provided as '0' or '1')
+     * @param line A string containing the boolean property
+     * @return The matching boolean
+     */
     public boolean GetBooleanParam(String line) {
         return Integer.parseInt(line) == 1;
     }
 
+    /**
+     * Given an object name and attribute from the config file, create an
+     * instance of it (as the name indicates, it's based on reflection for
+     * doing this generically instead of writing specific code for each object)
+     * @param objType The name of the object (from the config file)
+     * @param props The properties of the object (from the config file)
+     * @return An object representing the given data
+     */
     public Object ReflectionParse(String objType, Map<String, String> props) {
         Object obj = null;
         Class c = null;
@@ -176,12 +227,6 @@ public class ConfigParser {
 
             obj = c.newInstance();
 
-            /*
-            System.err.println("   Fields of " + className);
-            for (Field field : c.getFields()) {
-                System.err.println("   " + field.getName());
-            }
-             */
             for (String key : props.keySet()) {
                 fieldName = key.trim().replace('-', '_');
                 f = c.getField(fieldName);

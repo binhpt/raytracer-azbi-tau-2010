@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package AZBIrenderer;
 
 import java.lang.reflect.Field;
@@ -9,20 +5,33 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- *
- * @author user
+ * A class filled with debugging goodies
+ * @author Barak Itkin
  */
 public class Debug {
 
-    public static boolean DEBUG = true;
-    public static Vector3 LightGlobal =Vector3.Normalize(new Vector3(1,4,5));
+    /**
+     * A global parameter indicating whether debugging info should be printed or
+     * not.
+     */
+    public static boolean DEBUG = false;
+    /**
+     * A temporary directional light vector
+     */
+    public static Vector3 LightGlobal = Vector3.Normalize(new Vector3(1,4,5));
 
+    /**
+     * A temporary method for giving color to a surface
+     */
     public static Color getFromNormal (Surface sf, Vector3 normal)
     {
         float light = Math.abs(Vector3.InnerProduct(normal, LightGlobal));
         return new Color(sf.mtl_diffuse.r * light, sf.mtl_diffuse.g * light, sf.mtl_diffuse.b * light, 1);
     }
 
+    /**
+     * Make a string representation of field values
+     */
     public static String makeString(Object obj) {
         if (obj instanceof Color) {
             Color c = (Color) obj;
@@ -36,6 +45,9 @@ public class Debug {
 
     }
 
+    /**
+     * If DEBUG is set to true, print the structure of an object
+     */
     public static void print (Object obj) {
         if (!DEBUG)
             return;

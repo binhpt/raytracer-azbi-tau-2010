@@ -1,7 +1,8 @@
 package AZBIrenderer;
 
 /**
- *
+ * A class for representing Scenes
+ * @author Adam Zeira & Barak Itkin
  */
 public class Scene implements ReflectionConstructed {
 

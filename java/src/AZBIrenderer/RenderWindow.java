@@ -1,31 +1,15 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
-/*
- * RenderWindow.java
- *
- * Created on 09/12/2010, 23:44:11
- */
-
 package AZBIrenderer;
 
 import java.awt.image.BufferedImage;
-import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Scanner;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.ImageIcon;
-import javax.swing.JFileChooser;
-import javax.swing.UnsupportedLookAndFeelException;
 
 /**
- *
- * @author user
+ * A GUI class for interfacing with the renderer
+ * @author Barak Itkin
  */
 public class RenderWindow extends javax.swing.JFrame {
 
@@ -78,7 +62,7 @@ public class RenderWindow extends javax.swing.JFrame {
 
         TextEditorWindow.getContentPane().add(TextToolbar, java.awt.BorderLayout.PAGE_START);
 
-        TextPane.setText("scene:\nbackground-col=0.5 0.5 1\nambient-light=1 1 1\n\ncamera:\neye = -1 1.7 1\nlook-at = 0 0 0\nscreen-dist = 1\nup-direction = 0 1 0\n\nrectangle:\np0=-2 0 -2\np1=-2 0 2\np2=2 0 -2\n\nsphere:\ncenter = 0 0.5 0\nradius = 0.5\nmtl-diffuse=0.98 0.48 0.4\n\nsphere:\ncenter= 0 1 0.3\nradius=0.1\n\nlight-point:\npos= 0 4 -2\ncolor = 0.1 0.1 0.4\n\nlight-directed:\ndirection=0 -1 -1\ncolor= 0.8 0.8 0.8\n");
+        TextPane.setText("scene:\nbackground-col=0.5 0.5 1\n\ncamera:\neye = 0 0.3 2\ndirection = 0 0 -1\nscreen-dist = 1\nup-direction = 0 1 0\n\nrectangle:\np0=-1 0 -1\np1=-1 0 1\np2=1 0 -1\n\nsphere:\ncenter=0 0.5 0\nradius=0.5\n\nlight-directed:\ndirection=0 -1 -1");
         TextScroll.setViewportView(TextPane);
 
         TextEditorWindow.getContentPane().add(TextScroll, java.awt.BorderLayout.CENTER);
@@ -190,8 +174,9 @@ public class RenderWindow extends javax.swing.JFrame {
     }//GEN-LAST:event_SaveButtonActionPerformed
 
     /**
-    * @param args the command line arguments
-    */
+     * The main method of the program
+     * @param args the command line arguments
+     */
     public static void main(String args[]) {
         try {
             javax.swing.UIManager.setLookAndFeel(javax.swing.UIManager.getSystemLookAndFeelClassName());
