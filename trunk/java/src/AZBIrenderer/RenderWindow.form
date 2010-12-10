@@ -52,7 +52,7 @@
           <SubComponents>
             <Component class="javax.swing.JTextPane" name="TextPane">
               <Properties>
-                <Property name="text" type="java.lang.String" value="scene:&#xa;background-col=0.5 0.5 1&#xa;ambient-light=1 1 1&#xa;&#xa;camera:&#xa;eye = -1 1.7 1&#xa;look-at = 0 0 0&#xa;screen-dist = 1&#xa;up-direction = 0 1 0&#xa;&#xa;rectangle:&#xa;p0=-2 0 -2&#xa;p1=-2 0 2&#xa;p2=2 0 -2&#xa;&#xa;sphere:&#xa;center = 0 0.5 0&#xa;radius = 0.5&#xa;mtl-diffuse=0.98 0.48 0.4&#xa;&#xa;sphere:&#xa;center= 0 1 0.3&#xa;radius=0.1&#xa;&#xa;light-point:&#xa;pos= 0 4 -2&#xa;color = 0.1 0.1 0.4&#xa;&#xa;light-directed:&#xa;direction=0 -1 -1&#xa;color= 0.8 0.8 0.8&#xa;"/>
+                <Property name="text" type="java.lang.String" value="scene:&#xa;background-col=0.5 0.5 1&#xa;&#xa;camera:&#xa;eye = 0 0.3 2&#xa;direction = 0 0 -1&#xa;screen-dist = 1&#xa;up-direction = 0 1 0&#xa;&#xa;rectangle:&#xa;p0=-1 0 -1&#xa;p1=-1 0 1&#xa;p2=1 0 -1&#xa;&#xa;sphere:&#xa;center=0 0.5 0&#xa;radius=0.5&#xa;&#xa;light-directed:&#xa;direction=0 -1 -1"/>
               </Properties>
             </Component>
           </SubComponents>

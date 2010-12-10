@@ -8,7 +8,7 @@ package AZBIrenderer;
 /**
  * This class is needed for reflection purposes, to seperate points (which
  * shouldn't be normalized) from vectors (which should be normalized)
- * @author user
+ * @author Barak Itkin
  */
 public class Point3 extends Vector3 {
 

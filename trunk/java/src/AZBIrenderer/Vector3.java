@@ -1,4 +1,3 @@
-
 package AZBIrenderer;
 
 import java.util.Iterator;
@@ -6,12 +5,13 @@ import java.util.Iterator;
 /**
  * A class for representing vectors in 3D space. The data is saved inside 3
  * seperate fields and not in an array, since the referencing of the array is
- * definetly an overkill for heavily used code.
+ * may have a performance cost for heavily used code.
  *
  * For the same reason exactly, as many methods as possible are not defined as
  * virtual - instead they are defined as static to skip the Dynamic Dispatch
  * mechanisem which is expensive.
  *
+ * @author Adam Zeira & Barak Itkin
  */
 public class Vector3 implements Iterable<Float>{
 
@@ -172,11 +172,9 @@ public class Vector3 implements Iterable<Float>{
      * Compute the cross product of two vectors.
      * <pre>
      *           |X  Y  Z |   (y1 * z2 - z1 * y2)
-     * v1 × v2 = |x1 y1 z1| = (z1 * x2 - x1 * z2) * (X, Y, Z)
+     * v1 × v2 = |x1 y1 z1| = (z1 * x2 - x1 * z2)
      *           |x2 y2 z2|   (x1 * y2 - y1 * x2)
      * </pre>
-     * @param v1
-     * @param v2
      * @return v1 × v2
      */
     public static Vector3 CrossProduct(Vector3 v1, Vector3 v2)
@@ -190,7 +188,7 @@ public class Vector3 implements Iterable<Float>{
 
     /**
      * Normalize a vector
-     * @param v
+     * @param v A vector to normalize
      * @return v / ||v||
      */
     public static Vector3 Normalize(Vector3 v)
@@ -201,6 +199,11 @@ public class Vector3 implements Iterable<Float>{
                 );
     }
 
+    /**
+     * Compute the norm (length) of a vector
+     * @param v The vector to computer its length
+     * @return the vectors length
+     */
     public static float Norm(Vector3 v)
     {
         return (float) Math.sqrt(InnerProduct(v, v));
@@ -211,9 +214,6 @@ public class Vector3 implements Iterable<Float>{
      * x = min(v1.x, v2.x)
      * y = min(v1.y, v2.y)
      * z = min(v1.z, v2.z)
-     * @param v1
-     * @param v2
-     * @return
      */
     public static Vector3 CoordinateMin(Vector3 v1, Vector3 v2)
     {
@@ -229,9 +229,6 @@ public class Vector3 implements Iterable<Float>{
      * x = max(v1.x, v2.x)
      * y = max(v1.y, v2.y)
      * z = max(v1.z, v2.z)
-     * @param v1
-     * @param v2
-     * @return
      */
     public static Vector3 CoordinateMax(Vector3 v1, Vector3 v2)
     {

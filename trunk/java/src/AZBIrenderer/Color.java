@@ -2,7 +2,8 @@
 package AZBIrenderer;
 
 /**
- *
+ * A class for representing RGBA colors
+ * @author Adam Zeira & Barak Itkin
  */
 public class Color {
 
@@ -34,6 +35,10 @@ public class Color {
         array[3] = b;
     }
 
+    /**
+     * Convert the color to javas int RGB format
+     * @return The integer representing this color
+     */
     public int getRGB()
     {
 

@@ -1,9 +1,9 @@
-
 package AZBIrenderer;
 
 /**
  * A class for representing a 3D box, whose edges are parrallel to the X Y and Z
  * axises.
+ * @author Adam Zeira & Barak Itkin
  */
 public class BoundingBox {
 
@@ -17,5 +17,4 @@ public class BoundingBox {
         this.p1 = p1;
         this.p2 = p2;
     }
-
 }

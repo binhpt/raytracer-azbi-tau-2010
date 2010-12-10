@@ -1,18 +1,13 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package AZBIrenderer;
 
 import static AZBIrenderer.Vector3.*;
 /**
- *
- * @author user
+ * A class holding various 3D math utilities
+ * @author Barak Itkin
  */
 public class Math3D {
 
-    public static final float Point2RayDist (Vector3 p, Ray r)
+    public static float Point2RayDist (Vector3 p, Ray r)
     {
         Vector3 M = sub(p,r.origin);
         float temp = InnerProduct(r.direction, M);

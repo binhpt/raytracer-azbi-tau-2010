@@ -1,12 +1,23 @@
 package AZBIrenderer;
 
 /**
- *
+ * A base class for 3D surfaces
+ * @author Adam Zeira & Barak Itkin
  */
 public abstract class Surface implements ReflectionConstructed {
 
+    /**
+     * Compue the first intersection of a ray with this surface
+     * @param r The ray to intersect with
+     * @param intersect A location for storing the intersection data in
+     * @return Whether there is an intersection
+     */
     public abstract boolean Intersection(final Ray r, IntersectionData intersect);
 
+    /**
+     * Compute the bounding box containing this object
+     * @return A bounding box containing this object
+     */
     public abstract BoundingBox BoundingBox();
 
     public Surface() {
