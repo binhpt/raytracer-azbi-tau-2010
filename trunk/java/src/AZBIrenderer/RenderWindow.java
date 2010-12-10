@@ -11,9 +11,16 @@
 
 package AZBIrenderer;
 
+import java.awt.image.BufferedImage;
+import java.io.DataInputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.ImageIcon;
+import javax.swing.JFileChooser;
 import javax.swing.UnsupportedLookAndFeelException;
 
 /**
@@ -22,6 +29,7 @@ import javax.swing.UnsupportedLookAndFeelException;
  */
 public class RenderWindow extends javax.swing.JFrame {
 
+    BufferedImage renderResult;
     /** Creates new form RenderWindow */
     public RenderWindow() {
         initComponents();
@@ -43,6 +51,7 @@ public class RenderWindow extends javax.swing.JFrame {
         TextOpenButton = new javax.swing.JButton();
         TextScroll = new javax.swing.JScrollPane();
         TextPane = new javax.swing.JTextPane();
+        FileChooser = new javax.swing.JFileChooser();
         ImageToolbar = new javax.swing.JToolBar();
         RenderButton = new javax.swing.JButton();
         SaveButton = new javax.swing.JButton();
@@ -60,6 +69,11 @@ public class RenderWindow extends javax.swing.JFrame {
         TextOpenButton.setFocusable(false);
         TextOpenButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         TextOpenButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        TextOpenButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                TextOpenButtonActionPerformed(evt);
+            }
+        });
         TextToolbar.add(TextOpenButton);
 
         TextEditorWindow.getContentPane().add(TextToolbar, java.awt.BorderLayout.PAGE_START);
@@ -67,7 +81,10 @@ public class RenderWindow extends javax.swing.JFrame {
         TextPane.setText("scene:\nbackground-col=0.5 0.5 1\nambient-light=1 1 1\n\ncamera:\neye = -1 1.7 1\nlook-at = 0 0 0\nscreen-dist = 1\nup-direction = 0 1 0\n\nrectangle:\np0=-2 0 -2\np1=-2 0 2\np2=2 0 -2\n\nsphere:\ncenter = 0 0.5 0\nradius = 0.5\nmtl-diffuse=0.98 0.48 0.4\n\nsphere:\ncenter= 0 1 0.3\nradius=0.1\n\nlight-point:\npos= 0 4 -2\ncolor = 0.1 0.1 0.4\n\nlight-directed:\ndirection=0 -1 -1\ncolor= 0.8 0.8 0.8\n");
         TextScroll.setViewportView(TextPane);
 
-        TextEditorWindow.getContentPane().add(TextScroll, java.awt.BorderLayout.LINE_END);
+        TextEditorWindow.getContentPane().add(TextScroll, java.awt.BorderLayout.CENTER);
+
+        FileChooser.setCurrentDirectory(new java.io.File("C:\\Program Files\\NetBeans 6.9.1"));
+        FileChooser.setDialogTitle("Choose a scene file");
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -92,6 +109,11 @@ public class RenderWindow extends javax.swing.JFrame {
         SaveButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         SaveButton.setPreferredSize(new java.awt.Dimension(31, 41));
         SaveButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        SaveButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                SaveButtonActionPerformed(evt);
+            }
+        });
         ImageToolbar.add(SaveButton);
 
         EditButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/AZBIrenderer/images/tango-edit.png"))); // NOI18N
@@ -126,12 +148,46 @@ public class RenderWindow extends javax.swing.JFrame {
         r.render(ImageScroll.getWidth(), ImageScroll.getHeight());
         ImageView.setIcon(new ImageIcon(r.render));
         ImageView.setText("");
+        renderResult = r.render;
     }//GEN-LAST:event_RenderButtonActionPerformed
 
     private void EditButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_EditButtonActionPerformed
         TextEditorWindow.setVisible(true);
         TextEditorWindow.requestFocus();
     }//GEN-LAST:event_EditButtonActionPerformed
+
+    private void TextOpenButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_TextOpenButtonActionPerformed
+        try {
+            FileChooser.showOpenDialog(this);
+            File f = FileChooser.getSelectedFile();
+            if (f == null || !f.exists())
+                return;
+            java.util.Scanner s = new Scanner(FileChooser.getSelectedFile());
+            StringBuilder text = new StringBuilder();
+            while (s.hasNextLine()) {
+                text.append(s.nextLine()).append("\n");
+            }
+            s.close();
+            TextPane.setText(text.toString());
+        } catch (FileNotFoundException ex) {
+            System.err.println("An error occured while opening the file...");
+            System.err.println(ex.getMessage());
+        }
+    }//GEN-LAST:event_TextOpenButtonActionPerformed
+
+    private void SaveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SaveButtonActionPerformed
+        try {
+            FileChooser.showSaveDialog(this);
+            File f = FileChooser.getSelectedFile();
+            if (f == null) {
+                return;
+            }
+            javax.imageio.ImageIO.write(renderResult, "PNG", f);
+        } catch (IOException ex) {
+            System.err.println("An IO error occured while writing the file...");
+            System.err.println(ex.getMessage());
+        }
+    }//GEN-LAST:event_SaveButtonActionPerformed
 
     /**
     * @param args the command line arguments
@@ -149,6 +205,7 @@ public class RenderWindow extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton EditButton;
+    private javax.swing.JFileChooser FileChooser;
     private javax.swing.JScrollPane ImageScroll;
     private javax.swing.JToolBar ImageToolbar;
     private javax.swing.JLabel ImageView;

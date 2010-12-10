@@ -38,8 +38,16 @@ public class Rectangle extends Surface {
         temp2 *= temp2;
         if (! (0 <= temp1 && temp1 <= unormSquare && 0 <= temp2 && temp2 <= vnormSquare))
             return false;
-        intersect.col = mtl_diffuse;
+        intersect.col = Debug.getFromNormal(this,normal);
         intersect.normal = new Vector3(normal);
+/*
+        Debug.print("*****************************************");
+        Debug.print(this);
+        Debug.print(r);
+        Debug.print("Intersection at " + Debug.makeString(intersect.point));
+        Debug.print("The distance is " + Debug.makeString(intersect.T));
+        Debug.print("*****************************************");
+*/
         return true;
 
     }

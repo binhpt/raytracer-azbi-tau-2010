@@ -43,6 +43,8 @@ public class Render {
         parser.Parse(config);
 
         render = new BufferedImage(screenWidth, screenHeight, BufferedImage.TYPE_INT_ARGB);
+        render.getGraphics().setColor(new java.awt.Color(scene.background_col.getRGB()));
+        render.getGraphics().fillRect(0, 0, screenWidth, screenHeight);
 
 	/****ROUGH DRAFT of how it should go:***/
 	//additional camera initializations

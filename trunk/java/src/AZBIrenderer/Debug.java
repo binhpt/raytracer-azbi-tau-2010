@@ -14,8 +14,15 @@ import java.util.logging.Logger;
  */
 public class Debug {
 
-    public static boolean DEBUG = false;
-    
+    public static boolean DEBUG = true;
+    public static Vector3 LightGlobal =Vector3.Normalize(new Vector3(1,4,5));
+
+    public static Color getFromNormal (Surface sf, Vector3 normal)
+    {
+        float light = Math.abs(Vector3.InnerProduct(normal, LightGlobal));
+        return new Color(sf.mtl_diffuse.r * light, sf.mtl_diffuse.g * light, sf.mtl_diffuse.b * light, 1);
+    }
+
     public static String makeString(Object obj) {
         if (obj instanceof Color) {
             Color c = (Color) obj;
