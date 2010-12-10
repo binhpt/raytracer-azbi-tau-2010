@@ -76,9 +76,10 @@ public class Render {
 
     }
 
-    public Color ShootRay(Ray r) {
-        Color c;
-        IntersectionData closestIntersect = new IntersectionData();
+    public static boolean shootAtSurfaces (Iterable<? extends Surface> surfaces, Ray r,
+            IntersectionData closestIntersect)
+    {
+        boolean intersect = false;
         IntersectionData temp = new IntersectionData();
 
         closestIntersect.T = Float.MAX_VALUE;
@@ -86,17 +87,25 @@ public class Render {
         for (Surface surf : surfaces) //if there is a collision, and its T is smaller, this is the new closest collision
         {
             if (surf.Intersection(r, temp) && temp.T < closestIntersect.T) {
-                closestIntersect = temp;
+                closestIntersect.copyFrom(temp);
+                intersect = true;
             }
         }
+        return intersect;
+    }
 
+    /* Returns null in case of no intersection */
+    public Color ShootRay(Ray r) {
+        IntersectionData closestIntersect = new IntersectionData();
+        if (shootAtSurfaces(surfaces, r, closestIntersect))
         //we now have the closest surface and point on the surface
         //obviously enough to get the color
         //surface and point are saved for later implementations of bouncing
         //we'll also need the normal later on, either on collision or we'll get it on its own function using the intersection vector
         //for this excersize they want plain color, angles don't matter
-        c = closestIntersect.col;
-        return c;
+            return closestIntersect.col;
+        else
+            return null;
     }
 
 

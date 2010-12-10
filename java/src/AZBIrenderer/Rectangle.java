@@ -34,7 +34,7 @@ public class Rectangle extends Surface {
      */
     public Vector3 normal;
     /**
-     * The variable d in the surface's equation:
+     * The variable d in the plain equation:
      * <pre>Ax + By + Cz + d = 0</pre>
      */
     public float d;
@@ -49,6 +49,15 @@ public class Rectangle extends Surface {
      */
     public float vnormSquare;
 
+    public Rectangle() {
+    }
+
+    public Rectangle(Point3 p0, Point3 p1, Point3 p2) {
+        this.p0 = p0;
+        this.p1 = p1;
+        this.p2 = p2;
+    }
+
     @Override
     public boolean Intersection(Ray r, IntersectionData intersect) {
         float SABC = InnerProduct(r.direction, this.normal);
@@ -61,11 +70,7 @@ public class Rectangle extends Surface {
 
         Vector3 M = sub(intersect.point, p0);
         float temp1 = InnerProduct(M, u), temp2 = InnerProduct(M, v);
-        if (temp1 < 0 || temp2 < 0)
-            return false;
-//        temp1 *= temp1;
-//        temp2 *= temp2;
-        if (temp1 > unormSquare || temp2 > vnormSquare)
+        if (temp1 < 0 || temp2 < 0 || temp1 > unormSquare || temp2 > vnormSquare)
             return false;
         intersect.col = Debug.getFromNormal(this,normal);
         intersect.normal = new Vector3(normal);
