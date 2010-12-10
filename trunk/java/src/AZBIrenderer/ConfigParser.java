@@ -8,9 +8,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.StringReader;
 import java.lang.reflect.Field;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -76,6 +74,7 @@ public class ConfigParser {
         } catch (IOException ex) {
             Logger.getLogger(ConfigParser.class.getName()).log(Level.SEVERE, null, ex);
         }
+        pushObject("");
     }
 
     public static Color GetColorParam(String line) {
@@ -85,63 +84,38 @@ public class ConfigParser {
         c.r = Float.parseFloat(components[0]);
         c.g = Float.parseFloat(components[1]);
         c.b = Float.parseFloat(components[2]);
-/*
-        String buf;
-        int found = 0;
+        c.a = 1;
 
-        found = line.indexOf('=');
-        buf = line.substring(found + 1, line.indexOf(' ', found + 1) - found - 1);
-        c.r = Float.parseFloat(buf);
-
-        found = line.indexOf(' ', found + 1);
-        buf = line.substring(found + 1, line.indexOf(' ', found + 1) - found - 1);
-        c.g = Float.parseFloat(buf);
-
-        found = line.indexOf(' ', found + 1);
-        buf = line.substring(found + 1, line.indexOf(' ', found + 1) - found - 1);
-        c.b = Float.parseFloat(buf);
-
-        found = line.indexOf(' ', found + 1);
-        if (found == -1) {
-            c.a = 1;
-        } else {
-            buf = line.substring(found + 1, line.indexOf(' ', found + 1) - found - 1);
-            c.a = Float.parseFloat(buf);
-        }
-*/
         return c;
     }
 
+    /* "parameters that are of type "vector" must be normalized to be of length
+     *  1 by your code".
+     * OK, makes sense - this means we won't need to normalize vectors later!
+     */
     public static Vector3 GetVectorParam(String line) {
         Vector3 v = new Vector3();
+
+        String[] components = line.trim().replaceAll("\\s+", " ").split(" ");
+        v.x = Float.parseFloat(components[0]);
+        v.y = Float.parseFloat(components[1]);
+        v.z = Float.parseFloat(components[2]);
+        
+        return Vector3.Normalize(v);
+    }
+
+    /* Unlike the vector parameter, this shouldn't be normalized!!
+     * And I figured the mistake of auto normalizing points (which were
+     * represented as vectors, only after a lot of debugging :P)
+     */
+    public static Point3 GetPointParam(String line) {
+        Point3 v = new Point3();
+
         String[] components = line.trim().replaceAll("\\s+", " ").split(" ");
         v.x = Float.parseFloat(components[0]);
         v.y = Float.parseFloat(components[1]);
         v.z = Float.parseFloat(components[2]);
 
-        /*
-        String buf;
-        int found = 0;
-        
-
-        found = line.indexOf('=');
-
-        //take care of the " = " case
-        if (line.charAt(found + 1) == ' ') {
-            found++;
-        }
-
-        buf = line.substring(found + 1, line.indexOf(' ', found + 1) - found - 1);
-        v.x = Float.parseFloat(buf);
-
-        found = line.indexOf(' ', found + 1);
-        buf = line.substring(found + 1, line.indexOf(' ', found + 1) - found - 1);
-        v.y = Float.parseFloat(buf);
-
-        found = line.indexOf(' ', found + 1);
-        buf = line.substring(found + 1, line.indexOf(' ', found + 1) - found - 1);
-        v.z = Float.parseFloat(buf);
-*/
         return v;
     }
 
@@ -167,6 +141,9 @@ public class ConfigParser {
 
         String className = "";
         String temp = null;
+        Class p;
+
+        boolean safe = false;
 
         /* Generate the class name from the config file name:
          * Capitalize the begining of each word, and remove the '-' signs
@@ -178,6 +155,25 @@ public class ConfigParser {
 
         try {
             c = Class.forName(ConfigParser.class.getPackage().getName() + "." + className);
+            
+            /* Now, to prevent someone to abuse this interface, for safety
+             * reasons we defined the ReflectionConstructed interface that in
+             * addition to it's functionallity, will allow us to prevent someone
+             * from writing malicous config files that will create various system
+             * objects
+             */
+            p = c;
+            while (!safe && p != null)
+            {
+                for (Class inter : p.getInterfaces()) {
+                    if (safe = (inter == ReflectionConstructed.class))
+                        break;
+                }
+                p = p.getSuperclass();
+            }
+            if (!safe)
+                throw new ClassNotFoundException();
+
             obj = c.newInstance();
 
             /*
@@ -189,16 +185,23 @@ public class ConfigParser {
             for (String key : props.keySet()) {
                 fieldName = key.trim().replace('-', '_');
                 f = c.getField(fieldName);
-                if (f.getType() == Integer.class) {
+                if (f.getType() == int.class) {
                     f.setInt(obj, GetIntParam(props.get(key)));
-                } else if (f.getType() == Boolean.class) {
+                } else if (f.getType() == float.class) {
+                    f.setFloat(obj, GetFloatParam(props.get(key)));
+                } else if (f.getType() == boolean.class) {
                     f.setBoolean(obj, GetBooleanParam(props.get(key)));
+                } else if (f.getType() == Point3.class) {
+                    f.set(obj, GetPointParam(props.get(key)));
                 } else if (f.getType() == Vector3.class) {
                     f.set(obj, GetVectorParam(props.get(key)));
                 } else if (f.getType() == Color.class) {
                     f.set(obj, GetColorParam(props.get(key)));
                 }
             }
+
+            ((ReflectionConstructed)obj).fillMissing();
+
         } catch (NoSuchFieldException ex) {
             System.err.println("Invalid property " + fieldName + " of " + objType);
         } catch (ClassNotFoundException ex) {
@@ -206,8 +209,7 @@ public class ConfigParser {
         } catch (Exception ex) {
             Logger.getLogger(ConfigParser.class.getName()).log(Level.SEVERE, null, ex);
         }
-
-        Debug.printObj(obj);
+        Debug.print(obj);
         return obj;
 
     }

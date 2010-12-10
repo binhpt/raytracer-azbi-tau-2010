@@ -64,10 +64,10 @@ public class RenderWindow extends javax.swing.JFrame {
 
         TextEditorWindow.getContentPane().add(TextToolbar, java.awt.BorderLayout.PAGE_START);
 
-        TextPane.setText("scene:\nbackground-col=0.5 0.5 1\nambient-light=1 1 1\n\ncamera:\neye = -1 1.7 1\nlook-at = 0 0 0\nscreen-dist = 1\nup-direction = 0 1 0\n\nrectangle:\np0=-2 0 -2\np1=-2 0 2\np2=2 0 -2\n\nsphere:\ncenter = 0 0.5 0\nradius = 0.5\nmtl-diffuse=0.98 0.48 0.4\n\nsphere:\ncenter= 0 1 0.3\nradius=0.1\n\nlight-point:\npos= 0 4 -2\ncolor = 0.1 0.1 0.4\n\nlight-directed:\ndirection=0 -1 -1\ncolor= 0.8 0.8 0.8\n\n");
+        TextPane.setText("scene:\nbackground-col=0.5 0.5 1\nambient-light=1 1 1\n\ncamera:\neye = -1 1.7 1\nlook-at = 0 0 0\nscreen-dist = 1\nup-direction = 0 1 0\n\nrectangle:\np0=-2 0 -2\np1=-2 0 2\np2=2 0 -2\n\nsphere:\ncenter = 0 0.5 0\nradius = 0.5\nmtl-diffuse=0.98 0.48 0.4\n\nsphere:\ncenter= 0 1 0.3\nradius=0.1\n\nlight-point:\npos= 0 4 -2\ncolor = 0.1 0.1 0.4\n\nlight-directed:\ndirection=0 -1 -1\ncolor= 0.8 0.8 0.8\n");
         TextScroll.setViewportView(TextPane);
 
-        TextEditorWindow.getContentPane().add(TextScroll, java.awt.BorderLayout.CENTER);
+        TextEditorWindow.getContentPane().add(TextScroll, java.awt.BorderLayout.LINE_END);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -108,10 +108,12 @@ public class RenderWindow extends javax.swing.JFrame {
 
         getContentPane().add(ImageToolbar, java.awt.BorderLayout.PAGE_START);
 
+        ImageScroll.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
         ImageScroll.setMinimumSize(new java.awt.Dimension(50, 50));
 
         ImageView.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         ImageView.setText("Render will be here!");
+        ImageView.setIconTextGap(0);
         ImageScroll.setViewportView(ImageView);
 
         getContentPane().add(ImageScroll, java.awt.BorderLayout.CENTER);

@@ -5,10 +5,10 @@ package AZBIrenderer;
  */
 public class IntersectionData {
 
-    Vector3 point;
-    Vector3 normal;
-    Color col;
-    float T;
+    public Vector3 point;
+    public Vector3 normal;
+    public Color col;
+    public float T;
 
     public IntersectionData() {
     }

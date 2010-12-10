@@ -41,7 +41,7 @@
           </AuxValues>
           <Constraints>
             <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout" value="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout$BorderConstraintsDescription">
-              <BorderConstraints direction="Center"/>
+              <BorderConstraints direction="After"/>
             </Constraint>
           </Constraints>
 
@@ -49,7 +49,7 @@
           <SubComponents>
             <Component class="javax.swing.JTextPane" name="TextPane">
               <Properties>
-                <Property name="text" type="java.lang.String" value="scene:&#xa;background-col=0.5 0.5 1&#xa;ambient-light=1 1 1&#xa;&#xa;camera:&#xa;eye = -1 1.7 1&#xa;look-at = 0 0 0&#xa;screen-dist = 1&#xa;up-direction = 0 1 0&#xa;&#xa;rectangle:&#xa;p0=-2 0 -2&#xa;p1=-2 0 2&#xa;p2=2 0 -2&#xa;&#xa;sphere:&#xa;center = 0 0.5 0&#xa;radius = 0.5&#xa;mtl-diffuse=0.98 0.48 0.4&#xa;&#xa;sphere:&#xa;center= 0 1 0.3&#xa;radius=0.1&#xa;&#xa;light-point:&#xa;pos= 0 4 -2&#xa;color = 0.1 0.1 0.4&#xa;&#xa;light-directed:&#xa;direction=0 -1 -1&#xa;color= 0.8 0.8 0.8&#xa;&#xa;"/>
+                <Property name="text" type="java.lang.String" value="scene:&#xa;background-col=0.5 0.5 1&#xa;ambient-light=1 1 1&#xa;&#xa;camera:&#xa;eye = -1 1.7 1&#xa;look-at = 0 0 0&#xa;screen-dist = 1&#xa;up-direction = 0 1 0&#xa;&#xa;rectangle:&#xa;p0=-2 0 -2&#xa;p1=-2 0 2&#xa;p2=2 0 -2&#xa;&#xa;sphere:&#xa;center = 0 0.5 0&#xa;radius = 0.5&#xa;mtl-diffuse=0.98 0.48 0.4&#xa;&#xa;sphere:&#xa;center= 0 1 0.3&#xa;radius=0.1&#xa;&#xa;light-point:&#xa;pos= 0 4 -2&#xa;color = 0.1 0.1 0.4&#xa;&#xa;light-directed:&#xa;direction=0 -1 -1&#xa;color= 0.8 0.8 0.8&#xa;"/>
               </Properties>
             </Component>
           </SubComponents>
@@ -137,6 +137,7 @@
     </Container>
     <Container class="javax.swing.JScrollPane" name="ImageScroll">
       <Properties>
+        <Property name="horizontalScrollBarPolicy" type="int" value="32"/>
         <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
           <Dimension value="[50, 50]"/>
         </Property>
@@ -153,6 +154,7 @@
           <Properties>
             <Property name="horizontalAlignment" type="int" value="0"/>
             <Property name="text" type="java.lang.String" value="Render will be here!"/>
+            <Property name="iconTextGap" type="int" value="0"/>
           </Properties>
         </Component>
       </SubComponents>
