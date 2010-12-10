@@ -14,6 +14,8 @@ import java.util.logging.Logger;
  */
 public class Debug {
 
+    public static boolean DEBUG = false;
+    
     public static String makeString(Object obj) {
         if (obj instanceof Color) {
             Color c = (Color) obj;
@@ -27,8 +29,10 @@ public class Debug {
 
     }
 
-    public static void printObj(Object obj) {
-        if (obj == null) {
+    public static void print (Object obj) {
+        if (!DEBUG)
+            return;
+        if (obj == null || obj instanceof String || obj instanceof Float || obj instanceof Integer || obj instanceof Boolean || obj instanceof Double) {
             System.err.println(obj);
         } else {
             System.err.println(obj.getClass().getName() + ":");

@@ -22,6 +22,7 @@ public class Render {
     public String config;
     protected boolean init;
     protected BufferedImage render;
+    protected int hitCount;
 
     public Render(String config) {
         this.surfaces = new ArrayList<Surface>();
@@ -34,44 +35,41 @@ public class Render {
     }
 
     public void render(int screenWidth, int screenHeight) {
+        hitCount = 0;
         Color pixel;
         Ray r;
 
         ConfigParser parser = new ConfigParser(this);
         parser.Parse(config);
 
-        render = new BufferedImage(screenWidth, screenHeight, BufferedImage.TYPE_INT_RGB);
+        render = new BufferedImage(screenWidth, screenHeight, BufferedImage.TYPE_INT_ARGB);
 
 	/****ROUGH DRAFT of how it should go:***/
 	//additional camera initializations
-        if (camera.direction == null && camera.look_at != null)
-            camera.direction = sub (camera.look_at, camera.eye);
-	camera.right_direction = CrossProduct(camera.up_direction, camera.direction);
-	camera.up_direction = CrossProduct(camera.right_direction, camera.direction);
-	camera.P1 =
-                sub (
-                    sub(
-                        mul(camera.screen_dist, camera.direction),
-                        mul(camera.screen_width / 2, camera.right_direction)
-                    ),
-                    mul(camera.screen_width / 2, camera.up_direction)
-                );
 
-	camera.screen_height = camera.screen_width * (screenWidth / screenHeight);
+	camera.screen_height = camera.screen_width * (((float)screenWidth) / screenHeight);
 
 	//iterate every pixel of the display screen
 	//multithreading should go here
-        float[] color = new float[4];
+        int color;
 	for (int i = 0; i < screenHeight; i++)
 		for (int j = 0; j < screenWidth; j++)
 		{
-			r = CreateRay(i / screenHeight, j / screenWidth);
+			r = CreateRay(((float)i) / screenHeight, ((float)j) / screenWidth);
+//                        Debug.print("\n\n\nShooting a ray!");
+//                        Debug.print(r);
 			//UI related- image[i, j] = ShootRay(ray);
 			pixel = ShootRay(r);
-                        pixel.fillArray(color);
-			render.getRaster().setPixel(j, i, color);
+                        if (pixel != null)
+                        {
+                            hitCount++;
+                            color = pixel.getRGB();
+                            render.setRGB(j, i, color);
+                        }
 			//1 ray for now, anti aliasing later
 		}
+
+        System.out.println("Total hits: " + hitCount);
 
     }
 
@@ -79,11 +77,12 @@ public class Render {
         Color c;
         IntersectionData closestIntersect = new IntersectionData();
         IntersectionData temp = new IntersectionData();
-        closestIntersect.T = -1;//500 - max distance. maybe make macro, maybe get from scene
+
+        closestIntersect.T = Float.MAX_VALUE;
 
         for (Surface surf : surfaces) //if there is a collision, and its T is smaller, this is the new closest collision
         {
-            if (surf.Intersection(r, temp) && (closestIntersect.T == -1 || temp.T < closestIntersect.T)) {
+            if (surf.Intersection(r, temp) && temp.T < closestIntersect.T) {
                 closestIntersect = temp;
             }
         }
@@ -100,13 +99,13 @@ public class Render {
     Ray CreateRay(float xratio, float yratio) {
         Ray r = new Ray();
         r.origin = camera.eye;
-        Vector3 p = new Vector3();
-        p = add(
-                add(camera.P1,
-                    mul(((xratio + 0.5f) * camera.screen_width), camera.right_direction)),
-                    mul(((yratio + 0.5f) * camera.screen_width), camera.up_direction));
 
-        r.direction = Normalize(sub(p, camera.eye)); //if we don't need to normalize, remove the normalize
+        Vector3 dest = new Vector3(camera.eye);
+        dest = add(dest, mul(camera.screen_dist, camera.direction));
+        dest = add(dest, mul((0.5f - xratio) * camera.screen_width, camera.right_direction));
+        dest = add(dest, mul((0.5f - yratio) * camera.screen_height, camera.up_direction));
+
+        r.direction = Normalize(sub(dest, camera.eye));
         return r;
     }
 

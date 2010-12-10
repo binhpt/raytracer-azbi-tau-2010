@@ -2,35 +2,45 @@
 package AZBIrenderer;
 
 import static AZBIrenderer.Vector3.*;
-import static java.lang.Math.*;
+import static AZBIrenderer.Math3D.*;
 /**
  *
  */
 public class Sphere extends Surface {
 
-    public Vector3 center;
+    public Point3 center;
     public float radius;
 
     @Override
     public boolean Intersection(Ray r, IntersectionData intersect) {
-	Vector3 L;
-	float Tca, Thc, d, T;
+        float L_P2_P3_square, L_P2_P1, d;
 
-	L = sub(center, r.origin);
-	Tca = InnerProduct(L, r.direction);
-	if (Tca < 0) return false;
+        d = Point2RayDist(this.center, r);
+        L_P2_P3_square = this.radius * this.radius - d * d;
 
-	d = InnerProduct(L, L) + Tca * Tca;
-	if (d > radius * radius) return false;
+        /* Now, make sure there is an intersection */
+        if (L_P2_P3_square < 0 || L_P2_P3_square == Float.NaN)
+        {
+//            intersect.point = null;
+//            intersect.col = null; //change to something more complex next submission
+//            intersect.normal = null;
+//            intersect.T = Float.POSITIVE_INFINITY;
+            return false;
+        }
 
-	Thc = (float)sqrt(radius * radius - d);
-	/* assuming T won't be negative, which should never happen in cases that matter (either we're inside the sphere and so we have bigger problems, or it's behind us)*/
-	T = min(Tca - Thc, Tca + Thc);
+        L_P2_P1 = InnerProduct(sub(center, r.origin), r.direction);
 
-	intersect.point = (Vector3)mul(T, r.direction);
+	intersect.T = L_P2_P1 - (float) Math.sqrt(L_P2_P3_square);
+	intersect.point = add(r.origin, mul (intersect.T, r.direction));
 	intersect.col = this.mtl_diffuse; //change to something more complex next submission
-	intersect.normal = sub (intersect.point, this.center);
-	intersect.T = T;
+	intersect.normal = Normalize (sub (intersect.point, this.center));
+
+        Debug.print("*****************************************");
+        Debug.print(this);
+        Debug.print(r);
+        Debug.print("Intersection at " + Debug.makeString(intersect.point));
+        Debug.print("The distance is " + Debug.makeString(intersect.T));
+        Debug.print("*****************************************");
 
 	return true;
     }
@@ -41,4 +51,6 @@ public class Sphere extends Surface {
                 Vector3.add (center, radius),
                 Vector3.sub (center, radius));
     }
+
+    public void fillMissing() { }
 }

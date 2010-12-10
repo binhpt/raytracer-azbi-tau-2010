@@ -201,6 +201,11 @@ public class Vector3 implements Iterable<Float>{
                 );
     }
 
+    public static float Norm(Vector3 v)
+    {
+        return (float) Math.sqrt(InnerProduct(v, v));
+    }
+
     /**
      * Return a point whose coordinates are the coordinate minima:
      * x = min(v1.x, v2.x)
