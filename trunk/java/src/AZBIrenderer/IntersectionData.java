@@ -27,4 +27,12 @@ public class IntersectionData {
 
     public IntersectionData() {
     }
+
+    public void copyFrom (IntersectionData d)
+    {
+        this.point = d.point;
+        this.normal = d.normal;
+        this.col = d.col;
+        this.T = d.T;
+    }
 }
