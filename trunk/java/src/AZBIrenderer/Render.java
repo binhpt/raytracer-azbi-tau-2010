@@ -94,13 +94,16 @@ public class Render {
         return intersect;
     }
 
+
+    /*
+     * similar to shootAtSurfaces, but more efficient because it does less
+     */
     public static boolean ShootLightAtSurfaces(List<Surface> surfaces, Ray r, float maxT)
     {
         IntersectionData temp = new IntersectionData();
         for (Surface surf : surfaces)
         {
-            //OPTIMIZE:  think of a better way than the > 0.001
-            if (surf.Intersection(r, temp) && temp.T < maxT && temp.T > 0.001f)// && !temp.point.equals(r.origin))
+            if (surf.Intersection(r, temp) && temp.T < maxT && temp.T > 0f)// && !temp.point.equals(r.origin))
                 return false;
         }
         return true;
@@ -112,27 +115,28 @@ public class Render {
         
         IntersectionData lightIntersection = new IntersectionData();
         lightIntersection.T = Float.MAX_VALUE;
-        Ray lightray;
+        Ray lightray = new Ray();
 
         Color color = new Color(this.scene.ambient_light.r, this.scene.ambient_light.g, this.scene.ambient_light.b, 1);
         Color tc;
 
         double ambient, specular1, specular2;
         Vector3 H;
+        float dist;
 
         if (shootAtSurfaces(surfaces, r, intersect))
         {
 
             /*
-             * not done making it work, just going to sleep
+             * rough draft still, uses only LightDirected.
              */
             for (Light light : lights)
             {
                 //OPTIMIZE
-                lightray = light.GetRay(intersect.point);
+                dist = light.GetRay(intersect.point, lightray);
                 //lightray.origin = add(lightray.origin, mul(Float.MIN_VALUE, lightray.direction));
                 //float.maxvalue is only for LightDirected, change later
-                if (ShootLightAtSurfaces(surfaces, lightray, Float.MAX_VALUE))
+                if (ShootLightAtSurfaces(surfaces, lightray, dist))
                 //if (lightIntersection.point.equals(closestIntersect.point))
                 {
                     //just for testing, need to OPTIMIZE.. alot
