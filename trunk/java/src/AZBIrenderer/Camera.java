@@ -22,6 +22,7 @@ public class Camera implements ReflectionConstructed {
 
     public Camera() {
         this.screen_width = 2;
+        this.bot_left = new Vector3();
     }
 
     /**
@@ -56,6 +57,10 @@ public class Camera implements ReflectionConstructed {
      * The height of the screen in world units
      */
     public float screen_height;
+    /**
+     * the bottom left corner of the projected screen
+     */
+    public Vector3 bot_left;
 
     /**
      * Construct a ray for a given position in the image
@@ -65,16 +70,13 @@ public class Camera implements ReflectionConstructed {
      *               coordinates in javas screen coordinate system
      * @return The ray from the cameras eye which goes through that point
      */
-    Ray CreateRay(float xratio, float yratio) {
-        float xOurs = 1 - yratio;
-        float yOurs = xratio;
+    Ray CreateRay(float yratio, float xratio) {
         Ray r = new Ray();
         r.origin = this.eye;
 
-        Vector3 dest = new Vector3(this.eye);
-        dest = add(dest, mul(this.screen_dist, this.direction));
-        dest = add(dest, mul((0.5f - xOurs) * this.screen_width, this.right_direction));
-        dest = add(dest, mul((0.5f - yOurs) * this.screen_height, this.up_direction));
+        Vector3 dest = new Vector3(bot_left);
+        dest = add(dest, mul(xratio * screen_width, right_direction));
+        dest = add(dest, mul((1 - yratio) * screen_height, up_direction));
 
         r.direction = Normalize(sub(dest, this.eye));
         return r;
