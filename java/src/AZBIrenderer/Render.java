@@ -102,7 +102,7 @@ public class Render {
         IntersectionData temp = new IntersectionData();
         for (Surface surf : surfaces)
         {
-            if (surf.Intersection(r, temp) && temp.T < maxT && temp.T > Float.MIN_VALUE)// && !temp.point.equals(r.origin))
+            if (surf.Intersection(r, temp) && temp.T < maxT && temp.T > 0.001f)//Float.MIN_VALUE)// && !temp.point.equals(r.origin))
                 return false;
         }
         return true;
