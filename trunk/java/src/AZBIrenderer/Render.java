@@ -99,7 +99,8 @@ public class Render {
         IntersectionData temp = new IntersectionData();
         for (Surface surf : surfaces)
         {
-            if (surf.Intersection(r, temp) && temp.T < maxT && temp.T > 0 && !temp.point.equals(r.origin))
+            //OPTIMIZE:  think of a better way than the > 0.001
+            if (surf.Intersection(r, temp) && temp.T < maxT && temp.T > 0.001f)// && !temp.point.equals(r.origin))
                 return false;
         }
         return true;
@@ -107,16 +108,19 @@ public class Render {
 
     /* Returns null in case of no intersection */
     public Color ShootRay(Ray r) {
-        IntersectionData closestIntersect = new IntersectionData();
+        IntersectionData intersect = new IntersectionData();
         
         IntersectionData lightIntersection = new IntersectionData();
         lightIntersection.T = Float.MAX_VALUE;
         Ray lightray;
 
-        Color color = new Color(0, 0, 0, 1);
+        Color color = new Color(this.scene.ambient_light.r, this.scene.ambient_light.g, this.scene.ambient_light.b, 1);
         Color tc;
 
-        if (shootAtSurfaces(surfaces, r, closestIntersect))
+        double ambient, specular1, specular2;
+        Vector3 H;
+
+        if (shootAtSurfaces(surfaces, r, intersect))
         {
 
             /*
@@ -124,19 +128,31 @@ public class Render {
              */
             for (Light light : lights)
             {
-                lightray = light.GetRay(closestIntersect.point);
-                lightray.origin = add(lightray.origin, mul(Float.MIN_VALUE, lightray.direction));
+                //OPTIMIZE
+                lightray = light.GetRay(intersect.point);
+                //lightray.origin = add(lightray.origin, mul(Float.MIN_VALUE, lightray.direction));
                 //float.maxvalue is only for LightDirected, change later
                 if (ShootLightAtSurfaces(surfaces, lightray, Float.MAX_VALUE))
                 //if (lightIntersection.point.equals(closestIntersect.point))
                 {
-                    //color.r = 0.8f;
-                    //color.g = 0f;
-                    //color.b = 0.8f;
-                    tc = light.EffectFromLight(closestIntersect.point);
-                    color.r += closestIntersect.surface.mtl_diffuse.r * tc.r;
-                    color.g += closestIntersect.surface.mtl_diffuse.g * tc.g;
-                    color.b += closestIntersect.surface.mtl_diffuse.b * tc.b;
+                    //just for testing, need to OPTIMIZE.. alot
+                    tc = light.EffectFromLight(intersect.point); //I(L) in the presentation
+
+                    //diffuse component: K(d) * NL * I(L)
+                    lightray.direction = Normalize(new Vector3(-lightray.direction.x, -lightray.direction.y, -lightray.direction.z));
+                    ambient = InnerProduct(intersect.normal, lightray.direction); //N*L
+                    if (ambient < 0) ambient = 1f;
+
+                    //specular component: K(s) * (VR)^n *I(L)
+                    H = add(r.direction, lightray.direction);
+                    specular1 = InnerProduct(H, intersect.normal);
+                    if (specular1 < 0) specular1 = 0;
+                    specular2 = Math.pow(specular1, intersect.surface.mtl_shininess);
+
+                    color.r += tc.r * (intersect.surface.mtl_diffuse.r * ambient + specular2 * intersect.surface.mtl_specular.r);
+                    color.g += tc.g * (intersect.surface.mtl_diffuse.g * ambient + specular2 * intersect.surface.mtl_specular.g);
+                    color.b += tc.b * (intersect.surface.mtl_diffuse.b * ambient + specular2 * intersect.surface.mtl_specular.b);
+
                 }
                 //float light = Math.abs(Vector3.InnerProduct(normal, LightGlobal));
                 //return new Color(sf.mtl_diffuse.r * light, sf.mtl_diffuse.g * light, sf.mtl_diffuse.b * light, 1);

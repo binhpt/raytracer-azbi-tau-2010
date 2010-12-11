@@ -20,20 +20,34 @@ public class Sphere extends Surface {
 
     @Override
     public boolean Intersection(Ray r, IntersectionData intersect) {
-        float L_P2_P3_square, L_P2_P1, d;
+        //squared radius, squared distance
+        float sd, srad, thc, tca;
+        Vector3 L;
+        
+        L = sub(this.center, r.origin);
+        tca = InnerProduct(L, r.direction);
 
-        d = Point2RayDist(this.center, r);
-        L_P2_P3_square = this.radius * this.radius - d * d;
+        if (tca < 0) return false;
+        
+        sd = InnerProduct(L, L) - tca * tca;
+        srad = this.radius * this.radius;
+        if (sd > srad) return false;
+
+        thc = (float)Math.sqrt(srad - sd);
+
+        intersect.T = tca - thc;
+        //d = Point2RayDist(this.center, r);
+        //L_P2_P3_square = this.radius * this.radius - d * d;
 
         /* Now, make sure there is an intersection */
-        if (L_P2_P3_square < 0 || L_P2_P3_square == Float.NaN)
+        /*if (L_P2_P3_square < 0 || L_P2_P3_square == Float.NaN)
         {
             return false;
         }
 
         L_P2_P1 = InnerProduct(sub(center, r.origin), r.direction);
 
-	intersect.T = L_P2_P1 - (float) Math.sqrt(L_P2_P3_square);
+	intersect.T = L_P2_P1 - (float) Math.sqrt(L_P2_P3_square);*/
 	intersect.point = add(r.origin, mul (intersect.T, r.direction));
 	intersect.normal = Normalize (sub (intersect.point, this.center));
         intersect.surface = this;// Debug.getFromNormal(this,intersect.normal); //change to something more complex next submission
