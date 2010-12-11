@@ -4,7 +4,7 @@ package AZBIrenderer;
  * A base class for 3D surfaces
  * @author Adam Zeira & Barak Itkin
  */
-public abstract class Surface implements ReflectionConstructed,  SurfaceI {
+public abstract class Surface implements ReflectionConstructed {
 
     /**
      * Compue the first intersection of a ray with this surface
@@ -45,7 +45,7 @@ public abstract class Surface implements ReflectionConstructed,  SurfaceI {
 
     public Color getCheckers_diffuse1() {
         return checkers_diffuse1;
-    }
+}
 
     public void setCheckers_diffuse1(Color checkers_diffuse1) {
         this.checkers_diffuse1 = checkers_diffuse1;
