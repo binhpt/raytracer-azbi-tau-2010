@@ -73,7 +73,6 @@ public class Render {
 		}
 
         System.out.println("Total hits: " + hitCount);
-
     }
 
     public static boolean shootAtSurfaces (Iterable<? extends SurfaceI> surfaces, Ray r,
@@ -103,7 +102,7 @@ public class Render {
         IntersectionData temp = new IntersectionData();
         for (SurfaceI surf : surfaces)
         {
-            if (surf.Intersection(r, temp) && temp.T < maxT && temp.T > 0f)// && !temp.point.equals(r.origin))
+            if (surf.Intersection(r, temp) && temp.T < maxT && temp.T > Float.MIN_VALUE)// && !temp.point.equals(r.origin))
                 return false;
         }
         return true;
