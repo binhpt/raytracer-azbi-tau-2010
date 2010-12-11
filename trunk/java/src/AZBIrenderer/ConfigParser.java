@@ -57,8 +57,8 @@ public class ConfigParser {
             Object obj = ReflectionParse(this.className, props);
             if (obj instanceof Light) {
                 this.render.lights.add((Light) obj);
-            } else if (obj instanceof SurfaceI) {
-                this.render.surfaces.add((SurfaceI) obj);
+            } else if (obj instanceof Surface) {
+                this.render.surfaces.add((Surface) obj);
             } else if (obj instanceof Camera) {
                 this.render.camera = (Camera) obj;
             } else if (obj instanceof Scene) {
@@ -80,8 +80,10 @@ public class ConfigParser {
         BufferedReader iss = new BufferedReader(new StringReader(config));
         try {
             while (iss.ready() && (line = iss.readLine()) != null) {
-                if (!line.isEmpty()) {
-                    if (line.endsWith(":")) {
+                if (!(line = line.trim()).isEmpty()) {
+                    if (line.startsWith("#"))
+                        continue;
+                    else if (line.endsWith(":")) {
                         pushObject(line.substring(0, line.length()-1));
                     } else if ((splitLocation = line.indexOf("=")) != -1) {
                         pushProp(line.substring(0, splitLocation), line.substring(splitLocation+1));
