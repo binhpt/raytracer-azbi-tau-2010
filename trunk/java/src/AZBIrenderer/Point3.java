@@ -13,7 +13,7 @@ package AZBIrenderer;
 public class Point3 extends Vector3 {
 
     public Point3(Vector3 v) {
-        super();
+        super(v);
     }
 
     public Point3() {
