@@ -13,7 +13,7 @@ import static AZBIrenderer.Vector3.*;
  */
 public class Render {
 
-    public List<SurfaceI> surfaces;
+    public List<Surface> surfaces;
     public List<Light> lights;
     public Camera camera;
     public Scene scene;
@@ -23,7 +23,7 @@ public class Render {
     protected int hitCount;
 
     public Render(String config) {
-        this.surfaces = new ArrayList<SurfaceI>();
+        this.surfaces = new ArrayList<Surface>();
         this.lights = new ArrayList<Light>();
         this.init = false;
         this.config = config;
@@ -75,7 +75,7 @@ public class Render {
         System.out.println("Total hits: " + hitCount);
     }
 
-    public static boolean shootAtSurfaces (Iterable<? extends SurfaceI> surfaces, Ray r,
+    public static boolean shootAtSurfaces (Iterable<? extends Surface> surfaces, Ray r,
             IntersectionData closestIntersect)
     {
         boolean intersect = false;
@@ -83,7 +83,7 @@ public class Render {
 
         closestIntersect.T = Float.MAX_VALUE;
 
-        for (SurfaceI surf : surfaces) //if there is a collision, and its T is smaller, this is the new closest collision
+        for (Surface surf : surfaces) //if there is a collision, and its T is smaller, this is the new closest collision
         {
             if (surf.Intersection(r, temp) && temp.T < closestIntersect.T) {
                 closestIntersect.copyFrom(temp);
@@ -97,10 +97,10 @@ public class Render {
     /*
      * similar to shootAtSurfaces, but more efficient because it does less
      */
-    public static boolean ShootLightAtSurfaces(List<SurfaceI> surfaces, Ray r, float maxT)
+    public static boolean ShootLightAtSurfaces(List<Surface> surfaces, Ray r, float maxT)
     {
         IntersectionData temp = new IntersectionData();
-        for (SurfaceI surf : surfaces)
+        for (Surface surf : surfaces)
         {
             if (surf.Intersection(r, temp) && temp.T < maxT && temp.T > Float.MIN_VALUE)// && !temp.point.equals(r.origin))
                 return false;
