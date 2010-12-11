@@ -36,7 +36,7 @@ public class Sphere extends Surface {
 	intersect.T = L_P2_P1 - (float) Math.sqrt(L_P2_P3_square);
 	intersect.point = add(r.origin, mul (intersect.T, r.direction));
 	intersect.normal = Normalize (sub (intersect.point, this.center));
-        intersect.col = Debug.getFromNormal(this,intersect.normal); //change to something more complex next submission
+        intersect.surface = this;// Debug.getFromNormal(this,intersect.normal); //change to something more complex next submission
 
         return true;
     }

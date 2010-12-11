@@ -10,20 +10,20 @@ public class IntersectionData {
     /**
      * The point of intersection
      */
-    public Vector3 point;
+    public Point3 point;
     /**
      * The surface's normal at the intersection point
      */
     public Vector3 normal;
     /**
-     * The surface's color at the intersection point
-     */
-    public Color col;
-    /**
      * A value satisfying the following identity (psedo code, for a Ray r):
      * <pre>r.origin + T * r.direction = this.Point </pre>
      */
     public float T;
+    /*
+     * the data of the surface hit
+     */
+    public Surface surface;
 
     public IntersectionData() {
     }
@@ -32,7 +32,7 @@ public class IntersectionData {
     {
         this.point = d.point;
         this.normal = d.normal;
-        this.col = d.col;
+        this.surface = d.surface;
         this.T = d.T;
     }
 }

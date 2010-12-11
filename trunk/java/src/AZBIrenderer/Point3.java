@@ -13,7 +13,7 @@ package AZBIrenderer;
 public class Point3 extends Vector3 {
 
     public Point3(Vector3 v) {
-        super(v);
+        super();
     }
 
     public Point3() {
@@ -28,4 +28,19 @@ public class Point3 extends Vector3 {
         super();
     }
 
+    
+    public boolean equals(Object o)
+    {
+        if (this == o)
+            return true;
+
+        if (!(o instanceof Point3)) return false;
+
+        Point3 v = (Point3)o;
+
+        if (this.x == v.x && this.y == v.y && this.z == v.z)
+            return true;
+
+        return false;
+    }
 }

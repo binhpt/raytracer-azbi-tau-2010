@@ -116,6 +116,19 @@ public class Vector3 implements Iterable<Float>{
     }
 
     /**
+     * Vector addition between a point and a vector
+     * @return a new point representing p1 + v2
+     */
+    public static Point3 add (Point3 p1, Vector3 v2)
+    {
+        return new Point3 (
+                p1.x + v2.x,
+                p1.y + v2.y,
+                p1.z + v2.z
+                );
+    }
+
+    /**
      * Vector subtraction
      * @return a new vector representing v1 - v2
      */
@@ -237,5 +250,21 @@ public class Vector3 implements Iterable<Float>{
                 (v1.y > v2.y) ? v1.y : v2.y,
                 (v1.z > v2.z) ? v1.z : v2.z
                 );
+    }
+
+    @Override
+    public boolean equals(Object o)
+    {
+        if (this == o)
+            return true;
+
+        if (!(o instanceof Vector3)) return false;
+
+        Vector3 v = (Vector3)o;
+
+        if (this.x == v.x && this.y == v.y && this.z == v.z)
+            return true;
+
+        return false;
     }
 }

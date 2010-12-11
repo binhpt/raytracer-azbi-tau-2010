@@ -13,45 +13,7 @@ import javax.swing.ImageIcon;
  */
 public class RenderWindow extends javax.swing.JFrame {
 
-    public static final String axises ="\n"
-            + "cylinder:\n"
-            + "start     = -100 0 0\n"
-            + "direction =   1  0 0\n"
-            + "length    = 200\n"
-            + "radius    = 0.03\n"
-            + "mtl_diffuse = 1 0 0\n"
-            + "\n"
-            + "sphere:\n"
-            + "center = 2 0 0\n"
-            + "radius = 0.1\n"
-            + "mtl_diffuse = 1 0 0\n"
-            + "\n"
-            + "\n"
-            + "cylinder:\n"
-            + "start     = 0 -100 0\n"
-            + "direction = 0   1  0\n"
-            + "length    = 200\n"
-            + "radius    = 0.03\n"
-            + "mtl_diffuse = 0 1 0\n"
-            + "\n"
-            + "sphere:\n"
-            + "center = 0 2 0\n"
-            + "radius = 0.1\n"
-            + "mtl_diffuse = 0 1 0\n"
-            + "\n"
-            + "cylinder:\n"
-            + "start     = 0 0 -100\n"
-            + "direction = 0 0   1 \n"
-            + "length    = 200\n"
-            + "radius    = 0.03\n"
-            + "mtl_diffuse = 0 0 1\n"
-            + "\n"
-            + "sphere:\n"
-            + "center = 0 0 2\n"
-            + "radius = 0.1\n"
-            + "mtl_diffuse = 0 0 1\n";
     BufferedImage renderResult;
-
     /** Creates new form RenderWindow */
     public RenderWindow() {
         initComponents();
@@ -80,7 +42,6 @@ public class RenderWindow extends javax.swing.JFrame {
         EditButton = new javax.swing.JButton();
         ImageScroll = new javax.swing.JScrollPane();
         ImageView = new javax.swing.JLabel();
-        AxisCheckbox = new javax.swing.JCheckBox();
 
         TextEditorWindow.setTitle("Scene Text Editor");
 
@@ -101,7 +62,7 @@ public class RenderWindow extends javax.swing.JFrame {
 
         TextEditorWindow.getContentPane().add(TextToolbar, java.awt.BorderLayout.PAGE_START);
 
-        TextPane.setText("scene:\nbackground-col=0.5 0.5 1\n\ncamera:\neye = 5 5 5\nlook-at = 0 0 0\nscreen-dist = 1\nup-direction = 0 0 1\n\nbox:\np0 = -1 -1 -1\np1 =  1 0 -1\np2 = 0 1 -1\np3 = -1 -1 1\n\nsphere:\ncenter = -1 -1 -1\nradius = 0.2\n\nsphere:\ncenter = 1 0 -1\nradius = 0.2\n\nsphere:\ncenter = 0 1 -1\nradius = 0.2\n\nsphere:\ncenter = -1 -1 1\nradius = 0.2\n");
+        TextPane.setText("scene:\nbackground-col=0.5 0.5 1\n\ncamera:\neye = 0 0.3 2\ndirection = 0 0 -1\nscreen-dist = 1\nup-direction = 0 1 0\n\nrectangle:\np0=-1 0 -1\np1=-1 0 1\np2=1 0 -1\n\nsphere:\ncenter=0 0.5 0\nradius=0.5\n\nlight-directed:\ndirection=0 -1 -1");
         TextScroll.setViewportView(TextPane);
 
         TextEditorWindow.getContentPane().add(TextScroll, java.awt.BorderLayout.CENTER);
@@ -163,19 +124,15 @@ public class RenderWindow extends javax.swing.JFrame {
 
         getContentPane().add(ImageScroll, java.awt.BorderLayout.CENTER);
 
-        AxisCheckbox.setText("Visualize Axises");
-        getContentPane().add(AxisCheckbox, java.awt.BorderLayout.PAGE_END);
-
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void RenderButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_RenderButtonActionPerformed
-        Render r = new Render((AxisCheckbox.isSelected() ? axises : "") + TextPane.getText());
+        Render r = new Render(TextPane.getText());
         r.render(ImageScroll.getWidth(), ImageScroll.getHeight());
         ImageView.setIcon(new ImageIcon(r.render));
         ImageView.setText("");
         renderResult = r.render;
-
     }//GEN-LAST:event_RenderButtonActionPerformed
 
     private void EditButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_EditButtonActionPerformed
@@ -187,9 +144,8 @@ public class RenderWindow extends javax.swing.JFrame {
         try {
             FileChooser.showOpenDialog(this);
             File f = FileChooser.getSelectedFile();
-            if (f == null || !f.exists()) {
+            if (f == null || !f.exists())
                 return;
-            }
             java.util.Scanner s = new Scanner(FileChooser.getSelectedFile());
             StringBuilder text = new StringBuilder();
             while (s.hasNextLine()) {
@@ -224,17 +180,15 @@ public class RenderWindow extends javax.swing.JFrame {
     public static void main(String args[]) {
         try {
             javax.swing.UIManager.setLookAndFeel(javax.swing.UIManager.getSystemLookAndFeelClassName());
-        } catch (Exception ex) {
-        }
+        } catch (Exception ex) { }
         java.awt.EventQueue.invokeLater(new Runnable() {
-
             public void run() {
                 new RenderWindow().setVisible(true);
             }
         });
     }
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JCheckBox AxisCheckbox;
     private javax.swing.JButton EditButton;
     private javax.swing.JFileChooser FileChooser;
     private javax.swing.JScrollPane ImageScroll;
@@ -248,4 +202,5 @@ public class RenderWindow extends javax.swing.JFrame {
     private javax.swing.JScrollPane TextScroll;
     private javax.swing.JToolBar TextToolbar;
     // End of variables declaration//GEN-END:variables
+
 }

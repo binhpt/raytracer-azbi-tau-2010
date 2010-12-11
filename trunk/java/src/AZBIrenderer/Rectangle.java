@@ -72,7 +72,7 @@ public class Rectangle extends Surface {
         float temp1 = InnerProduct(M, u), temp2 = InnerProduct(M, v);
         if (temp1 < 0 || temp2 < 0 || temp1 > unormSquare || temp2 > vnormSquare)
             return false;
-        intersect.col = Debug.getFromNormal(this,normal);
+        intersect.surface = this;//Debug.getFromNormal(this,normal);
         intersect.normal = new Vector3(normal);
 
         return true;
