@@ -140,14 +140,14 @@ public class Render {
 
                     //diffuse component: K(d) * NL * I(L)
                     lightray.direction = Normalize(new Vector3(-lightray.direction.x, -lightray.direction.y, -lightray.direction.z));
-                    ambient = InnerProduct(intersect.normal, lightray.direction); //N*L
-                    if (ambient < 0) ambient = 1f;
+                    ambient = Math.abs(InnerProduct(intersect.normal, lightray.direction)); //N*L
 
                     //specular component: K(s) * (VR)^n *I(L)
-                    H = add(r.direction, lightray.direction);
+                    H = Normalize(add(r.direction, lightray.direction));
                     specular1 = InnerProduct(H, intersect.normal);
-                    if (specular1 < 0) specular1 = 0;
+                    //if (specular1 < 0) specular1 = 0;
                     specular2 = Math.pow(specular1, intersect.surface.mtl_shininess);
+                    //specular2 = 0;
 
                     color.r += tc.r * (intersect.surface.mtl_diffuse.r * ambient + specular2 * intersect.surface.mtl_specular.r);
                     color.g += tc.g * (intersect.surface.mtl_diffuse.g * ambient + specular2 * intersect.surface.mtl_specular.g);
@@ -157,7 +157,15 @@ public class Render {
                 //float light = Math.abs(Vector3.InnerProduct(normal, LightGlobal));
                 //return new Color(sf.mtl_diffuse.r * light, sf.mtl_diffuse.g * light, sf.mtl_diffuse.b * light, 1);
             }
-            
+
+            if (color.r > 1f) color.r = 1;
+            if (color.g > 1f) color.g = 1;
+            if (color.b > 1f) color.b = 1;
+
+            if (color.r < 0f) color.r = 0;
+            if (color.g < 0f) color.g = 0;
+            if (color.b < 0f) color.b = 0;
+
             return color;// closestIntersect.surface.mtl_diffuse; //flat color
         }
         else
