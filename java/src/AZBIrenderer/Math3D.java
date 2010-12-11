@@ -15,5 +15,23 @@ public class Math3D {
         double temp2 = Math.sqrt(Math.abs(temp3));
         return (float) temp2;
     }
+    /* Normal must be normalized!
+     * Result is nor normalized!
+     */
+    public static Vector3 flattenVec (Vector3 toFlat, Vector3 normal)
+    {
+        return sub(toFlat, mul(InnerProduct(toFlat, normal), normal));
+    }
 
+    /* Normal must be normalized! */
+    public static Point3 flattenPt (Point3 toFlat, Vector3 normal)
+    {
+        return new Point3(flattenVec(toFlat, normal));
+    }
+
+    /* Normal must be normalized! */
+    public static Ray flattenRay (Ray r, Vector3 normal)
+    {
+        return new Ray(flattenPt(r.origin, normal), Normalize(flattenVec(r.direction, normal)));
+    }
 }
