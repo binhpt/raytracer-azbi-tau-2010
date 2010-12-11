@@ -48,4 +48,9 @@ public class Color {
                 | ((int)(b * 255) << 0);
     }
 
+    public static Color add(Color a, Color b)
+    {
+        return new Color(a.r + b.r, a.g + b.g, a.b + b.b, a.a + b.a);
+    }
+
 }

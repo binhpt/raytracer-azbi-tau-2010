@@ -35,6 +35,7 @@ public class Render {
     public void render(int screenWidth, int screenHeight) {
         hitCount = 0;
         Color pixel;
+        Color pixelColorSum;
         Ray r;
         Graphics g;
 
@@ -44,13 +45,19 @@ public class Render {
         render = new BufferedImage(screenWidth, screenHeight, BufferedImage.TYPE_INT_ARGB);
         g = render.getGraphics();
         g.setColor(new java.awt.Color(scene.background_col.r, scene.background_col.g, scene.background_col.b));
-        g.fillRect(0, 0, screenWidth, screenHeight);;
+        g.fillRect(0, 0, screenWidth, screenHeight);
 
 	/****ROUGH DRAFT of how it should go:***/
 	//additional camera initializations
 
         // Inverted because of the right hand coordinate system
-	camera.screen_height = camera.screen_width * (1/(((float)screenWidth) / screenHeight));
+	//camera.screen_height = camera.screen_width * (1/(((float)screenWidth) / screenHeight));
+        camera.screen_height = camera.screen_width * ((float)screenHeight / screenWidth);
+
+        camera.bot_left = add(camera.eye, mul(camera.screen_dist, camera.direction));
+        camera.bot_left = sub(camera.bot_left, mul(camera.screen_width / 2, camera.right_direction));
+        camera.bot_left = sub(camera.bot_left, mul(camera.screen_height / 2, camera.up_direction));
+        //camera.screen_height = camera.screen_width
 
 	//iterate every pixel of the display screen
 	//multithreading should go here
@@ -58,18 +65,28 @@ public class Render {
 	for (int i = 0; i < screenHeight; i++)
 		for (int j = 0; j < screenWidth; j++)
 		{
+                    /*pixelColorSum = new Color(0, 0, 0, 1);
+                    for (int k = 0; k < scene.super_sample_width; k++)*/
+                    //{
 			r = camera.CreateRay(((float)i) / screenHeight, ((float)j) / screenWidth);
 //                        Debug.print("\n\n\nShooting a ray!");
 //                        Debug.print(r);
 			//UI related- image[i, j] = ShootRay(ray);
 			pixel = ShootRay(r);
-                        if (pixel != null)
-                        {
-                            hitCount++;
-                            color = pixel.getRGB();
-                            render.setRGB(j, i, color);
-                        }
-			//1 ray for now, anti aliasing later
+                        //pixelColorSum = Color.add(pixel, pixelColorSum);
+                    //}
+
+                    /*pixelColorSum.r /= scene.super_sample_width;
+                    pixelColorSum.g /= scene.super_sample_width;
+                    pixelColorSum.b /= scene.super_sample_width;
+                    pixelColorSum.a = 1;*/
+
+                    if (pixel != null)
+                    {
+                        hitCount++;
+                        color = pixel.getRGB();
+                        render.setRGB(j, i, color);
+                    }
 		}
 
         System.out.println("Total hits: " + hitCount);
@@ -116,7 +133,7 @@ public class Render {
         lightIntersection.T = Float.MAX_VALUE;
         Ray lightray = new Ray();
 
-        Color color = new Color(this.scene.ambient_light.r, this.scene.ambient_light.g, this.scene.ambient_light.b, 1);
+        Color color = new Color(0, 0, 0, 1);
         Color tc;
 
         double ambient, specular1, specular2;
@@ -142,6 +159,7 @@ public class Render {
                     tc = light.EffectFromLight(intersect.point); //I(L) in the presentation
 
                     //diffuse component: K(d) * NL * I(L)
+                    //lightray.direction = Normalize(lightray.direction);
                     lightray.direction = Normalize(new Vector3(-lightray.direction.x, -lightray.direction.y, -lightray.direction.z));
                     ambient = Math.abs(InnerProduct(intersect.normal, lightray.direction)); //N*L
 
@@ -163,6 +181,10 @@ public class Render {
                 //return new Color(sf.mtl_diffuse.r * light, sf.mtl_diffuse.g * light, sf.mtl_diffuse.b * light, 1);
             }
 
+            color.r += this.scene.ambient_light.r * intersect.surface.mtl_ambient.r;
+            color.g += this.scene.ambient_light.g * intersect.surface.mtl_ambient.g;
+            color.b += this.scene.ambient_light.b * intersect.surface.mtl_ambient.b;
+
             if (color.r > 1f) color.r = 1;
             if (color.g > 1f) color.g = 1;
             if (color.b > 1f) color.b = 1;
@@ -170,6 +192,8 @@ public class Render {
             if (color.r < 0f) color.r = 0;
             if (color.g < 0f) color.g = 0;
             if (color.b < 0f) color.b = 0;
+
+            color.a = 1;
 
             return color;// closestIntersect.surface.mtl_diffuse; //flat color
         }
