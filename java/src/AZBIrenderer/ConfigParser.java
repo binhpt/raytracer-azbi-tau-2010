@@ -57,8 +57,8 @@ public class ConfigParser {
             Object obj = ReflectionParse(this.className, props);
             if (obj instanceof Light) {
                 this.render.lights.add((Light) obj);
-            } else if (obj instanceof Surface) {
-                this.render.surfaces.add((Surface) obj);
+            } else if (obj instanceof SurfaceI) {
+                this.render.surfaces.add((SurfaceI) obj);
             } else if (obj instanceof Camera) {
                 this.render.camera = (Camera) obj;
             } else if (obj instanceof Scene) {

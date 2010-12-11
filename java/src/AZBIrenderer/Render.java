@@ -13,7 +13,7 @@ import static AZBIrenderer.Vector3.*;
  */
 public class Render {
 
-    public List<Surface> surfaces;
+    public List<SurfaceI> surfaces;
     public List<Light> lights;
     public Camera camera;
     public Scene scene;
@@ -23,7 +23,7 @@ public class Render {
     protected int hitCount;
 
     public Render(String config) {
-        this.surfaces = new ArrayList<Surface>();
+        this.surfaces = new ArrayList<SurfaceI>();
         this.lights = new ArrayList<Light>();
         this.init = false;
         this.config = config;
@@ -76,7 +76,7 @@ public class Render {
 
     }
 
-    public static boolean shootAtSurfaces (Iterable<? extends Surface> surfaces, Ray r,
+    public static boolean shootAtSurfaces (Iterable<? extends SurfaceI> surfaces, Ray r,
             IntersectionData closestIntersect)
     {
         boolean intersect = false;
@@ -84,7 +84,7 @@ public class Render {
 
         closestIntersect.T = Float.MAX_VALUE;
 
-        for (Surface surf : surfaces) //if there is a collision, and its T is smaller, this is the new closest collision
+        for (SurfaceI surf : surfaces) //if there is a collision, and its T is smaller, this is the new closest collision
         {
             if (surf.Intersection(r, temp) && temp.T < closestIntersect.T) {
                 closestIntersect.copyFrom(temp);
@@ -98,10 +98,10 @@ public class Render {
     /*
      * similar to shootAtSurfaces, but more efficient because it does less
      */
-    public static boolean ShootLightAtSurfaces(List<Surface> surfaces, Ray r, float maxT)
+    public static boolean ShootLightAtSurfaces(List<SurfaceI> surfaces, Ray r, float maxT)
     {
         IntersectionData temp = new IntersectionData();
-        for (Surface surf : surfaces)
+        for (SurfaceI surf : surfaces)
         {
             if (surf.Intersection(r, temp) && temp.T < maxT && temp.T > 0f)// && !temp.point.equals(r.origin))
                 return false;
@@ -150,12 +150,14 @@ public class Render {
                     H = Normalize(add(r.direction, lightray.direction));
                     specular1 = InnerProduct(H, intersect.normal);
                     //if (specular1 < 0) specular1 = 0;
-                    specular2 = Math.pow(specular1, intersect.surface.mtl_shininess);
+                    specular2 = Math.pow(specular1, intersect.surface.getMtl_shininess());
                     //specular2 = 0;
 
-                    color.r += tc.r * (intersect.surface.mtl_diffuse.r * ambient + specular2 * intersect.surface.mtl_specular.r);
-                    color.g += tc.g * (intersect.surface.mtl_diffuse.g * ambient + specular2 * intersect.surface.mtl_specular.g);
-                    color.b += tc.b * (intersect.surface.mtl_diffuse.b * ambient + specular2 * intersect.surface.mtl_specular.b);
+                    Color mtlDiffuse = intersect.surface.getMtl_diffuse();
+                    Color mtlSpecular = intersect.surface.getMtl_specular();
+                    color.r += tc.r * (mtlDiffuse.r * ambient + specular2 * mtlSpecular.r);
+                    color.g += tc.g * (mtlDiffuse.g * ambient + specular2 * mtlSpecular.g);
+                    color.b += tc.b * (mtlDiffuse.b * ambient + specular2 * mtlSpecular.b);
 
                 }
                 //float light = Math.abs(Vector3.InnerProduct(normal, LightGlobal));
