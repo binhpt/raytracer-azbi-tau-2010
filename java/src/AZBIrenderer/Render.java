@@ -33,6 +33,7 @@ public class Render {
     }
 
     public void render(int screenWidth, int screenHeight) {
+        Debug.print(config);
         hitCount = 0;
         Color pixel;
         Ray r;
