@@ -39,7 +39,6 @@ public class ConfigParser {
      * @param val The property value
      */
     protected void pushProp(String key, String val) {
-        System.out.println("Prop: " + key + " = " + val);
         if (className.isEmpty()) {
             System.err.println("Can't define properties without an object...");
             System.err.println(key + " = " + val);
@@ -53,7 +52,6 @@ public class ConfigParser {
      * @param objType The type of the object
      */
     protected void pushObject(String objType) {
-        System.out.println("Object: " +objType);
         /* Ignore empty definitions or the empty before the first object */
         if (!this.className.isEmpty() && !this.props.isEmpty()) {
             Object obj = ReflectionParse(this.className, props);

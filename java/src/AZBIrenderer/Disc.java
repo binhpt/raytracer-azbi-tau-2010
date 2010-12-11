@@ -37,7 +37,7 @@ public class Disc extends Surface {
             return false;
 
         intersect.normal = new Vector3(normal);
-        intersect.col = Debug.getFromNormal(this, normal);
+        intersect.surface = this;//Debug.getFromNormal(this, normal);
 
         return true;
     }

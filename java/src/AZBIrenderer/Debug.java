@@ -23,13 +23,11 @@ public class Debug {
     /**
      * A temporary method for giving color to a surface
      */
-    public static Color getFromNormal (Surface sf, Vector3 normal)
+    /*public static Color getFromNormal (Surface sf, Vector3 normal)
     {
-
         float light = Math.abs(Vector3.InnerProduct(normal, LightGlobal));
         return new Color(sf.mtl_diffuse.r * light, sf.mtl_diffuse.g * light, sf.mtl_diffuse.b * light, 1);
-        //return new Color(Math.abs(normal.x), Math.abs(normal.y), Math.abs(normal.z), 1);
-    }
+    }*/
 
     /**
      * Make a string representation of field values

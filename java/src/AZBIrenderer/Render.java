@@ -33,7 +33,6 @@ public class Render {
     }
 
     public void render(int screenWidth, int screenHeight) {
-        Debug.print(config);
         hitCount = 0;
         Color pixel;
         Ray r;
@@ -95,16 +94,56 @@ public class Render {
         return intersect;
     }
 
+    public static boolean ShootLightAtSurfaces(List<Surface> surfaces, Ray r, float maxT)
+    {
+        IntersectionData temp = new IntersectionData();
+        for (Surface surf : surfaces)
+        {
+            if (surf.Intersection(r, temp) && temp.T < maxT && temp.T > 0 && !temp.point.equals(r.origin))
+                return false;
+        }
+        return true;
+    }
+
     /* Returns null in case of no intersection */
     public Color ShootRay(Ray r) {
         IntersectionData closestIntersect = new IntersectionData();
+        
+        IntersectionData lightIntersection = new IntersectionData();
+        lightIntersection.T = Float.MAX_VALUE;
+        Ray lightray;
+
+        Color color = new Color(0, 0, 0, 1);
+        Color tc;
+
         if (shootAtSurfaces(surfaces, r, closestIntersect))
-        //we now have the closest surface and point on the surface
-        //obviously enough to get the color
-        //surface and point are saved for later implementations of bouncing
-        //we'll also need the normal later on, either on collision or we'll get it on its own function using the intersection vector
-        //for this excersize they want plain color, angles don't matter
-            return closestIntersect.col;
+        {
+
+            /*
+             * not done making it work, just going to sleep
+             */
+            for (Light light : lights)
+            {
+                lightray = light.GetRay(closestIntersect.point);
+                lightray.origin = add(lightray.origin, mul(Float.MIN_VALUE, lightray.direction));
+                //float.maxvalue is only for LightDirected, change later
+                if (ShootLightAtSurfaces(surfaces, lightray, Float.MAX_VALUE))
+                //if (lightIntersection.point.equals(closestIntersect.point))
+                {
+                    //color.r = 0.8f;
+                    //color.g = 0f;
+                    //color.b = 0.8f;
+                    tc = light.EffectFromLight(closestIntersect.point);
+                    color.r += closestIntersect.surface.mtl_diffuse.r * tc.r;
+                    color.g += closestIntersect.surface.mtl_diffuse.g * tc.g;
+                    color.b += closestIntersect.surface.mtl_diffuse.b * tc.b;
+                }
+                //float light = Math.abs(Vector3.InnerProduct(normal, LightGlobal));
+                //return new Color(sf.mtl_diffuse.r * light, sf.mtl_diffuse.g * light, sf.mtl_diffuse.b * light, 1);
+            }
+            
+            return color;// closestIntersect.surface.mtl_diffuse; //flat color
+        }
         else
             return null;
     }
