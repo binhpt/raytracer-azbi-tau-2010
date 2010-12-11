@@ -13,17 +13,23 @@ public class LightDirected extends Light{
 
     public Color EffectFromLight(Point3 p)
     {
-        return this.intensity;
+        return this.color;
     }
 
     //OPTIMIZE
-    public Ray GetRay(Point3 point)
+    public float GetRay(Point3 point, Ray ray)
     {
-        Ray ray = new Ray(point, new Vector3(- direction.x, - direction.y, - direction.z));
-        return ray;
+        ray.origin = point;
+        ray.direction = reverseDirection;
+        return Float.POSITIVE_INFINITY;
     }
     
     public Vector3 direction;
+    public Vector3 reverseDirection; //for efficiency
 
-    public void fillMissing() { }
+    public void fillMissing()
+    {
+        direction = Vector3.Normalize(direction);
+        reverseDirection = new Vector3(-direction.x, -direction.y, -direction.z);
+    }
 }
