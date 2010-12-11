@@ -41,7 +41,7 @@ public class Cylinder extends Surface {
             return false;
 
         intersect.T = temp.T / flattenedSize;
-        intersect.point = new Vector3(add(r.origin, mul(intersect.T, r.direction)));
+        intersect.point = new Point3(add(r.origin, mul(intersect.T, r.direction)));
         toStart = sub(intersect.point, start);
         len = InnerProduct(toStart, direction);
 
@@ -53,14 +53,15 @@ public class Cylinder extends Surface {
             float P2P3_flat_square = (radius * radius - d * d);
             float projDiff_square = 4 * P2P3_flat_square * (1 * 1 - flattenedSize * flattenedSize);
                 intersect.T += Math.sqrt(4 * P2P3_flat_square + projDiff_square);
-                intersect.point = new Vector3(add(r.origin, mul(intersect.T, r.direction)));
+                intersect.point = new Point3(add(r.origin, mul(intersect.T, r.direction)));
                 toStart = sub(intersect.point, start);
                 len = InnerProduct(toStart, direction);
                 if (len < 0 || len > length)
                     return false;
         }
         intersect.normal = Normalize(Math3D.flattenVec(toStart, direction));
-        intersect.col = Debug.getFromNormal(this, intersect.normal);
+        intersect.surface = this;
+        //intersect.col = Debug.getFromNormal(this, intersect.normal);
 
         return true;
     }
