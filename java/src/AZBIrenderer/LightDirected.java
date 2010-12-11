@@ -16,6 +16,7 @@ public class LightDirected extends Light{
         return this.intensity;
     }
 
+    //OPTIMIZE
     public Ray GetRay(Point3 point)
     {
         Ray ray = new Ray(point, new Vector3(- direction.x, - direction.y, - direction.z));
