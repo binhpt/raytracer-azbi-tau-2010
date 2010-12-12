@@ -101,7 +101,7 @@ public class RenderWindow extends javax.swing.JFrame {
 
         TextEditorWindow.getContentPane().add(TextToolbar, java.awt.BorderLayout.PAGE_START);
 
-        TextPane.setText("scene:\nbackground-col=0.5 0.5 1\n\ncamera:\neye = 5 5 5\nlook-at = 0 0 0\nscreen-dist = 1\nup-direction = 0 0 1\n\nbox:\np0 = -1 -1 -1\np1 =  1 0 -1\np2 = 0 1 -1\np3 = -1 -1 1\n\nsphere:\ncenter = -1 -1 -1\nradius = 0.2\n\nsphere:\ncenter = 1 0 -1\nradius = 0.2\n\nsphere:\ncenter = 0 1 -1\nradius = 0.2\n\nsphere:\ncenter = -1 -1 1\nradius = 0.2\n\nlight-directed:\ndirection: 0 -1 -1");
+        TextPane.setText("scene:\nbackground-col= 0.36 0.46 0.63\n#ambient-light=1 1 1\nsuper-samp-width=1\n\ncamera:\neye = 3 3 3\nlook-at = 0 0 0\nscreen-dist = 1\nup-direction = 0 0 1\n\n\nlight-directed:\ndirection= -1 -1 -1\ncolor = 1 1 1\n\n\nbox:\np0 = -1 -1 -1\np1 = +1 -1 -1\np2 = -1 +1 -1\np3 = -1 -1 +1\n#mesh:\n#pos = 0 0 0\n#scale = 0.31\n#filename = triangle.off\n#mtl-diffuse = 0.55 0.53 0.44");
         TextScroll.setViewportView(TextPane);
 
         TextEditorWindow.getContentPane().add(TextScroll, java.awt.BorderLayout.CENTER);
@@ -163,6 +163,7 @@ public class RenderWindow extends javax.swing.JFrame {
 
         getContentPane().add(ImageScroll, java.awt.BorderLayout.CENTER);
 
+        AxisCheckbox.setSelected(true);
         AxisCheckbox.setText("Visualize Axises");
         getContentPane().add(AxisCheckbox, java.awt.BorderLayout.PAGE_END);
 
@@ -226,6 +227,7 @@ public class RenderWindow extends javax.swing.JFrame {
             javax.swing.UIManager.setLookAndFeel(javax.swing.UIManager.getSystemLookAndFeelClassName());
         } catch (Exception ex) {
         }
+
         java.awt.EventQueue.invokeLater(new Runnable() {
 
             public void run() {

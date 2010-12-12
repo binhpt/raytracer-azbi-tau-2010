@@ -53,16 +53,32 @@ public class ConfigParser {
      */
     protected void pushObject(String objType) {
         /* Ignore empty definitions or the empty before the first object */
+        Object[] single = new Object[1];
+        Object[] children;
+
         if (!this.className.isEmpty() && !this.props.isEmpty()) {
             Object obj = ReflectionParse(this.className, props);
-            if (obj instanceof Light) {
-                this.render.lights.add((Light) obj);
-            } else if (obj instanceof Surface) {
-                this.render.surfaces.add((Surface) obj);
-            } else if (obj instanceof Camera) {
-                this.render.camera = (Camera) obj;
-            } else if (obj instanceof Scene) {
-                this.render.scene = (Scene) obj;
+            
+            if (obj instanceof ReflectionWrapper)
+            {
+                children = ((ReflectionWrapper)obj).getRealObjects();
+            }
+            else
+            {
+                single[0] = obj;
+                children = single;
+            }
+
+            for (Object sceneObj : children) {
+                if (sceneObj instanceof Light) {
+                    this.render.lights.add((Light) sceneObj);
+                } else if (sceneObj instanceof Surface) {
+                    this.render.surfaces.add((Surface) sceneObj);
+                } else if (sceneObj instanceof Camera) {
+                    this.render.camera = (Camera) sceneObj;
+                } else if (sceneObj instanceof Scene) {
+                    this.render.scene = (Scene) sceneObj;
+                }
             }
             props.clear();
         }
@@ -146,6 +162,21 @@ public class ConfigParser {
         v.z = Float.parseFloat(components[2]);
 
         return v;
+    }
+
+    /**
+     * Parse a shader property.
+     * @param line A string containing the shader name
+     * @return The matching shader
+     */
+    public Mesh.Shader GetShaderParam(String line) {
+        line = line.trim().replaceAll("\\s+", " ");
+        if (line.equals("flat"))
+            return Mesh.Shader.FLAT;
+        else if(line.equals("phong"))
+            return Mesh.Shader.PHONG;
+        else
+            throw new IllegalArgumentException("Bad shader type! \"" + line + "\"");
     }
 
     /**
@@ -244,6 +275,10 @@ public class ConfigParser {
                     f.set(obj, GetVectorParam(props.get(key)));
                 } else if (f.getType() == Color.class) {
                     f.set(obj, GetColorParam(props.get(key)));
+                } else if (f.getType() == Mesh.Shader.class) {
+                    f.set(obj, GetShaderParam(props.get(key)));
+                } else if (f.getType() == String.class) {
+                    f.set(obj, props.get(key).trim());
                 }
             }
 

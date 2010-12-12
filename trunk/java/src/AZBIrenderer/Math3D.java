@@ -34,4 +34,18 @@ public class Math3D {
     {
         return new Ray(flattenPt(r.origin, normal), Normalize(flattenVec(r.direction, normal)));
     }
+
+    public static boolean RayPlanintersection (Ray r, Vector3 normal, float d, IntersectionData result)
+    {
+        float SABC = InnerProduct(r.direction, normal);
+
+        if (SABC == 0)
+            return false;
+
+        result.T = - (d + InnerProduct(r.origin, normal)) / SABC;
+        result.point = add(r.origin, mul (result.T, r.direction));
+
+        return true;
+    }
+
 }

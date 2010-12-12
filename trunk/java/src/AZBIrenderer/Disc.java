@@ -6,7 +6,7 @@ import static AZBIrenderer.Vector3.*;
  * A class for representing Disc sufraces
  * @author Barak Itkin
  */
-public class Disc extends Surface {
+public class Disc extends SingleMaterialSurface implements Surface {
 
     public Vector3 normal;
     /**
@@ -25,13 +25,8 @@ public class Disc extends Surface {
 
     @Override
     public boolean Intersection(Ray r, IntersectionData intersect) {
-        float SABC = InnerProduct(r.direction, this.normal);
-
-        if (SABC == 0)
+        if (Math3D.RayPlanintersection(r, normal, d, intersect))
             return false;
-
-        intersect.T = - (d + InnerProduct(r.origin, normal)) / SABC;
-        intersect.point = add(r.origin, mul (intersect.T, r.direction));
 
         if (Norm(sub(intersect.point, this.center)) > radius)
             return false;

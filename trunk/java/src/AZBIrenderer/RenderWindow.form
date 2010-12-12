@@ -52,7 +52,7 @@
           <SubComponents>
             <Component class="javax.swing.JTextPane" name="TextPane">
               <Properties>
-                <Property name="text" type="java.lang.String" value="scene:&#xa;background-col=0.5 0.5 1&#xa;&#xa;camera:&#xa;eye = 5 5 5&#xa;look-at = 0 0 0&#xa;screen-dist = 1&#xa;up-direction = 0 0 1&#xa;&#xa;box:&#xa;p0 = -1 -1 -1&#xa;p1 =  1 0 -1&#xa;p2 = 0 1 -1&#xa;p3 = -1 -1 1&#xa;&#xa;sphere:&#xa;center = -1 -1 -1&#xa;radius = 0.2&#xa;&#xa;sphere:&#xa;center = 1 0 -1&#xa;radius = 0.2&#xa;&#xa;sphere:&#xa;center = 0 1 -1&#xa;radius = 0.2&#xa;&#xa;sphere:&#xa;center = -1 -1 1&#xa;radius = 0.2&#xa;&#xa;light-directed:&#xa;direction: 0 -1 -1"/>
+                <Property name="text" type="java.lang.String" value="scene:&#xa;background-col= 0.36 0.46 0.63&#xa;#ambient-light=1 1 1&#xa;super-samp-width=1&#xa;&#xa;camera:&#xa;eye = 3 3 3&#xa;look-at = 0 0 0&#xa;screen-dist = 1&#xa;up-direction = 0 0 1&#xa;&#xa;&#xa;light-directed:&#xa;direction= -1 -1 -1&#xa;color = 1 1 1&#xa;&#xa;&#xa;box:&#xa;p0 = -1 -1 -1&#xa;p1 = +1 -1 -1&#xa;p2 = -1 +1 -1&#xa;p3 = -1 -1 +1&#xa;#mesh:&#xa;#pos = 0 0 0&#xa;#scale = 0.31&#xa;#filename = triangle.off&#xa;#mtl-diffuse = 0.55 0.53 0.44"/>
               </Properties>
             </Component>
           </SubComponents>
@@ -175,6 +175,7 @@
     </Container>
     <Component class="javax.swing.JCheckBox" name="AxisCheckbox">
       <Properties>
+        <Property name="selected" type="boolean" value="true"/>
         <Property name="text" type="java.lang.String" value="Visualize Axises"/>
       </Properties>
       <Constraints>

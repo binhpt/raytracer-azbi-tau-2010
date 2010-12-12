@@ -23,7 +23,7 @@ public class IntersectionData {
     /*
      * the data of the surface hit
      */
-    public Surface surface;
+    public SingleMaterialSurface surface;
 
     public IntersectionData() {
     }

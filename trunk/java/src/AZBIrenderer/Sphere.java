@@ -7,7 +7,7 @@ import static AZBIrenderer.Math3D.*;
  * A class for representing sphere sufraces
  * @author Adam Zeira & Barak Itkin
  */
-public class Sphere extends Surface {
+public class Sphere extends SingleMaterialSurface implements Surface {
 
     /**
      * The spheres center
