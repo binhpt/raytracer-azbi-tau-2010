@@ -6,7 +6,7 @@ import static AZBIrenderer.Vector3.*;
  * A class for representing Cylinder sufraces
  * @author Barak Itkin
  */
-public class Cylinder extends Surface {
+public class Cylinder extends SingleMaterialSurface implements Surface {
 
     public static final float SQRT2 = (float)Math.sqrt(2);
     public Vector3 direction;

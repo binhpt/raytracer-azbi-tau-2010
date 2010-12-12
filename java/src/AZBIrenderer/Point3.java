@@ -25,7 +25,7 @@ public class Point3 extends Vector3 {
     }
 
     public Point3(float[] c) {
-        super();
+        super(c);
     }
 
     

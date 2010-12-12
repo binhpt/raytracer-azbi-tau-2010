@@ -14,88 +14,96 @@ import static AZBIrenderer.Vector3.*;
  * </pre>
  * @author Adam Zeira & Barak Itkin
  */
-public class Rectangle extends Surface {
+public class Rectangle extends SingleMaterialSurface implements ReflectionConstructed, ReflectionWrapper {
+
+    public static class RectangleFace extends Face {
+        public Point3 p0, p1, p2;
+
+        /**
+         * The vector from p0 to p1
+         */
+        public Vector3 u;
+        /**
+         * The vector from p0 to p2
+         */
+        public Vector3 v;
+        /**
+         * The surface's normal
+         */
+        public Vector3 normal;
+        /**
+         * The variable d in the plain equation:
+         * <pre>Ax + By + Cz + d = 0</pre>
+         */
+        public float d;
+        /**
+         * A value cached for performance reasons
+         * <pre>Innerproduct(u,u)</pre>
+         */
+        public float uNormSquare;
+        /**
+         * A value cached for performance reasons
+         * <pre>Innerproduct(v,v)</pre>
+         */
+        public float vNormSquare;
+
+        public RectangleFace(SingleMaterialSurface sf,
+                Point3 p0, Point3 p1, Point3 p2) {
+            super (sf);
+
+            this.p0 = p0;
+            this.p1 = p1;
+            this.p2 = p2;
+
+            this.u = sub(p1,p0);
+            this.uNormSquare = InnerProduct(this.u, this.u);
+            this.v = sub(p2,p0);
+            this.vNormSquare = InnerProduct(this.v, this.v);
+
+            this.normal = Normalize(CrossProduct(u, v));
+            this.d = -InnerProduct(this.normal, this.p0);
+        }
+
+        public AZBIrenderer.BoundingBox BoundingBox() {
+            return BoundingBox.create(p0, p1, p2, add(p0, v));
+        }
+
+        public boolean Intersection(Ray r, IntersectionData intersect) {
+            if (!Math3D.RayPlanintersection(r, normal, d, intersect))
+                return false;
+
+            Vector3 x = sub(intersect.point, p0);
+
+            float temp1 = InnerProduct(x, u), temp2 = InnerProduct(x, v);
+
+            if (temp1 < 0 || temp1 > uNormSquare || temp2 < 0 || temp2 > vNormSquare)
+                return false;
+
+            intersect.normal = normal;
+            intersect.surface = this.surfaceMaterial;
+
+            return true;
+        }
+    }
 
     public Point3 p0;
     public Point3 p1;
     public Point3 p2;
     public Point3 p3;
 
-    /**
-     * The vector from p0 to p1
-     */
-    public Vector3 u;
-    /**
-     * The vector from p0 to p2
-     */
-    public Vector3 v;
-    /**
-     * The surface's normal
-     */
-    public Vector3 normal;
-    /**
-     * The variable d in the plain equation:
-     * <pre>Ax + By + Cz + d = 0</pre>
-     */
-    public float d;
-    /**
-     * A value cached for performance reasons
-     * <pre>Innerproduct(u,u)</pre>
-     */
-    public float unormSquare;
-    /**
-     * A value cached for performance reasons
-     * <pre>Innerproduct(v,v)</pre>
-     */
-    public float vnormSquare;
+    public RectangleFace[] real;
 
-    public Rectangle() {
-    }
+    public Rectangle() { }
 
-    public Rectangle(Point3 p0, Point3 p1, Point3 p2) {
-        this.p0 = p0;
-        this.p1 = p1;
-        this.p2 = p2;
-    }
-
-    @Override
-    public boolean Intersection(Ray r, IntersectionData intersect) {
-        float SABC = InnerProduct(r.direction, this.normal);
-
-        if (SABC == 0)
-            return false;
-
-        intersect.T = - (d + InnerProduct(r.origin, normal)) / SABC;
-        intersect.point = add(r.origin, mul (intersect.T, r.direction));
-
-        Vector3 M = sub(intersect.point, p0);
-        float temp1 = InnerProduct(M, u), temp2 = InnerProduct(M, v);
-        if (temp1 < 0 || temp2 < 0 || temp1 > unormSquare || temp2 > vnormSquare)
-            return false;
-        intersect.surface = this;//Debug.getFromNormal(this,normal);
-        intersect.normal = new Vector3(normal);
-
-        return true;
-
-    }
-
-    @Override
-    public AZBIrenderer.BoundingBox BoundingBox() {
-        return new BoundingBox(
-                CoordinateMax(p0, CoordinateMax(p1, CoordinateMax(p2, p3))),
-                CoordinateMin(p0, CoordinateMin(p1, CoordinateMin(p2, p3)))
-                );
+    public Object[] getRealObjects() {
+        return real;
     }
 
     @Override
     public void fillMissing() {
-        this.u = sub (p1, p0);
-        this.v = sub (p2, p0);
-        this.normal = Normalize(CrossProduct(u, v));
-        this.d = - InnerProduct(p0, normal);
-        this.unormSquare = InnerProduct(u, u);
-        this.vnormSquare = InnerProduct(v, v);
-        this.p3 = new Point3(add(p1, v));
+        this.real = new RectangleFace[1];
+        this.real[0] = new RectangleFace(this.makeCopyOfMaterial(), p0, p1, p2);
     }
+
 
 }

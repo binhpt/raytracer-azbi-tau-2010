@@ -114,7 +114,7 @@ public class Render {
     /*
      * similar to shootAtSurfaces, but more efficient because it does less
      */
-    public static boolean ShootLightAtSurfaces(List<Surface> surfaces, Ray r, float maxT)
+    public static boolean ShootLightAtSurfaces(List<? extends Surface> surfaces, Ray r, float maxT)
     {
         IntersectionData temp = new IntersectionData();
         for (Surface surf : surfaces)
