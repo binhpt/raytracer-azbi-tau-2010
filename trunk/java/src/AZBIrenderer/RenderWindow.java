@@ -81,6 +81,8 @@ public class RenderWindow extends javax.swing.JFrame {
         ImageScroll = new javax.swing.JScrollPane();
         ImageView = new javax.swing.JLabel();
         AxisCheckbox = new javax.swing.JCheckBox();
+        ThreadCountLabel = new javax.swing.JLabel();
+        ThreadCountSpin = new javax.swing.JSpinner();
 
         TextEditorWindow.setTitle("Scene Text Editor");
 
@@ -151,8 +153,6 @@ public class RenderWindow extends javax.swing.JFrame {
         });
         ImageToolbar.add(EditButton);
 
-        getContentPane().add(ImageToolbar, java.awt.BorderLayout.PAGE_START);
-
         ImageScroll.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
         ImageScroll.setMinimumSize(new java.awt.Dimension(50, 50));
 
@@ -161,20 +161,53 @@ public class RenderWindow extends javax.swing.JFrame {
         ImageView.setIconTextGap(0);
         ImageScroll.setViewportView(ImageView);
 
-        getContentPane().add(ImageScroll, java.awt.BorderLayout.CENTER);
-
         AxisCheckbox.setSelected(true);
         AxisCheckbox.setText("Visualize Axises");
-        getContentPane().add(AxisCheckbox, java.awt.BorderLayout.PAGE_END);
+
+        ThreadCountLabel.setText("Thread Count:");
+
+        ThreadCountSpin.setModel(new javax.swing.SpinnerNumberModel(1, 1, 16, 1));
+
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+        getContentPane().setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(AxisCheckbox)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 183, Short.MAX_VALUE)
+                .addComponent(ThreadCountLabel)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(ThreadCountSpin, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
+            .addComponent(ImageScroll, javax.swing.GroupLayout.DEFAULT_SIZE, 420, Short.MAX_VALUE)
+            .addComponent(ImageToolbar, javax.swing.GroupLayout.DEFAULT_SIZE, 420, Short.MAX_VALUE)
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(ImageToolbar, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(ImageScroll, javax.swing.GroupLayout.DEFAULT_SIZE, 175, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(AxisCheckbox, javax.swing.GroupLayout.PREFERRED_SIZE, 18, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(ThreadCountSpin, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(ThreadCountLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 14, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap())
+        );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void RenderButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_RenderButtonActionPerformed
         Render r = new Render((AxisCheckbox.isSelected() ? axises : "") + TextPane.getText());
-        r.render(ImageScroll.getWidth(), ImageScroll.getHeight());
+        long time = System.currentTimeMillis();
+        r.render(ImageScroll.getWidth(), ImageScroll.getHeight(), 4, 4, (Integer)ThreadCountSpin.getValue());
         ImageView.setIcon(new ImageIcon(r.render));
         ImageView.setText("");
+        time -= System.currentTimeMillis();
+        System.out.println("Rendering took " + -time + "ms");
         renderResult = r.render;
 
     }//GEN-LAST:event_RenderButtonActionPerformed
@@ -249,5 +282,7 @@ public class RenderWindow extends javax.swing.JFrame {
     private javax.swing.JTextPane TextPane;
     private javax.swing.JScrollPane TextScroll;
     private javax.swing.JToolBar TextToolbar;
+    private javax.swing.JLabel ThreadCountLabel;
+    private javax.swing.JSpinner ThreadCountSpin;
     // End of variables declaration//GEN-END:variables
 }

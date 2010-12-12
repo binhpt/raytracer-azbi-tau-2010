@@ -3,7 +3,9 @@ package AZBIrenderer;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 import static AZBIrenderer.Vector3.*;
 
 /**
@@ -12,6 +14,28 @@ import static AZBIrenderer.Vector3.*;
  * @author Barak Itkin & Adam Zeira
  */
 public class Render {
+
+    public static class ImagePart {
+
+        int xStart, yStart, xEnd, yEnd;
+        int width, height;
+        int[][] im;
+
+        public ImagePart(int xStart, int yStart, int xEnd, int yEnd) {
+            this.xStart = xStart;
+            this.yStart = yStart;
+            this.xEnd = xEnd;
+            this.yEnd = yEnd;
+            this.width = xEnd - xStart + 1;
+            this.height = yEnd - yStart + 1;
+            this.im = new int[height][width];
+        }
+
+        public void setRGB (int x, int y, int rgb)
+        {
+            im[y][x]= rgb;
+        }
+    }
 
     public List<Surface> surfaces;
     public List<Light> lights;
@@ -32,11 +56,9 @@ public class Render {
     private void init() {
     }
 
-    public void render(int screenWidth, int screenHeight) {
+    public void render(final int screenWidth, final int screenHeight,
+            final int xParts, final int yParts, final int threadCount) {
         hitCount = 0;
-        Color pixel;
-        Color pixelColorSum;
-        Ray r;
         Graphics g;
 
         ConfigParser parser = new ConfigParser(this);
@@ -47,54 +69,81 @@ public class Render {
         g.setColor(new java.awt.Color(scene.background_col.r, scene.background_col.g, scene.background_col.b));
         g.fillRect(0, 0, screenWidth, screenHeight);
 
-	/****ROUGH DRAFT of how it should go:***/
-	//additional camera initializations
-
         // Inverted because of the right hand coordinate system
-	//camera.screen_height = camera.screen_width * (1/(((float)screenWidth) / screenHeight));
-        camera.screen_height = camera.screen_width * ((float)screenHeight / screenWidth);
+        camera.screen_height = camera.screen_width * ((float) screenHeight / screenWidth);
 
         camera.bot_left = add(camera.eye, mul(camera.screen_dist, camera.direction));
         camera.bot_left = sub(camera.bot_left, mul(camera.screen_width / 2, camera.right_direction));
         camera.bot_left = sub(camera.bot_left, mul(camera.screen_height / 2, camera.up_direction));
-        //camera.screen_height = camera.screen_width
 
-	//iterate every pixel of the display screen
-	//multithreading should go here
-        int color;
-	for (int i = 0; i < screenHeight; i++)
-		for (int j = 0; j < screenWidth; j++)
-		{
-                    /*pixelColorSum = new Color(0, 0, 0, 1);
-                    for (int k = 0; k < scene.super_sample_width; k++)*/
-                    //{
-			r = camera.CreateRay(((float)i) / screenHeight, ((float)j) / screenWidth);
-//                        Debug.print("\n\n\nShooting a ray!");
-//                        Debug.print(r);
-			//UI related- image[i, j] = ShootRay(ray);
-			pixel = ShootRay(r);
-                        //pixelColorSum = Color.add(pixel, pixelColorSum);
-                    //}
+        Thread[] threads = new Thread[threadCount];
+        final List<ImagePart> parts = Collections.synchronizedList(new ArrayList<ImagePart>());
+        final AtomicInteger in = new AtomicInteger(0);
 
-                    /*pixelColorSum.r /= scene.super_sample_width;
-                    pixelColorSum.g /= scene.super_sample_width;
-                    pixelColorSum.b /= scene.super_sample_width;
-                    pixelColorSum.a = 1;*/
+        for (int i = 0; i < xParts; i++) {
+            for (int j = 0; j < yParts; j++) {
+                parts.add(new ImagePart((i * screenWidth) / xParts, (j * screenHeight) / yParts,
+                        ((i + 1) * screenWidth) / xParts - 1, ((j + 1) * screenHeight) / yParts - 1));
+            }
+        }
 
-                    if (pixel != null)
+        for (int i = 0; i < threads.length; i++) {
+            threads[i] = new Thread(new Runnable() {
+
+                public void run() {
+                    int part;
+                    while ((part = in.getAndIncrement()) < xParts * yParts)
                     {
-                        hitCount++;
-                        color = pixel.getRGB();
-                        render.setRGB(j, i, color);
-                    }
-		}
+                        ImagePart im = parts.get(part);
+                        Color pixel;
+                        Ray r;
 
-        System.out.println("Total hits: " + hitCount);
+                        int color;
+                        for (int i = im.yStart; i <= im.yEnd; i++) {
+                        for (int j = im.xStart; j <= im.xEnd; j++) {
+                            
+                                r = camera.CreateRay(((float) i) / screenHeight, ((float) j) / screenWidth);
+                                pixel = ShootRay(r);
+
+                                if (pixel != null) {
+                                    color = pixel.getRGB();
+                                    im.setRGB(j - im.xStart, i - im.yStart, color);
+                                }
+                            }
+                        }
+                    }
+
+                }
+            });
+            threads[i].start();
+        }
+
+        for (int i = 0; i < threads.length; i++) {
+            try {
+                threads[i].join();
+            } catch (InterruptedException ex) {
+                System.err.print("A serious synchronization error occured...");
+                System.err.print("Please try the single threaded execution.");
+            }
+        }
+
+        BufferedImage accumulate = new BufferedImage(screenWidth, screenHeight, BufferedImage.TYPE_INT_ARGB);
+
+        int part = 0;
+        for (ImagePart imagePart : parts)
+        {
+            for (int i = 0; i < imagePart.height; i++) {
+                for (int j = 0; j < imagePart.width; j++) {
+                    accumulate.setRGB(j+imagePart.xStart, i+imagePart.yStart, imagePart.im[i][j]);
+                }
+            }
+        }
+
+        g.drawImage(accumulate, 0, 0, null);
     }
 
-    public static boolean shootAtSurfaces (Iterable<? extends Surface> surfaces, Ray r,
-            IntersectionData closestIntersect)
-    {
+    public static boolean shootAtSurfaces(Iterable<? extends Surface> surfaces, Ray r,
+            IntersectionData closestIntersect) {
         boolean intersect = false;
         IntersectionData temp = new IntersectionData();
 
@@ -114,13 +163,13 @@ public class Render {
     /*
      * similar to shootAtSurfaces, but more efficient because it does less
      */
-    public static boolean ShootLightAtSurfaces(List<? extends Surface> surfaces, Ray r, float maxT)
-    {
+    public static boolean ShootLightAtSurfaces(List<? extends Surface> surfaces, Ray r, float maxT) {
         IntersectionData temp = new IntersectionData();
-        for (Surface surf : surfaces)
-        {
+        for (Surface surf : surfaces) {
             if (surf.Intersection(r, temp) && temp.T < maxT && temp.T > 0.001f)//Float.MIN_VALUE)// && !temp.point.equals(r.origin))
+            {
                 return false;
+            }
         }
         return true;
     }
@@ -128,7 +177,7 @@ public class Render {
     /* Returns null in case of no intersection */
     public Color ShootRay(Ray r) {
         IntersectionData intersect = new IntersectionData();
-        
+
         IntersectionData lightIntersection = new IntersectionData();
         lightIntersection.T = Float.MAX_VALUE;
         Ray lightray = new Ray();
@@ -140,20 +189,17 @@ public class Render {
         Vector3 H;
         float dist;
 
-        if (shootAtSurfaces(surfaces, r, intersect))
-        {
+        if (shootAtSurfaces(surfaces, r, intersect)) {
 
             /*
              * rough draft still, uses only LightDirected.
              */
-            for (Light light : lights)
-            {
+            for (Light light : lights) {
                 //OPTIMIZE
                 dist = light.GetRay(intersect.point, lightray);
                 //lightray.origin = add(lightray.origin, mul(Float.MIN_VALUE, lightray.direction));
                 //float.maxvalue is only for LightDirected, change later
-                if (ShootLightAtSurfaces(surfaces, lightray, dist))
-                //if (lightIntersection.point.equals(closestIntersect.point))
+                if (ShootLightAtSurfaces(surfaces, lightray, dist)) //if (lightIntersection.point.equals(closestIntersect.point))
                 {
                     //just for testing, need to OPTIMIZE.. alot
                     tc = light.EffectFromLight(intersect.point); //I(L) in the presentation
@@ -185,21 +231,31 @@ public class Render {
             color.g += this.scene.ambient_light.g * intersect.surface.mtl_ambient.g;
             color.b += this.scene.ambient_light.b * intersect.surface.mtl_ambient.b;
 
-            if (color.r > 1f) color.r = 1;
-            if (color.g > 1f) color.g = 1;
-            if (color.b > 1f) color.b = 1;
+            if (color.r > 1f) {
+                color.r = 1;
+            }
+            if (color.g > 1f) {
+                color.g = 1;
+            }
+            if (color.b > 1f) {
+                color.b = 1;
+            }
 
-            if (color.r < 0f) color.r = 0;
-            if (color.g < 0f) color.g = 0;
-            if (color.b < 0f) color.b = 0;
+            if (color.r < 0f) {
+                color.r = 0;
+            }
+            if (color.g < 0f) {
+                color.g = 0;
+            }
+            if (color.b < 0f) {
+                color.b = 0;
+            }
 
             color.a = 1;
 
             return color;// closestIntersect.surface.mtl_diffuse; //flat color
-        }
-        else
+        } else {
             return null;
+        }
     }
-
-
 }
