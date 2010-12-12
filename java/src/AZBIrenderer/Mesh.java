@@ -24,54 +24,37 @@ public class Mesh extends SingleMaterialSurface implements ReflectionConstructed
         FLAT, PHONG;
     }
 
-    public class Triangle extends Face {
+    public static class Triangle extends Face {
 
-        public Point3 p0, p1, p2, p3;
-        public Vector3 u, v;
-        public float uNormSquare, vNormSquare;
-        public Vector3 u1, v1;
-        public float u1NormSquare, v1NormSquare;
+        public Point3 A, B, C, p3;
+        public Vector3 v0, v1;
+        public float dot00, dot01, dot11, invDenom;
         public Vector3 normal;
         public float d;
 
         public Triangle(SingleMaterialSurface sf,
-                Point3 p0, Point3 p1, Point3 p2) {
+                Point3 A, Point3 B, Point3 C) {
             super(sf);
 
-            this.p0 = p0;
-            System.out.println("p0 = " + Debug.makeString(p0));
-            this.p1 = p1;
-            System.out.println("p1 = " + Debug.makeString(p1));
-            this.p2 = p2;
-            System.out.println("p2 = " + Debug.makeString(p2));
+            this.A = A;
+            this.B = B;
+            this.C = C;
 
-            this.u = sub(p1, p0);
-            System.out.println("u = " + Debug.makeString(u));
-            this.uNormSquare = InnerProduct(this.u, this.u);
-            System.out.println("<u,u> = " + Debug.makeString(uNormSquare));
-            this.v = sub(p2, p0);
-            System.out.println("v = " + Debug.makeString(v));
-            this.vNormSquare = InnerProduct(this.v, this.v);
-            System.out.println("<v,v> = " + Debug.makeString(vNormSquare));
+            this.v0 = sub(C, A);
+            this.v1 = sub(B, A);
 
-            this.p3 = add(add(p0, u), v);
-            System.out.println("p3 = " + Debug.makeString(p3));
+            this.dot00 = InnerProduct(this.v0, this.v0);
+            this.dot01 = InnerProduct(this.v0, this.v1);
+            this.dot11 = InnerProduct(this.v1, this.v1);
 
-            this.u1 = sub(p2, p1);
-            System.out.println("u1 = " + Debug.makeString(u1));
-            this.u1NormSquare = InnerProduct(this.u1, this.u1);
-            System.out.println("<u1,u1> = " + Debug.makeString(u1NormSquare));
-            this.v1 = sub(p3, p1);
-            System.out.println("v1 = " + Debug.makeString(v1));
-            this.v1NormSquare = InnerProduct(this.v1, this.v1);
-            System.out.println("<v1,v1> = " + Debug.makeString(v1NormSquare));
+            this.normal = Normalize(CrossProduct(v0, v1));
+            this.d = -InnerProduct(this.normal, this.A);
 
-            this.normal = Normalize(CrossProduct(u, v));
-            this.d = -InnerProduct(this.normal, this.p0);
+            this.invDenom = 1 / (dot00 * dot01 - dot11 * dot11);
         }
 
         public AZBIrenderer.BoundingBox BoundingBox() {
-            return BoundingBox.create(p0, p1, p2);
+            return BoundingBox.create(A, B, C);
         }
 
         // TODO: FIXME!
@@ -80,19 +63,21 @@ public class Mesh extends SingleMaterialSurface implements ReflectionConstructed
             if (!Math3D.RayPlanintersection(r, normal, d, intersect)) {
                 return false;
             }
-            Vector3 x = sub(intersect.point, p0);
+            Point3 P = intersect.point;
 
-            float temp1 = InnerProduct(x, u), temp2 = InnerProduct(x, v);
+            Vector3 v2 = sub(P, A);
 
-            if (temp1 < 0 || temp1 > uNormSquare || temp2 < 0 || temp2 > vNormSquare)
-                return false;
+            // Compute dot products
+            float dot02 = InnerProduct(v0, v2);
+            float dot12 = InnerProduct(v1, v2);
 
-            x = sub(intersect.point, p1);
+            // Compute barycentric coordinates
+            invDenom = 1 / (dot00 * dot11 - dot01 * dot01);
+            float u = (dot11 * dot02 - dot01 * dot12) * invDenom;
+            float v = (dot00 * dot12 - dot01 * dot02) * invDenom;
 
-            temp1 = InnerProduct(x, u1);
-            temp2 = InnerProduct(x, v1);
-
-            if (!(temp1 < 0 || temp1 > u1NormSquare || temp2 < 0 || temp2 > v1NormSquare))
+            // Check if point is in triangle
+            if (u < 0 || v < 0 || u + v > 1)
                 return false;
 
             intersect.normal = normal;

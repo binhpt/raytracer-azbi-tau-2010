@@ -22,11 +22,11 @@ public class Rectangle extends SingleMaterialSurface implements ReflectionConstr
         /**
          * The vector from p0 to p1
          */
-        public Vector3 u;
+        public Vector3 v1;
         /**
          * The vector from p0 to p2
          */
-        public Vector3 v;
+        public Vector3 v0;
         /**
          * The surface's normal
          */
@@ -36,16 +36,8 @@ public class Rectangle extends SingleMaterialSurface implements ReflectionConstr
          * <pre>Ax + By + Cz + d = 0</pre>
          */
         public float d;
-        /**
-         * A value cached for performance reasons
-         * <pre>Innerproduct(u,u)</pre>
-         */
-        public float uNormSquare;
-        /**
-         * A value cached for performance reasons
-         * <pre>Innerproduct(v,v)</pre>
-         */
-        public float vNormSquare;
+
+        public float dot00, dot01, dot11, invDenom;
 
         public RectangleFace(SingleMaterialSurface sf,
                 Point3 p0, Point3 p1, Point3 p2) {
@@ -55,28 +47,40 @@ public class Rectangle extends SingleMaterialSurface implements ReflectionConstr
             this.p1 = p1;
             this.p2 = p2;
 
-            this.u = sub(p1,p0);
-            this.uNormSquare = InnerProduct(this.u, this.u);
-            this.v = sub(p2,p0);
-            this.vNormSquare = InnerProduct(this.v, this.v);
+            this.v0 = sub(p2, p0);
+            this.v1 = sub(p1, p0);
 
-            this.normal = Normalize(CrossProduct(u, v));
+            this.dot00 = InnerProduct(this.v0, this.v0);
+            this.dot01 = InnerProduct(this.v0, this.v1);
+            this.dot11 = InnerProduct(this.v1, this.v1);
+
+            this.normal = Normalize(CrossProduct(v0, v1));
             this.d = -InnerProduct(this.normal, this.p0);
         }
 
         public AZBIrenderer.BoundingBox BoundingBox() {
-            return BoundingBox.create(p0, p1, p2, add(p0, v));
+            return BoundingBox.create(p0, p1, p2, add(p1, v0));
         }
 
         public boolean Intersection(Ray r, IntersectionData intersect) {
             if (!Math3D.RayPlanintersection(r, normal, d, intersect))
                 return false;
 
-            Vector3 x = sub(intersect.point, p0);
+            Point3 P = intersect.point;
 
-            float temp1 = InnerProduct(x, u), temp2 = InnerProduct(x, v);
+            Vector3 v2 = sub(P, p0);
 
-            if (temp1 < 0 || temp1 > uNormSquare || temp2 < 0 || temp2 > vNormSquare)
+            // Compute dot products
+            float dot02 = InnerProduct(v0, v2);
+            float dot12 = InnerProduct(v1, v2);
+
+            // Compute barycentric coordinates
+            invDenom = 1 / (dot00 * dot11 - dot01 * dot01);
+            float u = (dot11 * dot02 - dot01 * dot12) * invDenom;
+            float v = (dot00 * dot12 - dot01 * dot02) * invDenom;
+
+            // Check if point is in triangle
+            if (u < 0 || v < 0 || u > 1 || v > 1)
                 return false;
 
             intersect.normal = normal;
