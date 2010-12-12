@@ -24,6 +24,12 @@ public class Mesh extends SingleMaterialSurface implements ReflectionConstructed
         FLAT, PHONG;
     }
 
+    public Mesh() {
+        this.scale = 1;
+        this.pos = new Point3();
+    }
+
+
     public static class Triangle extends Face {
 
         public Point3 A, B, C, p3;
@@ -100,6 +106,13 @@ public class Mesh extends SingleMaterialSurface implements ReflectionConstructed
 
         this.triangles = new Triangle[mesh.faces.length];
 
+        BoundingBox temp = BoundingBox.create(mesh.vertices);
+        Vector3 center = mul(1/2, add (temp.p1, temp.p2));
+
+        for (int i = 0; i < mesh.vertices.length; i++) {
+            mesh.vertices[i] = new Point3(add(mul(scale,sub(mesh.vertices[i], center)), center));
+        }
+        
         int[] face;
         for (int i = 0; i < mesh.faces.length; i++) {
             face = mesh.faces[i];

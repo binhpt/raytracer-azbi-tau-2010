@@ -75,9 +75,9 @@ public class MeshParser {
             throw new ParsingException("Missing OFF file header!");
         }
 
-        readLine(line, input, 0);
-        n = (int) input[0];
-        m = (int) input[1];
+        readLine(line, inputW, 0);
+        n = (int) inputW[0];
+        m = (int) inputW[1];
 
         if (n < 0 || m < 0) {
             throw new ParsingException("Missing OFF file header!");
@@ -107,8 +107,10 @@ public class MeshParser {
         return mesh;
     }
 
-    /*              n           m        0
-     * 1 X { OFF numVertices numFaces numEdges
+    /*           n
+     * 1 X { numVertices
+     *           m
+     * 1 X { numFaces
      *     / x1 y1 z1
      * n X |   ....
      *     \ xn yn zn
@@ -118,25 +120,32 @@ public class MeshParser {
      */
     public static RawMesh parsePLY(FileInputStream in) throws ParsingException {
         float[] input = new float[3];
+        int[] inputW = new int[3];
         int n, m;
         RawMesh mesh;
 
         Scanner inStream = new Scanner(in);
         String line = inStream.nextLine();
 
-        readLine(line, input, 0);
-        n = (int) input[0];
-        m = (int) input[1];
-
-        if (n < 0 || m < 0) {
-            throw new ParsingException("Missing OFF file header!");
+        if ((line = inStream.nextLine()) == null) {
+            throw new ParsingException("Missing PLY file header!");
         }
+
+        readLine(line, inputW, 0);
+        n = inputW[0];
+
+        if ((line = inStream.nextLine()) == null) {
+            throw new ParsingException("Missing PLY file header!");
+        }
+
+        readLine(line, inputW, 0);
+        m = inputW[0];
 
         mesh = new RawMesh(n, m);
 
         for (int i = 0; i < n; i++) {
             if ((line = inStream.nextLine()) == null) {
-                throw new ParsingException("Not enough vertices in OFF file!");
+                throw new ParsingException("Not enough vertices in PLY file!");
             }
             readLine(line, input, 0);
             mesh.vertices[i] = new Point3(input);
@@ -144,13 +153,13 @@ public class MeshParser {
 
         for (int i = 0; i < m; i++) {
             if ((line = inStream.nextLine()) == null) {
-                throw new ParsingException("Not enough faces in OFF file!");
+                throw new ParsingException("Not enough faces in PLY file!");
             }
-            readLine(line, input, 1);
+            readLine(line, inputW, 1);
             if (!(line = line.trim()).startsWith("3")) {
-                throw new ParsingException("Only triangular meshes are supported!");
+                throw new ParsingException("PLY face line should start with 3!");
             }
-            System.arraycopy(input, 0, mesh.faces[i], 0, 3);
+            System.arraycopy(inputW, 0, mesh.faces[i], 0, 3);
         }
 
         return mesh;
