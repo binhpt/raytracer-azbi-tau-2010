@@ -20,7 +20,7 @@ public class Cylinder extends SingleMaterialSurface implements Surface {
     /**
      * The Cylinders center
      */
-    public Point3 start;
+    public @Point3d Vector3 start;
     /**
      * The radius of the Cylinder
      */
@@ -53,7 +53,7 @@ public class Cylinder extends SingleMaterialSurface implements Surface {
             return false;
 
         intersect.T = temp.T / flattenedSize;
-        intersect.point = new Point3(add(r.origin, mul(intersect.T, r.direction)));
+        intersect.point = add(r.origin, mul(intersect.T, r.direction));
         toStart = sub(intersect.point, start);
         len = InnerProduct(toStart, direction);
 
@@ -65,7 +65,7 @@ public class Cylinder extends SingleMaterialSurface implements Surface {
             float P2P3_flat_square = (radius * radius - d * d);
             float projDiff_square = 4 * P2P3_flat_square * (1 * 1 - flattenedSize * flattenedSize);
                 intersect.T += Math.sqrt(4 * P2P3_flat_square + projDiff_square);
-                intersect.point = new Point3(add(r.origin, mul(intersect.T, r.direction)));
+                intersect.point = add(r.origin, mul(intersect.T, r.direction));
                 toStart = sub(intersect.point, start);
                 len = InnerProduct(toStart, direction);
                 if (len < 0 || len > length)
@@ -92,7 +92,7 @@ public class Cylinder extends SingleMaterialSurface implements Surface {
     @Override
     public void fillMissing() {
         this.ProjectedSphere = new Sphere();
-        this.ProjectedSphere.center = new Point3(sub(start, mul(InnerProduct(direction, start), direction)));
+        this.ProjectedSphere.center = sub(start, mul(InnerProduct(direction, start), direction));
         this.ProjectedSphere.radius = radius;
         this.ProjectedSphere.fillMissing();
     }

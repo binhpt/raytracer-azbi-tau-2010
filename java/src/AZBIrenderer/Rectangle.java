@@ -27,7 +27,7 @@ public class Rectangle extends SingleMaterialSurface implements ReflectionConstr
      * @author Adam Zeira & Barak Itkin
      */
     public static class RectangleFace extends Face {
-        public Point3 p0, p1, p2;
+        public @Point3d Vector3 p0, p1, p2;
 
         /**
          * The vector from p0 to p1
@@ -42,7 +42,7 @@ public class Rectangle extends SingleMaterialSurface implements ReflectionConstr
          */
         public Vector3 normal;
         /**
-         * The variable d in the plain equation:
+         * The variable d in the plane equation:
          * <pre>Ax + By + Cz + d = 0</pre>
          */
         public float d;
@@ -53,7 +53,7 @@ public class Rectangle extends SingleMaterialSurface implements ReflectionConstr
         public float dot00, dot01, dot11, invDenom;
 
         public RectangleFace(SingleMaterialSurface sf,
-                Point3 p0, Point3 p1, Point3 p2) {
+                Vector3 p0, Vector3 p1, Vector3 p2) {
             super (sf);
 
             this.p0 = p0;
@@ -79,7 +79,7 @@ public class Rectangle extends SingleMaterialSurface implements ReflectionConstr
             if (!Math3D.RayPlanintersection(r, normal, d, intersect))
                 return false;
 
-            Point3 P = intersect.point;
+            @Point3d Vector3 P = intersect.point;
 
             Vector3 v2 = sub(P, p0);
 
@@ -107,7 +107,7 @@ public class Rectangle extends SingleMaterialSurface implements ReflectionConstr
      * The same variables from {@link RectangleFace}, present here only for the
      * reflection based parsing
      */
-    public Point3 p0, p1, p2, p3;
+    public @Point3d Vector3 p0, p1, p2, p3;
 
     /**
      * The actual {@link RectangleFace} for this object, inside an array

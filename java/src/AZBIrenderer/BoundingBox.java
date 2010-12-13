@@ -1,5 +1,7 @@
 package AZBIrenderer;
 
+import static AZBIrenderer.Vector3.*;
+
 /**
  * A class for representing a 3D box, whose edges are parrallel to the X Y and Z
  * axises. This is going to be used later for some optimizations (such as octal
@@ -11,16 +13,16 @@ public class BoundingBox {
     /**
      * One corner of the bounding box
      */
-    Vector3 p1;
+    public @Point3d Vector3 p1;
     /**
      * The other corner of the bounding box
      */
-    Vector3 p2;
+    public @Point3d Vector3 p2;
 
     /**
      * Construct the box by specifying the two opposite corners
      */
-    public BoundingBox(Vector3 p1, Vector3 p2) {
+    public BoundingBox(@Point3d Vector3 p1, @Point3d Vector3 p2) {
         this.p1 = p1;
         this.p2 = p2;
     }
@@ -36,8 +38,8 @@ public class BoundingBox {
         Vector3 min = new Vector3(Float.MAX_VALUE, Float.MAX_VALUE, Float.MAX_VALUE);
 
         for (BoundingBox box : boxes) {
-            min = Vector3.CoordinateMin(min, Vector3.CoordinateMin(box.p1, box.p2));
-            max = Vector3.CoordinateMax(max, Vector3.CoordinateMax(box.p1, box.p2));
+            min = CoordinateMin(min, CoordinateMin(box.p1, box.p2));
+            max = CoordinateMax(max, CoordinateMax(box.p1, box.p2));
         }
         return new BoundingBox(min, max);
     }
@@ -47,14 +49,14 @@ public class BoundingBox {
      * @param boxes An array of points - <b>it's length must not be zero!</b>
      * @return A box containing all the given points
      */
-    public static BoundingBox create(Vector3... pts)
+    public static BoundingBox create(@Point3d Vector3... pts)
     {
-        Vector3 max = new Vector3(Float.MIN_VALUE, Float.MIN_VALUE, Float.MIN_VALUE);
-        Vector3 min = new Vector3(Float.MAX_VALUE, Float.MAX_VALUE, Float.MAX_VALUE);
+        @Point3d Vector3 max = new Vector3(Float.MIN_VALUE, Float.MIN_VALUE, Float.MIN_VALUE);
+        @Point3d Vector3 min = new Vector3(Float.MAX_VALUE, Float.MAX_VALUE, Float.MAX_VALUE);
 
-        for (Vector3 pt : pts) {
-            min = Vector3.CoordinateMin(min, pt);
-            max = Vector3.CoordinateMax(max, pt);
+        for (@Point3d Vector3 pt : pts) {
+            min = CoordinateMin(min, pt);
+            max = CoordinateMax(max, pt);
         }
         return new BoundingBox(min, max);
     }

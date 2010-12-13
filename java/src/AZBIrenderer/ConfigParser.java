@@ -1,5 +1,6 @@
 package AZBIrenderer;
 
+import AZBIrenderer.Vector3.Point3d;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.StringReader;
@@ -165,8 +166,8 @@ public class ConfigParser {
      * @param line A string containing the point property
      * @return The matching Point3
      */
-    public static Point3 GetPointParam(String line) {
-        Point3 v = new Point3();
+    public static @Point3d Vector3 GetPointParam(String line) {
+        @Point3d Vector3 v = new Vector3();
 
         String[] components = line.trim().replaceAll("\\s+", " ").split(" ");
         v.x = Float.parseFloat(components[0]);
@@ -287,10 +288,11 @@ public class ConfigParser {
                         f.setFloat(obj, GetFloatParam(props.get(key)));
                     } else if (f.getType() == boolean.class) {
                         f.setBoolean(obj, GetBooleanParam(props.get(key)));
-                    } else if (f.getType() == Point3.class) {
-                        f.set(obj, GetPointParam(props.get(key)));
                     } else if (f.getType() == Vector3.class) {
-                        f.set(obj, GetVectorParam(props.get(key)));
+                        if (f.getAnnotation(Vector3.Point3d.class) != null)
+                            f.set(obj, GetPointParam(props.get(key)));
+                        else
+                            f.set(obj, GetVectorParam(props.get(key)));
                     } else if (f.getType() == Color.class) {
                         f.set(obj, GetColorParam(props.get(key)));
                     } else if (f.getType() == Mesh.Shader.class) {

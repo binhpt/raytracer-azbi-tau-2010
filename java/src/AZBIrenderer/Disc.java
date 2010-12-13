@@ -15,13 +15,13 @@ public class Disc extends SingleMaterialSurface implements Surface {
     /**
      * The Discs center
      */
-    public Point3 center;
+    public @Point3d Vector3 center;
     /**
      * The radius of the Disc
      */
     public float radius;
     /**
-     * The variable d in the plain equation:
+     * The variable d in the plane equation:
      * <pre>Ax + By + Cz + d = 0</pre>
      */
     public float d;

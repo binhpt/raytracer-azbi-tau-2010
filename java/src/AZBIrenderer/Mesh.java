@@ -16,10 +16,10 @@ public class Mesh extends SingleMaterialSurface implements ReflectionConstructed
     public static class RawMesh {
 
         public int[][] faces;
-        public Point3[] vertices;
+        public @Point3d Vector3[] vertices;
 
         public RawMesh(int verticeCount, int faceCount) {
-            this.vertices = new Point3[verticeCount];
+            this.vertices = new Vector3[verticeCount];
             this.faces = new int[faceCount][3];
         }
     }
@@ -34,7 +34,7 @@ public class Mesh extends SingleMaterialSurface implements ReflectionConstructed
 
     public Mesh() {
         this.scale = 1;
-        this.pos = new Point3();
+        this.pos = new Vector3();
     }
 
 
@@ -43,14 +43,14 @@ public class Mesh extends SingleMaterialSurface implements ReflectionConstructed
      */
     public static class Triangle extends Face {
 
-        public Point3 A, B, C, p3;
+        public @Point3d Vector3 A, B, C, p3;
         public Vector3 v0, v1;
         public float dot00, dot01, dot11, invDenom;
         public Vector3 normal;
         public float d;
 
         public Triangle(SingleMaterialSurface sf,
-                Point3 A, Point3 B, Point3 C) {
+                @Point3d Vector3 A, @Point3d Vector3 B, @Point3d Vector3 C) {
             super(sf);
 
             this.A = A;
@@ -78,7 +78,7 @@ public class Mesh extends SingleMaterialSurface implements ReflectionConstructed
             if (!Math3D.RayPlanintersection(r, normal, d, intersect)) {
                 return false;
             }
-            Point3 P = intersect.point;
+            @Point3d Vector3 P = intersect.point;
 
             Vector3 v2 = sub(P, A);
 
@@ -109,7 +109,7 @@ public class Mesh extends SingleMaterialSurface implements ReflectionConstructed
     /**
      * The offset for the mesh
      */
-    public Point3 pos;
+    public @Point3d Vector3 pos;
     /**
      * The scaling to apply to the mesh
      */
@@ -135,7 +135,7 @@ public class Mesh extends SingleMaterialSurface implements ReflectionConstructed
         Vector3 center = mul(1/2, add (temp.p1, temp.p2));
 
         for (int i = 0; i < mesh.vertices.length; i++) {
-            mesh.vertices[i] = new Point3(add(mul(scale,sub(mesh.vertices[i], center)), center));
+            mesh.vertices[i] = add(mul(scale,sub(mesh.vertices[i], center)), center);
         }
         
         int[] face;

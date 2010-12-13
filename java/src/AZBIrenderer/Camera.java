@@ -28,7 +28,7 @@ public class Camera implements ReflectionConstructed {
     /**
      * The canera's origin (aka eye)
      */
-    public Point3 eye;
+    public @Point3d Vector3 eye;
     /**
      * The canera's forward direction vector
      */
@@ -36,7 +36,7 @@ public class Camera implements ReflectionConstructed {
     /**
      * The point at which the camera is looking (Optional)
      */
-    public Point3 look_at;
+    public @Point3d Vector3 look_at;
     /**
      * The vector of the screens up direction
      */

@@ -1,5 +1,7 @@
 package AZBIrenderer;
 
+import AZBIrenderer.Vector3.Point3d;
+
 /**
  * A class for keeping all the information about a ray's intersection with a
  * surface
@@ -10,7 +12,7 @@ public class IntersectionData {
     /**
      * The point of intersection
      */
-    public Point3 point;
+    public @Point3d Vector3 point;
     /**
      * The surface's normal at the intersection point
      */

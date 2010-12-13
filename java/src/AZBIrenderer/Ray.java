@@ -1,6 +1,8 @@
 
 package AZBIrenderer;
 
+import AZBIrenderer.Vector3.Point3d;
+
 /**
  * A class for representing a ray in 3D space.
  * <b>THE DIRECTION MUST ALWAYS ALWAYS ALWAYS ALWAYS BE NORMALIZED!!!!!</b>
@@ -13,19 +15,20 @@ public class Ray {
     /**
      * The origin point of the Ray
      */
-    public Point3 origin;
+    @Point3d
+    public Vector3 origin;
     /**
      * The direction vector of the Ray
      */
     public Vector3 direction;
 
-    public Ray (Point3 origin, Vector3 direction) {
+    public Ray (@Point3d Vector3 origin, Vector3 direction) {
         this.origin = origin;
         this.direction = Vector3.Normalize(direction);
     }
 
     public Ray() {
-        this.origin = new Point3();
+        this.origin = new Vector3();
         this.direction = new Vector3();
     }
 

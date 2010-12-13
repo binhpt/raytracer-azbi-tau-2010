@@ -25,13 +25,7 @@ import static AZBIrenderer.Vector3.*;
  */
 public class Box extends SingleMaterialSurface implements ReflectionConstructed, ReflectionWrapper {
 
-    /**
-     * The origin point of the box
-     */
-    public Point3 p0;
-    public Point3 p1;
-    public Point3 p2;
-    public Point3 p3;
+    public @Point3d Vector3 p0, p1, p2, p3;
 
     /**
      * The faces of the rectangle
@@ -67,9 +61,9 @@ public class Box extends SingleMaterialSurface implements ReflectionConstructed,
         Vector3 v = sub(p2,p0);
         Vector3 w = sub(p3,p0);
 
-        Point3 p4 = new Point3(add(p1,v));
-        Point3 p5 = new Point3(add(p1,w));
-        Point3 p6 = new Point3(add(p2,w));
+        Vector3 p4 = add(p1,v);
+        Vector3 p5 = add(p1,w);
+        Vector3 p6 = add(p2,w);
 
         this.real = new Rectangle.RectangleFace[6];
         SingleMaterialSurface oneMaterial = this.makeCopyOfMaterial();
