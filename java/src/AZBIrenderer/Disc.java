@@ -25,7 +25,7 @@ public class Disc extends SingleMaterialSurface implements Surface {
 
     @Override
     public boolean Intersection(Ray r, IntersectionData intersect) {
-        if (Math3D.RayPlanintersection(r, normal, d, intersect))
+        if (!Math3D.RayPlanintersection(r, normal, d, intersect))
             return false;
 
         if (Norm(sub(intersect.point, this.center)) > radius)
@@ -44,6 +44,7 @@ public class Disc extends SingleMaterialSurface implements Surface {
                 Vector3.sub (center, radius));
     }
 
+    @Override
     public void fillMissing() {
         this.d = - InnerProduct(center, normal);
     }
