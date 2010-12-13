@@ -108,8 +108,8 @@ public class RenderWindow extends javax.swing.JFrame {
 
         TextEditorWindow.getContentPane().add(TextScroll, java.awt.BorderLayout.CENTER);
 
-        FileChooser.setCurrentDirectory(new java.io.File("C:\\Program Files\\NetBeans 6.9.1"));
-        FileChooser.setDialogTitle("Choose a scene file");
+        FileChooser.setCurrentDirectory(null);
+        FileChooser.setDialogTitle("Choose a file");
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 

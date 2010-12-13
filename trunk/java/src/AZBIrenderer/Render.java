@@ -1,6 +1,10 @@
 package AZBIrenderer;
 
-import java.awt.Graphics;
+import java.io.File;
+import java.io.IOException;
+import javax.imageio.ImageIO;
+import java.awt.Graphics2D;
+import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -59,15 +63,26 @@ public class Render {
     public void render(final int screenWidth, final int screenHeight,
             final int xParts, final int yParts, final int threadCount) {
         hitCount = 0;
-        Graphics g;
+        Graphics2D g;
 
         ConfigParser parser = new ConfigParser(this);
         parser.Parse(config);
 
         render = new BufferedImage(screenWidth, screenHeight, BufferedImage.TYPE_INT_ARGB);
-        g = render.getGraphics();
+        g = (Graphics2D) render.getGraphics();
         g.setColor(new java.awt.Color(scene.background_col.r, scene.background_col.g, scene.background_col.b));
         g.fillRect(0, 0, screenWidth, screenHeight);
+        if (scene.background_tex != null)
+        {
+            try {
+                AffineTransform scaleTrans = new AffineTransform();
+                BufferedImage bg_tex = ImageIO.read(new File(scene.background_tex));
+                scaleTrans.scale(screenWidth / (double) bg_tex.getWidth(), screenHeight / (double) bg_tex.getHeight());
+                g.drawImage(bg_tex, scaleTrans, null);
+            } catch (IOException ex) {
+                System.err.println("An error occured while reading the background image " + scene.background_tex);
+            }
+        }
 
         // Inverted because of the right hand coordinate system
         camera.screen_height = camera.screen_width * ((float) screenHeight / screenWidth);
