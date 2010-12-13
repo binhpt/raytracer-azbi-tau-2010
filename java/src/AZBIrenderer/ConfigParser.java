@@ -58,13 +58,10 @@ public class ConfigParser {
 
         if (!this.className.isEmpty() && !this.props.isEmpty()) {
             Object obj = ReflectionParse(this.className, props);
-            
-            if (obj instanceof ReflectionWrapper)
-            {
-                children = ((ReflectionWrapper)obj).getRealObjects();
-            }
-            else
-            {
+
+            if (obj instanceof ReflectionWrapper) {
+                children = ((ReflectionWrapper) obj).getRealObjects();
+            } else {
                 single[0] = obj;
                 children = single;
             }
@@ -97,12 +94,12 @@ public class ConfigParser {
         try {
             while (iss.ready() && (line = iss.readLine()) != null) {
                 if (!(line = line.trim()).isEmpty()) {
-                    if (line.startsWith("#"))
+                    if (line.startsWith("#")) {
                         continue;
-                    else if (line.endsWith(":")) {
-                        pushObject(line.substring(0, line.length()-1));
+                    } else if (line.endsWith(":")) {
+                        pushObject(line.substring(0, line.length() - 1));
                     } else if ((splitLocation = line.indexOf("=")) != -1) {
-                        pushProp(line.substring(0, splitLocation), line.substring(splitLocation+1));
+                        pushProp(line.substring(0, splitLocation), line.substring(splitLocation + 1));
                     }
                 }
             }
@@ -144,7 +141,7 @@ public class ConfigParser {
         v.x = Float.parseFloat(components[0]);
         v.y = Float.parseFloat(components[1]);
         v.z = Float.parseFloat(components[2]);
-        
+
         return Vector3.Normalize(v);
     }
 
@@ -171,12 +168,13 @@ public class ConfigParser {
      */
     public Mesh.Shader GetShaderParam(String line) {
         line = line.trim().replaceAll("\\s+", " ");
-        if (line.equals("flat"))
+        if (line.equals("flat")) {
             return Mesh.Shader.FLAT;
-        else if(line.equals("phong"))
+        } else if (line.equals("phong")) {
             return Mesh.Shader.PHONG;
-        else
+        } else {
             throw new IllegalArgumentException("Bad shader type! \"" + line + "\"");
+        }
     }
 
     /**
@@ -239,7 +237,7 @@ public class ConfigParser {
 
         try {
             c = Class.forName(ConfigParser.class.getPackage().getName() + "." + className);
-            
+
             /* Now, to prevent someone to abuse this interface, for safety
              * reasons we defined the ReflectionConstructed interface that in
              * addition to it's functionallity, will allow us to prevent someone
@@ -247,45 +245,47 @@ public class ConfigParser {
              * objects
              */
             p = c;
-            while (!safe && p != null)
-            {
+            while (!safe && p != null) {
                 for (Class inter : p.getInterfaces()) {
-                    if (safe = (inter == ReflectionConstructed.class))
+                    if (safe = (inter == ReflectionConstructed.class)) {
                         break;
+                    }
                 }
                 p = p.getSuperclass();
             }
-            if (!safe)
+            if (!safe) {
                 throw new ClassNotFoundException();
+            }
 
             obj = c.newInstance();
 
             for (String key : props.keySet()) {
-                fieldName = key.trim().replace('-', '_');
-                f = c.getField(fieldName);
-                if (f.getType() == int.class) {
-                    f.setInt(obj, GetIntParam(props.get(key)));
-                } else if (f.getType() == float.class) {
-                    f.setFloat(obj, GetFloatParam(props.get(key)));
-                } else if (f.getType() == boolean.class) {
-                    f.setBoolean(obj, GetBooleanParam(props.get(key)));
-                } else if (f.getType() == Point3.class) {
-                    f.set(obj, GetPointParam(props.get(key)));
-                } else if (f.getType() == Vector3.class) {
-                    f.set(obj, GetVectorParam(props.get(key)));
-                } else if (f.getType() == Color.class) {
-                    f.set(obj, GetColorParam(props.get(key)));
-                } else if (f.getType() == Mesh.Shader.class) {
-                    f.set(obj, GetShaderParam(props.get(key)));
-                } else if (f.getType() == String.class) {
-                    f.set(obj, props.get(key).trim());
+                try {
+                    fieldName = key.trim().replace('-', '_');
+                    f = c.getField(fieldName);
+                    if (f.getType() == int.class) {
+                        f.setInt(obj, GetIntParam(props.get(key)));
+                    } else if (f.getType() == float.class) {
+                        f.setFloat(obj, GetFloatParam(props.get(key)));
+                    } else if (f.getType() == boolean.class) {
+                        f.setBoolean(obj, GetBooleanParam(props.get(key)));
+                    } else if (f.getType() == Point3.class) {
+                        f.set(obj, GetPointParam(props.get(key)));
+                    } else if (f.getType() == Vector3.class) {
+                        f.set(obj, GetVectorParam(props.get(key)));
+                    } else if (f.getType() == Color.class) {
+                        f.set(obj, GetColorParam(props.get(key)));
+                    } else if (f.getType() == Mesh.Shader.class) {
+                        f.set(obj, GetShaderParam(props.get(key)));
+                    } else if (f.getType() == String.class) {
+                        f.set(obj, props.get(key).trim());
+                    }
+                } catch (NoSuchFieldException ex) {
+                    System.err.println("Invalid property " + fieldName + " of " + objType);
                 }
             }
+            ((ReflectionConstructed) obj).fillMissing();
 
-            ((ReflectionConstructed)obj).fillMissing();
-
-        } catch (NoSuchFieldException ex) {
-            System.err.println("Invalid property " + fieldName + " of " + objType);
         } catch (ClassNotFoundException ex) {
             System.err.println("No such object type " + objType);
         } catch (Exception ex) {
