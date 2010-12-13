@@ -161,7 +161,6 @@ public class RenderWindow extends javax.swing.JFrame {
         ImageView.setIconTextGap(0);
         ImageScroll.setViewportView(ImageView);
 
-        AxisCheckbox.setSelected(true);
         AxisCheckbox.setText("Visualize Axises");
 
         ThreadCountLabel.setText("Thread Count:");

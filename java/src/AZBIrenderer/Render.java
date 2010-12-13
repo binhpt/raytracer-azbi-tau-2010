@@ -41,28 +41,41 @@ public class Render {
         }
     }
 
+    /**
+     * A list of all the geometric surfaces which should be rendered
+     */
     public List<Surface> surfaces;
+    /**
+     * A list of all the lights
+     */
     public List<Light> lights;
+    /**
+     * The scene's camera
+     */
     public Camera camera;
+    /**
+     * An object contatining various scene settings
+     */
     public Scene scene;
+    /**
+     * A string containing the config file (it's content, not it's path) with
+     * the scene definitions
+     */
     public String config;
-    protected boolean init;
+
+    /**
+     * The result of the actual render
+     */
     protected BufferedImage render;
-    protected int hitCount;
 
     public Render(String config) {
         this.surfaces = new ArrayList<Surface>();
         this.lights = new ArrayList<Light>();
-        this.init = false;
         this.config = config;
-    }
-
-    private void init() {
     }
 
     public void render(final int screenWidth, final int screenHeight,
             final int xParts, final int yParts, final int threadCount) {
-        hitCount = 0;
         Graphics2D g;
 
         ConfigParser parser = new ConfigParser(this);
@@ -72,8 +85,7 @@ public class Render {
         g = (Graphics2D) render.getGraphics();
         g.setColor(new java.awt.Color(scene.background_col.r, scene.background_col.g, scene.background_col.b));
         g.fillRect(0, 0, screenWidth, screenHeight);
-        if (scene.background_tex != null)
-        {
+        if (scene.background_tex != null) {
             try {
                 AffineTransform scaleTrans = new AffineTransform();
                 BufferedImage bg_tex = ImageIO.read(new File(scene.background_tex));
@@ -107,21 +119,48 @@ public class Render {
 
                 public void run() {
                     int part;
-                    while ((part = in.getAndIncrement()) < xParts * yParts)
-                    {
+                    while ((part = in.getAndIncrement()) < xParts * yParts) {
                         ImagePart im = parts.get(part);
-                        Color pixel;
+                        int sampleCount = scene.super_samp_width, samplesPerPixel = sampleCount * sampleCount;
+                        float sampleDistX = 1.0f / (sampleCount + 1) / screenWidth;
+                        float sampleDistY = 1.0f / (sampleCount + 1) / screenHeight;
                         Ray r;
 
                         int color;
-                        for (int i = im.yStart; i <= im.yEnd; i++) {
-                        for (int j = im.xStart; j <= im.xEnd; j++) {
-                            
-                                r = camera.CreateRay(((float) i) / screenHeight, ((float) j) / screenWidth);
-                                pixel = ShootRay(r);
 
-                                if (pixel != null) {
-                                    color = pixel.getRGB();
+                        for (int i = im.yStart; i <= im.yEnd; i++) {
+                            for (int j = im.xStart; j <= im.xEnd; j++) {
+                                Color[][] samples = new Color[sampleCount][sampleCount];
+
+                                float y = ((float) i) / screenHeight;
+                                float x = ((float) j) / screenWidth;
+
+                                for (int a = 0; a < sampleCount; a++) {
+                                    for (int b = 0; b < sampleCount; b++) {
+                                        //r = camera.CreateRay(y + (a+(float)Math.random())*sampleDistY, x + (b+(float)Math.random())*sampleDistX);
+                                        r = camera.CreateRay(y + (a + (float)Math.random()) * sampleDistY, x + (b + (float)Math.random()) * sampleDistX);
+                                        //r = camera.CreateRay(y, x);
+                                        samples[a][b] = ShootRay(r);
+                                    }
+                                }
+
+                                float red = 0, green = 0, blue = 0;
+                                int hits = 0;
+
+                                for (Color[] pixelRow : samples) {
+                                    for (Color pixel : pixelRow) {
+                                        if (pixel != null)
+                                        {
+                                            red += pixel.r;
+                                            green += pixel.g;
+                                            blue += pixel.b;
+                                            hits++;
+                                        }
+                                    }
+                                }
+
+                                if (hits != 0) {
+                                    color = new Color(red / samplesPerPixel, green / samplesPerPixel, blue / samplesPerPixel, hits / (float)samplesPerPixel).getRGB();
                                     im.setRGB(j - im.xStart, i - im.yStart, color);
                                 }
                             }
@@ -144,12 +183,10 @@ public class Render {
 
         BufferedImage accumulate = new BufferedImage(screenWidth, screenHeight, BufferedImage.TYPE_INT_ARGB);
 
-        int part = 0;
-        for (ImagePart imagePart : parts)
-        {
+        for (ImagePart imagePart : parts) {
             for (int i = 0; i < imagePart.height; i++) {
                 for (int j = 0; j < imagePart.width; j++) {
-                    accumulate.setRGB(j+imagePart.xStart, i+imagePart.yStart, imagePart.im[i][j]);
+                    accumulate.setRGB(j + imagePart.xStart, i + imagePart.yStart, imagePart.im[i][j]);
                 }
             }
         }
