@@ -2,7 +2,7 @@
 package AZBIrenderer;
 
 /**
- * A base class for geometry
+ * A base interface for geometric surfaces
  * @author Barak Itkin and Adam Zeira
  */
 public interface SurfaceGeometry {

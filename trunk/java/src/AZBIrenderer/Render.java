@@ -19,6 +19,9 @@ import static AZBIrenderer.Vector3.*;
  */
 public class Render {
 
+    /**
+     * A class for representing a part of an image that should be rendered
+     */
     public static class ImagePart {
 
         int xStart, yStart, xEnd, yEnd;
@@ -74,72 +77,103 @@ public class Render {
         this.config = config;
     }
 
-    public void render(final int screenWidth, final int screenHeight,
+    /**
+     * The main process for the rendering, The result will be saved inside
+     * the render field of this class.
+     * @param resultWidth The width of the result image
+     * @param resultHeight The height of the result image
+     * @param xParts The amount of parts along the X-axis that the work should be split to
+     * @param yParts The amount of parts along the Y-axis that the work should be split to
+     * @param threadCount The amount of threads to use
+     */
+    public void render(final int resultWidth, final int resultHeight,
             final int xParts, final int yParts, final int threadCount) {
-        Graphics2D g;
 
+        /* Create a parser and parse this scene */
         ConfigParser parser = new ConfigParser(this);
         parser.Parse(config);
 
-        render = new BufferedImage(screenWidth, screenHeight, BufferedImage.TYPE_INT_ARGB);
-        g = (Graphics2D) render.getGraphics();
+        /* Create the result image */
+        render = new BufferedImage(resultWidth, resultHeight, BufferedImage.TYPE_INT_ARGB);
+        /* Fill it with a background color or a specified background image */
+        Graphics2D g = (Graphics2D) render.getGraphics();
         g.setColor(new java.awt.Color(scene.background_col.r, scene.background_col.g, scene.background_col.b));
-        g.fillRect(0, 0, screenWidth, screenHeight);
+        g.fillRect(0, 0, resultWidth, resultHeight);
         if (scene.background_tex != null) {
             try {
                 AffineTransform scaleTrans = new AffineTransform();
                 BufferedImage bg_tex = ImageIO.read(new File(scene.background_tex));
-                scaleTrans.scale(screenWidth / (double) bg_tex.getWidth(), screenHeight / (double) bg_tex.getHeight());
+                scaleTrans.scale(resultWidth / (double) bg_tex.getWidth(), resultHeight / (double) bg_tex.getHeight());
                 g.drawImage(bg_tex, scaleTrans, null);
             } catch (IOException ex) {
                 System.err.println("An error occured while reading the background image " + scene.background_tex);
             }
         }
 
-        // Inverted because of the right hand coordinate system
-        camera.screen_height = camera.screen_width * ((float) screenHeight / screenWidth);
+        /* Initialize some fields in the camera. Note that some values seem
+         * to be switched/inverted - this is because of the right hand
+         * coordinate system. See the Camera class for more details
+         */
+        camera.screen_height = camera.screen_width * ((float) resultHeight / resultWidth);
 
         camera.bot_left = add(camera.eye, mul(camera.screen_dist, camera.direction));
         camera.bot_left = sub(camera.bot_left, mul(camera.screen_width / 2, camera.right_direction));
         camera.bot_left = sub(camera.bot_left, mul(camera.screen_height / 2, camera.up_direction));
 
+        /* Initialize some fields for synchronizing between the threads */
         Thread[] threads = new Thread[threadCount];
+        final AtomicInteger partsDone = new AtomicInteger(0);
         final List<ImagePart> parts = Collections.synchronizedList(new ArrayList<ImagePart>());
-        final AtomicInteger in = new AtomicInteger(0);
 
+        /* Split the work on the entire image to smaller parts */
         for (int i = 0; i < xParts; i++) {
             for (int j = 0; j < yParts; j++) {
-                parts.add(new ImagePart((i * screenWidth) / xParts, (j * screenHeight) / yParts,
-                        ((i + 1) * screenWidth) / xParts - 1, ((j + 1) * screenHeight) / yParts - 1));
+                parts.add(new ImagePart((i * resultWidth) / xParts, (j * resultHeight) / yParts,
+                        ((i + 1) * resultWidth) / xParts - 1, ((j + 1) * resultHeight) / yParts - 1));
             }
         }
 
+        /* Create the rendering threads */
         for (int i = 0; i < threads.length; i++) {
             threads[i] = new Thread(new Runnable() {
 
+                /* The actual rendering by each thread is done here */
                 public void run() {
+                    Ray r;
+                    int color;
+
+                    /* The number of the part we should work on */
                     int part;
-                    while ((part = in.getAndIncrement()) < xParts * yParts) {
+
+                    /* Antialiasing parameters */
+                    int sampleCount = scene.super_samp_width, samplesPerPixel = sampleCount * sampleCount;
+                    /* The distance between samples, in image relative (0-1)
+                     * coordinates
+                     */
+                    float sampleDistX = 1.0f / (sampleCount + 1) / resultWidth;
+                    float sampleDistY = 1.0f / (sampleCount + 1) / resultHeight;
+
+                    /* Check that there are still some unrendered parts */
+                    while ((part = partsDone.getAndIncrement()) < xParts * yParts) {
+                        /* Get the part that we should work on */
                         ImagePart im = parts.get(part);
-                        int sampleCount = scene.super_samp_width, samplesPerPixel = sampleCount * sampleCount;
-                        float sampleDistX = 1.0f / (sampleCount + 1) / screenWidth;
-                        float sampleDistY = 1.0f / (sampleCount + 1) / screenHeight;
-                        Ray r;
 
-                        int color;
 
+                        /* For each pixel */
                         for (int i = im.yStart; i <= im.yEnd; i++) {
                             for (int j = im.xStart; j <= im.xEnd; j++) {
+                                /* Create an array of samples */
                                 Color[][] samples = new Color[sampleCount][sampleCount];
 
-                                float y = ((float) i) / screenHeight;
-                                float x = ((float) j) / screenWidth;
+                                /* Find the location of the pixel */
+                                float y = ((float) i) / resultHeight;
+                                float x = ((float) j) / resultWidth;
 
                                 for (int a = 0; a < sampleCount; a++) {
                                     for (int b = 0; b < sampleCount; b++) {
-                                        //r = camera.CreateRay(y + (a+(float)Math.random())*sampleDistY, x + (b+(float)Math.random())*sampleDistX);
+                                        /* Create the ray to shoot */
                                         r = camera.CreateRay(y + (a + (float)Math.random()) * sampleDistY, x + (b + (float)Math.random()) * sampleDistX);
-                                        //r = camera.CreateRay(y, x);
+                                        /* Save the color resulted from shooting it */
                                         samples[a][b] = ShootRay(r);
                                     }
                                 }
@@ -147,6 +181,7 @@ public class Render {
                                 float red = 0, green = 0, blue = 0;
                                 int hits = 0;
 
+                                /* Compute the averege color from all the samples*/
                                 for (Color[] pixelRow : samples) {
                                     for (Color pixel : pixelRow) {
                                         if (pixel != null)
@@ -159,8 +194,14 @@ public class Render {
                                     }
                                 }
 
+                                /* Put the result inside image buffer for the
+                                 * current part
+                                 */
                                 if (hits != 0) {
-                                    color = new Color(red / samplesPerPixel, green / samplesPerPixel, blue / samplesPerPixel, hits / (float)samplesPerPixel).getRGB();
+                                    color = new Color(red / samplesPerPixel,
+                                            green / samplesPerPixel,
+                                            blue / samplesPerPixel,
+                                            hits / (float)samplesPerPixel).getRGB();
                                     im.setRGB(j - im.xStart, i - im.yStart, color);
                                 }
                             }
@@ -169,19 +210,26 @@ public class Render {
 
                 }
             });
+
+            /* Start the thread */
             threads[i].start();
         }
 
+        /* Wait for all threads to finish */
         for (int i = 0; i < threads.length; i++) {
             try {
                 threads[i].join();
             } catch (InterruptedException ex) {
                 System.err.print("A serious synchronization error occured...");
                 System.err.print("Please try the single threaded execution.");
+                return;
             }
         }
 
-        BufferedImage accumulate = new BufferedImage(screenWidth, screenHeight, BufferedImage.TYPE_INT_ARGB);
+        /* Create an image into which we accumulate the different parts of the
+         * rendered image
+         */
+        BufferedImage accumulate = new BufferedImage(resultWidth, resultHeight, BufferedImage.TYPE_INT_ARGB);
 
         for (ImagePart imagePart : parts) {
             for (int i = 0; i < imagePart.height; i++) {
@@ -191,9 +239,13 @@ public class Render {
             }
         }
 
+        /* Draw the result above the background computed earlier */
         g.drawImage(accumulate, 0, 0, null);
     }
 
+    /**
+     * Shoot a ray at a list of surfaces, and return the closest intersect
+     */
     public static boolean shootAtSurfaces(Iterable<? extends Surface> surfaces, Ray r,
             IntersectionData closestIntersect) {
         boolean intersect = false;
@@ -212,8 +264,9 @@ public class Render {
     }
 
 
-    /*
-     * similar to shootAtSurfaces, but more efficient because it does less
+    /**
+     * similar to shootAtSurfaces, but more efficient because it does less,
+     * it just checks if there is an intersection or not
      */
     public static boolean ShootLightAtSurfaces(List<? extends Surface> surfaces, Ray r, float maxT) {
         IntersectionData temp = new IntersectionData();
@@ -226,7 +279,9 @@ public class Render {
         return true;
     }
 
-    /* Returns null in case of no intersection */
+    /**
+     * Shoot a ray and compute the color it produces
+     */
     public Color ShootRay(Ray r) {
         IntersectionData intersect = new IntersectionData();
 

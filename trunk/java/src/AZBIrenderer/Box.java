@@ -2,42 +2,67 @@ package AZBIrenderer;
 
 import static AZBIrenderer.Vector3.*;
 /**
- * A class for representing 3D paralleloids in 3D space
+ * A class for representing "boxes", or more correctly, 3D parallelograms (The
+ * exact term is Parallelepipeds).
  * <pre>
- *      p6
  *      X----------X
  *     /|         /|
  *    / |        / |
- * p3/  |     p5/  |
+ * p3/  |       /  |
  *  X----------X   |
  *  |   |      |   |
- *  |   p2     |   |
+ *  |   |      |   |
  *  |   X------|---X
- *  |  /       |  /p4
+ *  |  /       |  /
  *  | /        | /
  *  |/         |/
  *  X----------X
  * p0         p1
  * </pre>
+ *
+ * The actual implementation is based on 6 {@link Rectangles} objects
  * @author Adam Zeira & Barak Itkin
  */
 public class Box extends SingleMaterialSurface implements ReflectionConstructed, ReflectionWrapper {
 
+    /**
+     * The origin point of the box
+     */
     public Point3 p0;
     public Point3 p1;
     public Point3 p2;
     public Point3 p3;
 
+    /**
+     * The faces of the rectangle
+     */
     public Rectangle.RectangleFace[] real;
 
     public Box() { }
 
+    @Override
     public Object[] getRealObjects() {
         return real;
     }
 
     @Override
     public void fillMissing() {
+        /**
+         *      p6
+         *      X----------X
+         *     /|         /|
+         *    / |        / |
+         * p3/  |     p5/  |
+         *  X----------X   |
+         *  |   |      |   |
+         *  |   p2     |   |
+         *  |   X------|---X
+         *  |  /       |  /p4
+         *  | /        | /
+         *  |/         |/
+         *  X----------X
+         * p0         p1
+         */
         Vector3 u = sub(p1,p0);
         Vector3 v = sub(p2,p0);
         Vector3 w = sub(p3,p0);
@@ -57,6 +82,4 @@ public class Box extends SingleMaterialSurface implements ReflectionConstructed,
         this.real[4] = new Rectangle.RectangleFace(oneMaterial, p3, p5, p6);
         this.real[5] = new Rectangle.RectangleFace(oneMaterial, p2, p4, p6);
     }
-
-
 }

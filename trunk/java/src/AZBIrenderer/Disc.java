@@ -8,6 +8,9 @@ import static AZBIrenderer.Vector3.*;
  */
 public class Disc extends SingleMaterialSurface implements Surface {
 
+    /**
+     * The normal of the discs plane
+     */
     public Vector3 normal;
     /**
      * The Discs center

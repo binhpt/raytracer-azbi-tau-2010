@@ -4,8 +4,9 @@ import java.util.Iterator;
 
 /**
  * A class for representing vectors in 3D space. The data is saved inside 3
- * seperate fields and not in an array, since the referencing of the array is
- * may have a performance cost for heavily used code.
+ * seperate fields and not in an array, since the referencing of the array may
+ * have a performance cost for heavily used code (and besides, having fields
+ * labeles by axis makes the code more readable)
  *
  * For the same reason exactly, as many methods as possible are not defined as
  * virtual - instead they are defined as static to skip the Dynamic Dispatch
@@ -13,8 +14,17 @@ import java.util.Iterator;
  *
  * @author Adam Zeira & Barak Itkin
  */
-public class Vector3 implements Iterable<Float>{
+public class Vector3 implements Iterable<Float> {
 
+    /**
+     * An annotation for Vector3 fields which specifies that they are points and
+     * therefore should not be normalized
+     */
+    public @interface Point3d { }
+    
+    /**
+     * The coordinates of the vector
+     */
     public float x, y, z;
 
     /**
@@ -59,6 +69,10 @@ public class Vector3 implements Iterable<Float>{
         this.z = v.z;
     }
 
+    /**
+     * Make vectors iterable, exactly like lists and arrays
+     * @return An iterator for this vector
+     */
     public Iterator<Float> iterator() {
         return new Iterator<Float>() {
 
@@ -83,7 +97,8 @@ public class Vector3 implements Iterable<Float>{
             }
 
             public void remove() {
-                throw new UnsupportedOperationException("Not supported for Vector3");
+                throw new UnsupportedOperationException("You can't delete"
+                        + " coordinates for Vector3 objects...");
             }
         };
     }

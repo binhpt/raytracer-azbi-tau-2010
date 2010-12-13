@@ -3,7 +3,9 @@ package AZBIrenderer;
 
 /**
  * A delegate class around SingleMaterialSurface for many objects which share a
- * single material - or in simple english, Faces.
+ * single material - or in simple English, Faces.
+ * Note that childs of this class should be actual geometric surfaces (this is
+ * why this class "implements" the {@link Surface} interface.
  * @author Barak Itkin
  */
 public abstract class Face implements Surface {

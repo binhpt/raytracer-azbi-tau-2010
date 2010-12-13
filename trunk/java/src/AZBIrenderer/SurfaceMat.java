@@ -2,7 +2,7 @@
 package AZBIrenderer;
 
 /**
- * An interface for getting the "material" of all the geometric surfaces
+ * An interface for getting the "material" of a geometric surface
  * @author Barak Itkin
  */
 public interface SurfaceMat {
