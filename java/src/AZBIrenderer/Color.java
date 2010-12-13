@@ -2,7 +2,8 @@
 package AZBIrenderer;
 
 /**
- * A class for representing RGBA colors
+ * A class for representing RGBA colors in flating point precision. The values
+ * of each channel should be inside the range of 0-1
  * @author Adam Zeira & Barak Itkin
  */
 public class Color {
@@ -45,7 +46,7 @@ public class Color {
         return ((int)(a * 255) << 24)
                 | ((int)(r * 255) << 16)
                 | ((int)(g * 255) << 8)
-                | ((int)(b * 255) << 0);
+                | ((int)(b * 255));
     }
 
     public static Color add(Color a, Color b)

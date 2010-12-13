@@ -1,7 +1,4 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package AZBIrenderer;
 
 import AZBIrenderer.Mesh.RawMesh;
@@ -14,25 +11,27 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- *
- * @author user
+ * A class containing methods for parsing OFF and PLY mesh files
+ * @author Barak Itkin
  */
 public class MeshParser {
 
-    static class ParsingException extends Exception {
+    public static class ParsingException extends Exception {
 
         public ParsingException(String message) {
             super(message);
         }
     }
+
+    /**
+     * The longest prefix required to read from a mesh file, to distinguish it
+     * between the supported formats
+     */
     public static final int longestFormatName = 3;
 
     /**
-     * Read a list of floats from an input line, while skipping a given number
-     * of "words". A "word" is any sequence of non-space characters and
-     * @param line
-     * @param dest
-     * @param skipCount
+     * Read a list of space seperated floats from an input line, while skipping
+     * a given number of "words" (A "word" is any sequence of non-space characters)
      */
     public static void readLine(String line, float[] dest, int skipCount) {
         String[] nums = line.replaceAll("\\s+", " ").trim().split(" ");
@@ -41,6 +40,10 @@ public class MeshParser {
         }
     }
 
+    /**
+     * Read a list of space seperated ints from an input line, while skipping
+     * a given number of "words" (A "word" is any sequence of non-space characters)
+     */
     public static void readLine(String line, int[] dest, int skipCount) {
         String[] nums = line.replaceAll("\\s+", " ").trim().split(" ");
         for (int i = skipCount, j = 0; i < nums.length; i++, j++) {
@@ -165,6 +168,9 @@ public class MeshParser {
         return mesh;
     }
 
+    /**
+     * Parse a mesh file (either a PLY or an OFF file)
+     */
     public static RawMesh parse(String filename) {
         RawMesh mesh = null;
         FileInputStream input = null;

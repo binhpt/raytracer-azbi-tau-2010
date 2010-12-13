@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package AZBIrenderer;
 
 import java.io.BufferedReader;
@@ -14,13 +10,24 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * A parser for the scene config files
+ * A parser for the scene config files, based on heavy usage of reflection. See
+ * {@link ReflectionConstructed} for more details.
  * @author Adam Zeira & Barak Itkin
+ * @see ReflectionConstructed
  */
 public class ConfigParser {
 
+    /**
+     * The render object to be initialized
+     */
     public Render render;
+    /**
+     * The properties of the currently parsed object
+     */
     protected HashMap<String, String> props;
+    /**
+     * The name of the currently parsed object
+     */
     protected String className;
 
     /**
@@ -56,9 +63,13 @@ public class ConfigParser {
         Object[] single = new Object[1];
         Object[] children;
 
-        if (!this.className.isEmpty() && !this.props.isEmpty()) {
+        /* Make sure we have a real object */
+        if (!this.className.trim().isEmpty()) {
             Object obj = ReflectionParse(this.className, props);
 
+            /* If the current object is a wrapper around other objects, we want
+             * them and not the wrapper object
+             */
             if (obj instanceof ReflectionWrapper) {
                 children = ((ReflectionWrapper) obj).getRealObjects();
             } else {
@@ -66,6 +77,7 @@ public class ConfigParser {
                 children = single;
             }
 
+            /* Add the  object to the correct list inside the scene */
             for (Object sceneObj : children) {
                 if (sceneObj instanceof Light) {
                     this.render.lights.add((Light) sceneObj);
@@ -77,8 +89,9 @@ public class ConfigParser {
                     this.render.scene = (Scene) sceneObj;
                 }
             }
-            props.clear();
         }
+        /* Clear the properties and prepare for the next object */
+        props.clear();
         this.className = objType;
     }
 
@@ -94,6 +107,7 @@ public class ConfigParser {
         try {
             while (iss.ready() && (line = iss.readLine()) != null) {
                 if (!(line = line.trim()).isEmpty()) {
+                    /* Ignore comments */
                     if (line.startsWith("#")) {
                         continue;
                     } else if (line.endsWith(":")) {
@@ -106,7 +120,8 @@ public class ConfigParser {
         } catch (IOException ex) {
             Logger.getLogger(ConfigParser.class.getName()).log(Level.SEVERE, null, ex);
         }
-        /* Add the last object! */
+        /* Add the last object - simply say that we found a new object (with an
+         * invalid type so it will be ignored) */
         pushObject("");
     }
 
@@ -218,10 +233,9 @@ public class ConfigParser {
         Object obj = null;
         Class c = null;
         Field f = null;
-        Class fType = null;
         String fieldName = null;
 
-        String className = "";
+        String objClassName = "";
         String temp = null;
         Class p;
 
@@ -232,11 +246,11 @@ public class ConfigParser {
          */
         for (String word : objType.split("\\-")) {
             temp = word.toLowerCase();
-            className += Character.toUpperCase(temp.charAt(0)) + temp.substring(1);
+            objClassName += Character.toUpperCase(temp.charAt(0)) + temp.substring(1);
         }
 
         try {
-            c = Class.forName(ConfigParser.class.getPackage().getName() + "." + className);
+            c = Class.forName(ConfigParser.class.getPackage().getName() + "." + objClassName);
 
             /* Now, to prevent someone to abuse this interface, for safety
              * reasons we defined the ReflectionConstructed interface that in
@@ -257,8 +271,12 @@ public class ConfigParser {
                 throw new ClassNotFoundException();
             }
 
+            /* Now actually create the object */
             obj = c.newInstance();
 
+            /* For each property in the config file, try to initialize a
+             * matching field.
+             */
             for (String key : props.keySet()) {
                 try {
                     fieldName = key.trim().replace('-', '_');
@@ -284,6 +302,8 @@ public class ConfigParser {
                     System.err.println("Invalid property " + fieldName + " of " + objType);
                 }
             }
+
+            /* Now, allow the object to fill in the missing details */
             ((ReflectionConstructed) obj).fillMissing();
 
         } catch (ClassNotFoundException ex) {
@@ -291,7 +311,7 @@ public class ConfigParser {
         } catch (Exception ex) {
             Logger.getLogger(ConfigParser.class.getName()).log(Level.SEVERE, null, ex);
         }
-        Debug.print(obj);
+        //Debug.print(obj);
         return obj;
 
     }

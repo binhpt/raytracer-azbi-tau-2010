@@ -1,10 +1,9 @@
 package AZBIrenderer;
 
 import static AZBIrenderer.Vector3.*;
-import static AZBIrenderer.Math3D.*;
 
 /**
- * A class for representing sphere sufraces
+ * A class for representing sphere sufraces.
  * @author Adam Zeira & Barak Itkin
  */
 public class Sphere extends SingleMaterialSurface implements Surface {
@@ -50,5 +49,6 @@ public class Sphere extends SingleMaterialSurface implements Surface {
                 Vector3.sub (center, radius));
     }
 
+    @Override
     public void fillMissing() { }
 }

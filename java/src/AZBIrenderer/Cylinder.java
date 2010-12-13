@@ -3,12 +3,19 @@ package AZBIrenderer;
 import static AZBIrenderer.Vector3.*;
 
 /**
- * A class for representing Cylinder sufraces
+ * A class for representing Cylinder sufraces.
  * @author Barak Itkin
  */
 public class Cylinder extends SingleMaterialSurface implements Surface {
 
+    /**
+     * Square root of 2, kept for preformance reasons
+     */
     public static final float SQRT2 = (float)Math.sqrt(2);
+
+    /**
+     * The direction of the cylinder
+     */
     public Vector3 direction;
     /**
      * The Cylinders center
@@ -25,7 +32,12 @@ public class Cylinder extends SingleMaterialSurface implements Surface {
 
     public Sphere ProjectedSphere;
 
-    /* When intersecting a ray with a cylinder, the second intersection may be
+    /*
+     * You will want to see the attached math file in order to understand the
+     * intersection calculation - since the method used here is a bit unusual
+     * (actually, it was invented by the writer of these lines).
+     *
+     * Note that when intersecting a ray with a cylinder, the second intersection may be
      * in range when the first isn't....
      */
     @Override

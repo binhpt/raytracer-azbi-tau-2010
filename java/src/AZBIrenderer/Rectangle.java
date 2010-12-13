@@ -2,20 +2,30 @@ package AZBIrenderer;
 
 import static AZBIrenderer.Vector3.*;
 /**
- * A class for representing planar parallelograms in 3D space
- * <pre>
- *     p2         p3
- *     X----------X
- *    /          /
- *   /          /
- *  /          /
- * X----------X
- * p0         p1
- * </pre>
+ * A wrapper class around {@link RectangleFace}
  * @author Adam Zeira & Barak Itkin
+ * @see RectangleFace
+ * @see Box
  */
 public class Rectangle extends SingleMaterialSurface implements ReflectionConstructed, ReflectionWrapper {
 
+    /**
+     * A class for representing planar parallelograms in 3D space
+     * 
+     * <pre>
+     *     p2         p3
+     *     X----------X
+     *    /          /
+     *   /          /
+     *  /          /
+     * X----------X
+     * p0         p1
+     * </pre>
+     *
+     * It's seperated from the {@link Rectangle} class, since the {@link Box}
+     * class also uses it.
+     * @author Adam Zeira & Barak Itkin
+     */
     public static class RectangleFace extends Face {
         public Point3 p0, p1, p2;
 
@@ -37,6 +47,9 @@ public class Rectangle extends SingleMaterialSurface implements ReflectionConstr
          */
         public float d;
 
+        /**
+         * Variables cached for performance
+         */
         public float dot00, dot01, dot11, invDenom;
 
         public RectangleFace(SingleMaterialSurface sf,
@@ -90,11 +103,15 @@ public class Rectangle extends SingleMaterialSurface implements ReflectionConstr
         }
     }
 
-    public Point3 p0;
-    public Point3 p1;
-    public Point3 p2;
-    public Point3 p3;
+    /**
+     * The same variables from {@link RectangleFace}, present here only for the
+     * reflection based parsing
+     */
+    public Point3 p0, p1, p2, p3;
 
+    /**
+     * The actual {@link RectangleFace} for this object, inside an array
+     */
     public RectangleFace[] real;
 
     public Rectangle() { }

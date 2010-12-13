@@ -3,11 +3,16 @@ package AZBIrenderer;
 import static AZBIrenderer.Vector3.*;
 
 /**
- *
+ * A class for representing triangular meshes, which is actually a wrapper
+ * around Many {@link Triangle} faces.
  * @author Barak Itkin
+ * @see Triangle
  */
 public class Mesh extends SingleMaterialSurface implements ReflectionConstructed, ReflectionWrapper {
 
+    /**
+     * Represent a raw mesh, as a list of points and faces
+     */
     public static class RawMesh {
 
         public int[][] faces;
@@ -19,6 +24,9 @@ public class Mesh extends SingleMaterialSurface implements ReflectionConstructed
         }
     }
 
+    /**
+     * The shading types for a mesh object
+     */
     public static enum Shader {
 
         FLAT, PHONG;
@@ -30,6 +38,9 @@ public class Mesh extends SingleMaterialSurface implements ReflectionConstructed
     }
 
 
+    /**
+     * A class for representing triangular faces.
+     */
     public static class Triangle extends Face {
 
         public Point3 A, B, C, p3;
@@ -63,8 +74,6 @@ public class Mesh extends SingleMaterialSurface implements ReflectionConstructed
             return BoundingBox.create(A, B, C);
         }
 
-        // TODO: FIXME!
-        // TODO: Fix the pdf - it's v and not minus v
         public boolean Intersection(Ray r, IntersectionData intersect) {
             if (!Math3D.RayPlanintersection(r, normal, d, intersect)) {
                 return false;
@@ -92,10 +101,26 @@ public class Mesh extends SingleMaterialSurface implements ReflectionConstructed
             return true;
         }
     }
+
+    /**
+     * The file from which the mesh should be loaded
+     */
     public String filename;
+    /**
+     * The offset for the mesh
+     */
     public Point3 pos;
+    /**
+     * The scaling to apply to the mesh
+     */
     public float scale;
+    /**
+     * The shading type for this mesh
+     */
     public Shader shader;
+    /**
+     * The actual triangular faces of this mesh
+     */
     public Triangle[] triangles;
 
     private void initFromRawMesh(RawMesh mesh) {

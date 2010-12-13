@@ -1,7 +1,16 @@
 package AZBIrenderer;
 
 /**
- * A base class for 3D surfaces
+ * A base class for objects which have their own material.
+ *
+ * Many objects extend this class, instead of containing an instance of it as a
+ * field - and this may seem a bit weird at first. The reason for this is that
+ * the reflection based constructor can only initialize fields from an object's
+ * class or it's parent classes. So since it's possible to specify material
+ * properties directly for surfaces in the config files (instead of having
+ * surface definitions and have the objects point to those materials), many
+ * objects extend this class.
+ *
  * @author Adam Zeira & Barak Itkin
  */
 public class SingleMaterialSurface implements ReflectionConstructed, SurfaceMat {

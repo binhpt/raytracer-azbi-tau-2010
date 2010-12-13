@@ -1,13 +1,9 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package AZBIrenderer;
 
 /**
- *
- * @author adam
+ * A class for representing directed lights (aka Sun lights), which are
+ * equivalent to point lights in an infinite distance
+ * @author Adam Zeira
  */
 public class LightDirected extends Light{
 
