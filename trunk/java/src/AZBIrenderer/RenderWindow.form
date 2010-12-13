@@ -194,7 +194,6 @@
     </Container>
     <Component class="javax.swing.JCheckBox" name="AxisCheckbox">
       <Properties>
-        <Property name="selected" type="boolean" value="true"/>
         <Property name="text" type="java.lang.String" value="Visualize Axises"/>
       </Properties>
     </Component>
