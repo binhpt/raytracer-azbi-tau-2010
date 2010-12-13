@@ -166,7 +166,7 @@ public class Render {
     public static boolean ShootLightAtSurfaces(List<? extends Surface> surfaces, Ray r, float maxT) {
         IntersectionData temp = new IntersectionData();
         for (Surface surf : surfaces) {
-            if (surf.Intersection(r, temp) && temp.T < maxT && temp.T > 0.001f)//Float.MIN_VALUE)// && !temp.point.equals(r.origin))
+            if (surf.Intersection(r, temp) && temp.T < maxT && temp.T > 0.001f)
             {
                 return false;
             }
@@ -183,9 +183,9 @@ public class Render {
         Ray lightray = new Ray();
 
         Color color = new Color(0, 0, 0, 1);
-        Color tc;
+        Color tc, mtlDiffuse, mtlSpecular;
 
-        double ambient, specular1, specular2;
+        double diffuse, specular1, specular2;
         Vector3 H;
         float dist;
 
@@ -197,6 +197,9 @@ public class Render {
             for (Light light : lights) {
                 //OPTIMIZE
                 dist = light.GetRay(intersect.point, lightray);
+                //Vector3 temp = new Vector3(-intersect.normal.x, -intersect.normal.y, -intersect.normal.z);
+                //if (Vector3.InnerProduct(lightray.direction, intersect.normal) < 0)
+//                    continue;
                 //lightray.origin = add(lightray.origin, mul(Float.MIN_VALUE, lightray.direction));
                 //float.maxvalue is only for LightDirected, change later
                 if (ShootLightAtSurfaces(surfaces, lightray, dist)) //if (lightIntersection.point.equals(closestIntersect.point))
@@ -205,55 +208,45 @@ public class Render {
                     tc = light.EffectFromLight(intersect.point); //I(L) in the presentation
 
                     //diffuse component: K(d) * NL * I(L)
-                    //lightray.direction = Normalize(lightray.direction);
-                    lightray.direction = Normalize(new Vector3(-lightray.direction.x, -lightray.direction.y, -lightray.direction.z));
-                    ambient = Math.abs(InnerProduct(intersect.normal, lightray.direction)); //N*L
+                    lightray.direction = Normalize(lightray.direction);
+                    //lightray.direction = Normalize(new Vector3(-lightray.direction.x, -lightray.direction.y, -lightray.direction.z));
+                    //ambient = InnerProduct(intersect.normal, lightray.direction);
+                    //if (ambient < 0) ambient = 0;
+                    intersect.normal = Normalize(intersect.normal);
+                    diffuse = InnerProduct(intersect.normal, lightray.direction); //N*L
+                    if (diffuse < 0) diffuse = 0;
 
                     //specular component: K(s) * (VR)^n *I(L)
-                    H = Normalize(add(r.direction, lightray.direction));
+                    H = Normalize(sub(r.direction, lightray.direction));
                     specular1 = InnerProduct(H, intersect.normal);
                     //if (specular1 < 0) specular1 = 0;
                     specular2 = Math.pow(specular1, intersect.surface.getMtl_shininess());
                     //specular2 = 0;
 
-                    Color mtlDiffuse = intersect.surface.getMtl_diffuse();
-                    Color mtlSpecular = intersect.surface.getMtl_specular();
-                    color.r += tc.r * (mtlDiffuse.r * ambient + specular2 * mtlSpecular.r);
-                    color.g += tc.g * (mtlDiffuse.g * ambient + specular2 * mtlSpecular.g);
-                    color.b += tc.b * (mtlDiffuse.b * ambient + specular2 * mtlSpecular.b);
+                    mtlDiffuse = intersect.surface.getMtl_diffuse();
+                    mtlSpecular = intersect.surface.getMtl_specular();
+                    color.r += tc.r * (mtlDiffuse.r * diffuse + specular2 * mtlSpecular.r);
+                    color.g += tc.g * (mtlDiffuse.g * diffuse + specular2 * mtlSpecular.g);
+                    color.b += tc.b * (mtlDiffuse.b * diffuse + specular2 * mtlSpecular.b);
 
                 }
-                //float light = Math.abs(Vector3.InnerProduct(normal, LightGlobal));
-                //return new Color(sf.mtl_diffuse.r * light, sf.mtl_diffuse.g * light, sf.mtl_diffuse.b * light, 1);
             }
 
             color.r += this.scene.ambient_light.r * intersect.surface.mtl_ambient.r;
             color.g += this.scene.ambient_light.g * intersect.surface.mtl_ambient.g;
             color.b += this.scene.ambient_light.b * intersect.surface.mtl_ambient.b;
 
-            if (color.r > 1f) {
-                color.r = 1;
-            }
-            if (color.g > 1f) {
-                color.g = 1;
-            }
-            if (color.b > 1f) {
-                color.b = 1;
-            }
+            if (color.r > 1f) color.r = 1;
+            if (color.g > 1f) color.g = 1;
+            if (color.b > 1f) color.b = 1;
 
-            if (color.r < 0f) {
-                color.r = 0;
-            }
-            if (color.g < 0f) {
-                color.g = 0;
-            }
-            if (color.b < 0f) {
-                color.b = 0;
-            }
+            if (color.r < 0f) color.r = 0;
+            if (color.g < 0f) color.g = 0;
+            if (color.b < 0f) color.b = 0;
 
             color.a = 1;
 
-            return color;// closestIntersect.surface.mtl_diffuse; //flat color
+            return color;
         } else {
             return null;
         }
