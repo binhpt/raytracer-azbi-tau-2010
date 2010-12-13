@@ -77,6 +77,7 @@ public class Cylinder extends SingleMaterialSurface implements Surface {
                 Vector3.sub (top, radius));
     }
 
+    @Override
     public void fillMissing() {
         this.ProjectedSphere = new Sphere();
         this.ProjectedSphere.center = new Point3(sub(start, mul(InnerProduct(direction, start), direction)));
