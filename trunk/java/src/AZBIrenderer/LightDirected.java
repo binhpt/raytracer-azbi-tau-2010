@@ -1,5 +1,7 @@
 package AZBIrenderer;
 
+import AZBIrenderer.Vector3.Point3d;
+
 /**
  * A class for representing directed lights (aka Sun lights), which are
  * equivalent to point lights in an infinite distance
@@ -7,13 +9,13 @@ package AZBIrenderer;
  */
 public class LightDirected extends Light{
 
-    public Color EffectFromLight(Point3 p)
+    public Color EffectFromLight(@Point3d Vector3 p)
     {
         return this.color;
     }
 
     //OPTIMIZE
-    public float GetRay(Point3 point, Ray ray)
+    public float GetRay(@Point3d Vector3 point, Ray ray)
     {
         ray.origin = point;
         ray.direction = reverseDirection;

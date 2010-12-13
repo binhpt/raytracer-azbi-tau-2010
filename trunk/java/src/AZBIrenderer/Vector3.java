@@ -1,5 +1,7 @@
 package AZBIrenderer;
 
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 import java.util.Iterator;
 
 /**
@@ -20,7 +22,8 @@ public class Vector3 implements Iterable<Float> {
      * An annotation for Vector3 fields which specifies that they are points and
      * therefore should not be normalized
      */
-    public @interface Point3d { }
+    @Retention(RetentionPolicy.RUNTIME)
+    public static @interface Point3d { }
     
     /**
      * The coordinates of the vector
@@ -127,19 +130,6 @@ public class Vector3 implements Iterable<Float> {
                 v1.x + f,
                 v1.y + f,
                 v1.z + f
-                );
-    }
-
-    /**
-     * Vector addition between a point and a vector
-     * @return a new point representing p1 + v2
-     */
-    public static Point3 add (Point3 p1, Vector3 v2)
-    {
-        return new Point3 (
-                p1.x + v2.x,
-                p1.y + v2.y,
-                p1.z + v2.z
                 );
     }
 

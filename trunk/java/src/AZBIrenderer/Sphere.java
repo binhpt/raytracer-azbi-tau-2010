@@ -11,7 +11,7 @@ public class Sphere extends SingleMaterialSurface implements Surface {
     /**
      * The spheres center
      */
-    public Point3 center;
+    public @Point3d Vector3 center;
     /**
      * The radius of the sphere
      */

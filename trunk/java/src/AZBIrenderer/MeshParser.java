@@ -93,7 +93,7 @@ public class MeshParser {
                 throw new ParsingException("Not enough vertices in OFF file!");
             }
             readLine(line, input, 0);
-            mesh.vertices[i] = new Point3(input);
+            mesh.vertices[i] = new Vector3(input);
         }
 
         for (int i = 0; i < m; i++) {
@@ -151,7 +151,7 @@ public class MeshParser {
                 throw new ParsingException("Not enough vertices in PLY file!");
             }
             readLine(line, input, 0);
-            mesh.vertices[i] = new Point3(input);
+            mesh.vertices[i] = new Vector3(input);
         }
 
         for (int i = 0; i < m; i++) {

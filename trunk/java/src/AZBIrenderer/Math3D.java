@@ -38,9 +38,9 @@ public class Math3D {
      * plane goes through the origin)
      */
     /* Normal must be normalized! */
-    public static Point3 flattenPt (Point3 toFlat, Vector3 normal)
+    public static Vector3 flattenPt (Vector3 toFlat, Vector3 normal)
     {
-        return new Point3(flattenVec(toFlat, normal));
+        return sub(toFlat, mul(InnerProduct(toFlat, normal), normal));
     }
 
     /**
@@ -70,7 +70,7 @@ public class Math3D {
             return false;
 
         result.T = - (d + InnerProduct(r.origin, normal)) / SABC;
-        result.point = new Point3(add(r.origin, mul (result.T, r.direction)));
+        result.point = add(r.origin, mul (result.T, r.direction));
 
         return true;
     }

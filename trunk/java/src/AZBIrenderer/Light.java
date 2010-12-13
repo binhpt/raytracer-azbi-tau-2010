@@ -1,5 +1,7 @@
 package AZBIrenderer;
 
+import AZBIrenderer.Vector3.Point3d;
+
 /**
  * A base class for all light object
  * @author Adam Zeira & Barak Itkin
@@ -16,7 +18,7 @@ public abstract class Light implements ReflectionConstructed {
         this.color = new Color(1, 1, 1, 1);
     }
     
-    public abstract Color EffectFromLight(Point3 point);
+    public abstract Color EffectFromLight(@Point3d Vector3 point);
 
     /**
      * Given a point, Fill a Ray object with a ray from the light source to that
@@ -25,5 +27,5 @@ public abstract class Light implements ReflectionConstructed {
      * @param ray The ray to fill
      * @return The multiplier of the vector required to reach the light
      */
-    public abstract float GetRay(Point3 point, Ray ray);
+    public abstract float GetRay(@Point3d Vector3 point, Ray ray);
 }
