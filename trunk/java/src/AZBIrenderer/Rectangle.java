@@ -83,7 +83,7 @@ public class Rectangle extends SingleMaterialSurface implements ReflectionConstr
             if (u < 0 || v < 0 || u > 1 || v > 1)
                 return false;
 
-            intersect.normal = normal;
+            intersect.normal = new Vector3(-normal.x, -normal.y, -normal.z);
             intersect.surface = this.surfaceMaterial;
 
             return true;

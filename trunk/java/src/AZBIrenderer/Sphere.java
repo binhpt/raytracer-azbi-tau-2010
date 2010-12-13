@@ -36,21 +36,9 @@ public class Sphere extends SingleMaterialSurface implements Surface {
         thc = (float)Math.sqrt(srad - sd);
 
         intersect.T = tca - thc;
-        //d = Point2RayDist(this.center, r);
-        //L_P2_P3_square = this.radius * this.radius - d * d;
-
-        /* Now, make sure there is an intersection */
-        /*if (L_P2_P3_square < 0 || L_P2_P3_square == Float.NaN)
-        {
-            return false;
-        }
-
-        L_P2_P1 = InnerProduct(sub(center, r.origin), r.direction);
-
-	intersect.T = L_P2_P1 - (float) Math.sqrt(L_P2_P3_square);*/
 	intersect.point = add(r.origin, mul (intersect.T, r.direction));
 	intersect.normal = Normalize (sub (intersect.point, this.center));
-        intersect.surface = this;// Debug.getFromNormal(this,intersect.normal); //change to something more complex next submission
+        intersect.surface = this;
 
         return true;
     }
