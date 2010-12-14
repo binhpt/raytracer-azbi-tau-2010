@@ -19,22 +19,22 @@ public class Sphere extends SingleMaterialSurface implements Surface {
 
     @Override
     public boolean Intersection(Ray r, IntersectionData intersect) {
-        //squared radius, squared distance
-        float sd, srad, thc, tca;
-        Vector3 L;
-        
-        L = sub(this.center, r.origin);
-        tca = InnerProduct(L, r.direction);
+         //squared radius, squared distance
+        float d_square, R_square, P3P2_length, P1P2_length;
+        Vector3 P1P0;
 
-        if (tca < 0) return false;
-        
-        sd = InnerProduct(L, L) - tca * tca;
-        srad = this.radius * this.radius;
-        if (sd > srad) return false;
+        P1P0 = sub(this.center, r.origin);
+        P1P2_length = InnerProduct(P1P0, r.direction);
 
-        thc = (float)Math.sqrt(srad - sd);
+        if (P1P2_length < 0) return false;
 
-        intersect.T = tca - thc;
+        d_square = InnerProduct(P1P0, P1P0) - P1P2_length * P1P2_length;
+        R_square = this.radius * this.radius;
+        if (d_square > R_square) return false;
+
+        P3P2_length = (float)Math.sqrt(R_square - d_square);
+
+        intersect.T = P1P2_length - P3P2_length;
 	intersect.point = add(r.origin, mul (intersect.T, r.direction));
 	intersect.normal = Normalize (sub (intersect.point, this.center));
         intersect.surface = this;

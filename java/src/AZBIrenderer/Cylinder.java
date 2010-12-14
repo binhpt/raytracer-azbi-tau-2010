@@ -30,7 +30,10 @@ public class Cylinder extends SingleMaterialSurface implements Surface {
      */
     public float length;
 
-    public Sphere ProjectedSphere;
+    /**
+     * Kept for preformance reasons - see the mathematics file
+     */
+    public @Point3d Vector3 ProjectedCenter;
 
     /*
      * You will want to see the attached math file in order to understand the
@@ -42,17 +45,34 @@ public class Cylinder extends SingleMaterialSurface implements Surface {
      */
     @Override
     public boolean Intersection(Ray r, IntersectionData intersect) {
-        IntersectionData temp = new IntersectionData();
+        float T1, T2;
         Ray projectedRay = Math3D.flattenRay(r, direction);
         Vector3 toStart;
         float len;
 
         float flattenedSize = Norm(Math3D.flattenVec(r.direction, direction));
 
-        if (!ProjectedSphere.Intersection(projectedRay, temp))
-            return false;
+        {
+            //squared radius, squared distance
+            float d_square, R_square, P3P2_length, P1P2_length;
+            Vector3 P1P0;
 
-        intersect.T = temp.T / flattenedSize;
+            P1P0 = sub(Math3D.flattenPt(this.start, this.direction), projectedRay.origin);
+            P1P2_length = InnerProduct(P1P0, projectedRay.direction);
+
+            if (P1P2_length < 0) return false;
+
+            d_square = InnerProduct(P1P0, P1P0) - P1P2_length * P1P2_length;
+            R_square = this.radius * this.radius;
+            if (d_square > R_square) return false;
+
+            P3P2_length = (float)Math.sqrt(R_square - d_square);
+
+            T1 = P1P2_length - P3P2_length;
+            T2 = P1P2_length + P3P2_length;
+        }
+
+        intersect.T = T1 / flattenedSize;
         intersect.point = add(r.origin, mul(intersect.T, r.direction));
         toStart = sub(intersect.point, start);
         len = InnerProduct(toStart, direction);
@@ -60,11 +80,7 @@ public class Cylinder extends SingleMaterialSurface implements Surface {
         /* See if the first intersection works: */
         if (len < 0 || len > length)
         {
-                /* Try the second intersection */
-            float d = Math3D.Point2RayDist(ProjectedSphere.center, projectedRay);
-            float P2P3_flat_square = (radius * radius - d * d);
-            float projDiff_square = 4 * P2P3_flat_square * (1 * 1 - flattenedSize * flattenedSize);
-                intersect.T += Math.sqrt(4 * P2P3_flat_square + projDiff_square);
+                intersect.T = T2 / flattenedSize;
                 intersect.point = add(r.origin, mul(intersect.T, r.direction));
                 toStart = sub(intersect.point, start);
                 len = InnerProduct(toStart, direction);
@@ -91,9 +107,6 @@ public class Cylinder extends SingleMaterialSurface implements Surface {
 
     @Override
     public void fillMissing() {
-        this.ProjectedSphere = new Sphere();
-        this.ProjectedSphere.center = sub(start, mul(InnerProduct(direction, start), direction));
-        this.ProjectedSphere.radius = radius;
-        this.ProjectedSphere.fillMissing();
+        this.ProjectedCenter = Math3D.flattenPt(start, direction);
     }
 }
