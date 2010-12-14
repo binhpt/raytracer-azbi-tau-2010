@@ -158,56 +158,71 @@ public class Render {
                         /* Get the part that we should work on */
                         ImagePart im = parts.get(part);
 
-
                         /* For each pixel */
                         for (int i = im.yStart; i <= im.yEnd; i++) {
                             for (int j = im.xStart; j <= im.xEnd; j++) {
-                                /* Create an array of samples */
-                                Color[][] samples = new Color[sampleCount][sampleCount];
 
-                                /* Find the location of the pixel */
-                                float y = ((float) i) / resultHeight;
-                                float x = ((float) j) / resultWidth;
+                                /* The default color for this pixel */
+                                color = Color.TRANSPARENT.getRGB();
 
-                                for (int a = 0; a < sampleCount; a++) {
-                                    for (int b = 0; b < sampleCount; b++) {
-                                        /* Create the ray to shoot */
-                                        r = camera.CreateRay(y + (a + (float)Math.random()) * sampleDistY, x + (b + (float)Math.random()) * sampleDistX);
-                                        /* Save the color resulted from shooting it */
-                                        samples[a][b] = ShootRay(r);
-                                    }
-                                }
+                                /* Do we preform supersampling? */
+                                if (sampleCount != 1) {
+                                    int hits = 0;
+                                    /* Create an array of samples */
+                                    Color[][] samples = new Color[sampleCount][sampleCount];
 
-                                float red = 0, green = 0, blue = 0;
-                                int hits = 0;
+                                    /* Find the location of the pixel */
+                                    float y = ((float) i) / resultHeight;
+                                    float x = ((float) j) / resultWidth;
 
-                                /* Compute the averege color from all the samples*/
-                                for (Color[] pixelRow : samples) {
-                                    for (Color pixel : pixelRow) {
-                                        if (pixel != null)
-                                        {
-                                            red += pixel.r;
-                                            green += pixel.g;
-                                            blue += pixel.b;
-                                            hits++;
+                                    for (int a = 0; a < sampleCount; a++) {
+                                        for (int b = 0; b < sampleCount; b++) {
+                                            /* Create the ray to shoot */
+                                            r = camera.CreateRay (y + (a + (float) Math.random()) * sampleDistY,
+                                                    x + (b + (float) Math.random()) * sampleDistX);
+                                            /* Save the color resulted from shooting it */
+                                            samples[a][b] = ShootRay(r);
                                         }
                                     }
-                                }
 
-                                /* Put the result inside image buffer for the
-                                 * current part
-                                 */
-                                if (hits != 0) {
+                                    float red = 0, green = 0, blue = 0;
+
+                                    /* Compute the averege color from all the samples*/
+                                    for (Color[] pixelRow : samples) {
+                                        for (Color pixel : pixelRow) {
+                                            if (pixel != null) {
+                                                red += pixel.r;
+                                                green += pixel.g;
+                                                blue += pixel.b;
+                                                hits++;
+                                            }
+                                        }
+                                    }
+
+                                    /* Store the result in the variable representing
+                                     * the color of this pixel
+                                     */
                                     color = new Color(red / samplesPerPixel,
                                             green / samplesPerPixel,
                                             blue / samplesPerPixel,
-                                            hits / (float)samplesPerPixel).getRGB();
-                                    im.setRGB(j - im.xStart, i - im.yStart, color);
+                                            hits / (float) samplesPerPixel).getRGB();
+
+                                } else { /* We don't do super sampling */
+                                    /* Find the location of the pixel */
+                                    float y = ((float) i) / resultHeight;
+                                    float x = ((float) j) / resultWidth;
+                                    r = camera.CreateRay(y, x);
+                                    Color pixel = ShootRay(r);
+                                    if (pixel != null) {
+                                        color = pixel.getRGB();
+                                    }
                                 }
+
+                                /* Put the color inside the image buffer */
+                                im.setRGB(j - im.xStart, i - im.yStart, color);
                             }
                         }
                     }
-
                 }
             });
 
