@@ -299,26 +299,17 @@ public class Render {
         if (shootAtSurfaces(surfaces, r, intersect)) {
 
             /*
-             * rough draft still, uses only LightDirected.
+             * rough draft still, uses only LightDirected and LightPoint
              */
             for (Light light : lights) {
                 //OPTIMIZE
                 dist = light.GetRay(intersect.point, lightray);
-                //Vector3 temp = new Vector3(-intersect.normal.x, -intersect.normal.y, -intersect.normal.z);
-                //if (Vector3.InnerProduct(lightray.direction, intersect.normal) < 0)
-//                    continue;
-                //lightray.origin = add(lightray.origin, mul(Float.MIN_VALUE, lightray.direction));
-                //float.maxvalue is only for LightDirected, change later
-                if (ShootLightAtSurfaces(surfaces, lightray, dist)) //if (lightIntersection.point.equals(closestIntersect.point))
+                if (ShootLightAtSurfaces(surfaces, lightray, dist))
                 {
-                    //just for testing, need to OPTIMIZE.. alot
                     tc = light.EffectFromLight(intersect.point); //I(L) in the presentation
 
                     //diffuse component: K(d) * NL * I(L)
                     lightray.direction = Normalize(lightray.direction);
-                    //lightray.direction = Normalize(new Vector3(-lightray.direction.x, -lightray.direction.y, -lightray.direction.z));
-                    //ambient = InnerProduct(intersect.normal, lightray.direction);
-                    //if (ambient < 0) ambient = 0;
                     intersect.normal = Normalize(intersect.normal);
                     diffuse = InnerProduct(intersect.normal, lightray.direction); //N*L
                     if (diffuse < 0) diffuse = 0;
@@ -326,9 +317,7 @@ public class Render {
                     //specular component: K(s) * (VR)^n *I(L)
                     H = Normalize(sub(r.direction, lightray.direction));
                     specular1 = InnerProduct(H, intersect.normal);
-                    //if (specular1 < 0) specular1 = 0;
                     specular2 = Math.pow(specular1, intersect.surface.getMtl_shininess());
-                    //specular2 = 0;
 
                     mtlDiffuse = intersect.surface.getMtl_diffuse();
                     mtlSpecular = intersect.surface.getMtl_specular();
