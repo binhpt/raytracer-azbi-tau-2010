@@ -132,10 +132,10 @@ public class Mesh extends SingleMaterialSurface implements ReflectionConstructed
         this.triangles = new Triangle[mesh.faces.length];
 
         BoundingBox temp = BoundingBox.create(mesh.vertices);
-        Vector3 center = mul(1/2, add (temp.p1, temp.p2));
+        @Point3d Vector3 center = mul(1/2, add (temp.p1, temp.p2));
 
         for (int i = 0; i < mesh.vertices.length; i++) {
-            mesh.vertices[i] = add(mul(scale,sub(mesh.vertices[i], center)), center);
+            mesh.vertices[i] = add(pos, add(mul(scale,sub(mesh.vertices[i], center)), center));
         }
         
         int[] face;

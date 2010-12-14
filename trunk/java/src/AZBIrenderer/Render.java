@@ -244,7 +244,9 @@ public class Render {
     }
 
     /**
-     * Shoot a ray at a list of surfaces, and return the closest intersect
+     * Shoot a ray at a list of surfaces, and return the closest intersect.
+     * THE DIRECTION (SIGN) OF THE RAY MATTERS! ONLY TAKE INTERSECTIONS WHICH
+     * ARE AT A POSITIVE T FROM THE ORIGIN OF THE RAY!
      */
     public static boolean shootAtSurfaces(Iterable<? extends Surface> surfaces, Ray r,
             IntersectionData closestIntersect) {
@@ -255,7 +257,8 @@ public class Render {
 
         for (Surface surf : surfaces) //if there is a collision, and its T is smaller, this is the new closest collision
         {
-            if (surf.Intersection(r, temp) && temp.T < closestIntersect.T) {
+            // If the intersection is when T is negative, then we doon't want it!
+            if (surf.Intersection(r, temp) && temp.T >= 0 && temp.T < closestIntersect.T) {
                 closestIntersect.copyFrom(temp);
                 intersect = true;
             }
