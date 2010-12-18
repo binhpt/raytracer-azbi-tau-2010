@@ -327,7 +327,6 @@ public class Render {
                     tc = light.EffectFromLight(intersect.point); //I(L) in the presentation
 
                     //diffuse component: K(d) * NL * I(L)
-                    lightray.direction = Normalize(lightray.direction);
                     intersect.normal = Normalize(intersect.normal);
                     diffuse = InnerProduct(intersect.normal, lightray.direction); //N*L
                     if (diffuse < 0) diffuse = 0;
@@ -344,6 +343,11 @@ public class Render {
                     color.b += tc.b * (mtlDiffuse.b * diffuse + specular2 * mtlSpecular.b);
 
                 }
+            }
+
+            if (intersect.surface.reflectence > 0)
+            {
+                
             }
 
             color.r += this.scene.ambient_light.r * intersect.surface.mtl_ambient.r;
