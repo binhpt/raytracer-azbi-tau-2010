@@ -50,5 +50,6 @@ public class Disc extends SingleMaterialSurface implements Surface {
     @Override
     public void fillMissing() {
         this.d = - InnerProduct(center, normal);
+        this.normal = Vector3.Normalize(normal);
     }
 }

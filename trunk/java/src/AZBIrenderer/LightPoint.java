@@ -11,7 +11,7 @@ public class LightPoint extends Light{
     public LightPoint()
     {
         super();
-        attenuation = new Vector3(0, 1, 0);
+        attenuation = new Vector3(1, 0, 0);
     }
 
     @Override
@@ -25,11 +25,8 @@ public class LightPoint extends Light{
     public float GetRay(@Point3d Vector3 point, Ray ray) {
         float t;
         ray.origin = point;
-        ray.direction = Vector3.sub(pos, point);
+        ray.direction = Vector3.Normalize(Vector3.sub(pos, point));
         t = Vector3.Norm(ray.direction);
-        ray.direction.x /= t;
-        ray.direction.y /= t;
-        ray.direction.z /= t;
 
         return t;
     }
