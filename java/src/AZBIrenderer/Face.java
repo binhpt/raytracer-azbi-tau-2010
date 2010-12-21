@@ -1,6 +1,8 @@
 
 package AZBIrenderer;
 
+import java.awt.image.BufferedImage;
+
 /**
  * A delegate class around SingleMaterialSurface for many objects which share a
  * single material - or in simple English, Faces.
@@ -17,7 +19,7 @@ public abstract class Face implements Surface {
     }
 
     @Override
-    public void setTexture(String texture) {
+    public void setTexture(BufferedImage texture) {
         surfaceMaterial.setTexture(texture);
     }
 
@@ -67,7 +69,7 @@ public abstract class Face implements Surface {
     }
 
     @Override
-    public String getTexture() {
+    public BufferedImage getTexture() {
         return surfaceMaterial.getTexture();
     }
 

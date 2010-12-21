@@ -1,5 +1,7 @@
 package AZBIrenderer;
 
+import java.awt.image.BufferedImage;
+
 /**
  * A class for representing scenes and their settings
  * @author Adam Zeira & Barak Itkin
@@ -16,7 +18,7 @@ public class Scene implements ReflectionConstructed {
     }
     
     public Color background_col;
-    public String background_tex;
+    public @FileTexture BufferedImage background_tex;
     public Color ambient_light;
     public int super_samp_width;
     public boolean use_acceleration;

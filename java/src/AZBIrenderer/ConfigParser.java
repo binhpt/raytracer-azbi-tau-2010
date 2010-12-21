@@ -1,7 +1,9 @@
 package AZBIrenderer;
 
 import AZBIrenderer.Vector3.Point3d;
+import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.StringReader;
 import java.lang.reflect.Field;
@@ -223,6 +225,20 @@ public class ConfigParser {
     }
 
     /**
+     * Parse a boolean property (provided as '0' or '1')
+     * @param line A string containing the boolean property
+     * @return The matching boolean
+     */
+    public BufferedImage GetTextureParam(String line) {
+        try {
+            return javax.imageio.ImageIO.read(FileHandling.forPath(line));
+        } catch (IOException ex) {
+            System.err.println("An error occured while reading the image " + line);
+            return null;
+        }
+    }
+
+    /**
      * Given an object name and attribute from the config file, create an
      * instance of it (as the name indicates, it's based on reflection for
      * doing this generically instead of writing specific code for each object)
@@ -295,6 +311,8 @@ public class ConfigParser {
                             f.set(obj, GetVectorParam(props.get(key)));
                     } else if (f.getType() == Color.class) {
                         f.set(obj, GetColorParam(props.get(key)));
+                    } else if (f.getType() == BufferedImage.class) {
+                        f.set(obj, GetTextureParam(props.get(key)));
                     } else if (f.getType() == Mesh.Shader.class) {
                         f.set(obj, GetShaderParam(props.get(key)));
                     } else if (f.getType() == String.class) {

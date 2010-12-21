@@ -100,14 +100,9 @@ public class Render {
         g.setColor(new java.awt.Color(scene.background_col.r, scene.background_col.g, scene.background_col.b));
         g.fillRect(0, 0, resultWidth, resultHeight);
         if (scene.background_tex != null) {
-            try {
-                AffineTransform scaleTrans = new AffineTransform();
-                BufferedImage bg_tex = ImageIO.read(new File(scene.background_tex));
-                scaleTrans.scale(resultWidth / (double) bg_tex.getWidth(), resultHeight / (double) bg_tex.getHeight());
-                g.drawImage(bg_tex, scaleTrans, null);
-            } catch (IOException ex) {
-                System.err.println("An error occured while reading the background image " + scene.background_tex);
-            }
+            AffineTransform scaleTrans = new AffineTransform();
+            scaleTrans.scale(resultWidth / (double) scene.background_tex.getWidth(), resultHeight / (double) scene.background_tex.getHeight());
+            g.drawImage(scene.background_tex, scaleTrans, null);
         }
 
         /* Initialize some fields in the camera. Note that some values seem
