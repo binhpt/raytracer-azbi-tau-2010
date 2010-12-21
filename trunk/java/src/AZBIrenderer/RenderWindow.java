@@ -229,6 +229,7 @@ public class RenderWindow extends javax.swing.JFrame {
         try {
             FileChooser.showOpenDialog(this);
             File f = FileChooser.getSelectedFile();
+            FileHandling.setFile(f);
             if (f == null || !f.exists()) {
                 return;
             }

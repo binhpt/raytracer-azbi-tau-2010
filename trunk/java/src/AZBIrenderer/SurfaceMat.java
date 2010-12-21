@@ -1,6 +1,8 @@
 
 package AZBIrenderer;
 
+import java.awt.image.BufferedImage;
+
 /**
  * An interface for getting the "material" of a geometric surface
  * @author Barak Itkin
@@ -25,7 +27,7 @@ public interface SurfaceMat {
 
     int getReflectence();
 
-    String getTexture();
+    BufferedImage getTexture();
 
     void setCheckers_diffuse1(Color checkers_diffuse1);
 
@@ -45,6 +47,6 @@ public interface SurfaceMat {
 
     void setReflectence(int reflectence);
 
-    void setTexture(String texture);
+    void setTexture(BufferedImage texture);
 
 }

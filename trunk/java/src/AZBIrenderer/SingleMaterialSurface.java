@@ -1,5 +1,7 @@
 package AZBIrenderer;
 
+import java.awt.image.BufferedImage;
+
 /**
  * A base class for objects which have their own material.
  *
@@ -15,7 +17,7 @@ package AZBIrenderer;
  */
 public class SingleMaterialSurface implements ReflectionConstructed, SurfaceMat {
 
-    private SingleMaterialSurface(String mtl_type, Color mtl_diffuse, Color mtl_specular, Color mtl_ambient, int mtl_shininess, float checkers_size, Color checkers_diffuse1, Color checkers_diffuse2, String texture, int reflectence) {
+    private SingleMaterialSurface(String mtl_type, Color mtl_diffuse, Color mtl_specular, Color mtl_ambient, int mtl_shininess, float checkers_size, Color checkers_diffuse1, Color checkers_diffuse2, BufferedImage texture, int reflectence) {
         this.mtl_type = mtl_type;
         this.mtl_diffuse = mtl_diffuse;
         this.mtl_specular = mtl_specular;
@@ -55,7 +57,7 @@ public class SingleMaterialSurface implements ReflectionConstructed, SurfaceMat 
     public float checkers_size;
     public Color checkers_diffuse1;
     public Color checkers_diffuse2;
-    public String texture;
+    public @FileTexture BufferedImage texture;
     public int reflectence;
 
     /**
@@ -135,11 +137,11 @@ public class SingleMaterialSurface implements ReflectionConstructed, SurfaceMat 
         this.reflectence = reflectence;
     }
 
-    public String getTexture() {
+    public BufferedImage getTexture() {
         return texture;
     }
 
-    public void setTexture(String texture) {
+    public void setTexture(BufferedImage texture) {
         this.texture = texture;
     }
 }
