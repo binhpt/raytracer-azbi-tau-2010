@@ -25,7 +25,7 @@ public interface SurfaceMat {
 
     String getMtl_type();
 
-    int getReflectence();
+    float getReflectance();
 
     BufferedImage getTexture();
 
@@ -45,7 +45,7 @@ public interface SurfaceMat {
 
     void setMtl_type(String mtl_type);
 
-    void setReflectence(int reflectence);
+    void setReflectance(float reflectance);
 
     void setTexture(BufferedImage texture);
 

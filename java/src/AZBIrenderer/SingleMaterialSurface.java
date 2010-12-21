@@ -17,7 +17,7 @@ import java.awt.image.BufferedImage;
  */
 public class SingleMaterialSurface implements ReflectionConstructed, SurfaceMat {
 
-    private SingleMaterialSurface(String mtl_type, Color mtl_diffuse, Color mtl_specular, Color mtl_ambient, int mtl_shininess, float checkers_size, Color checkers_diffuse1, Color checkers_diffuse2, BufferedImage texture, int reflectence) {
+    private SingleMaterialSurface(String mtl_type, Color mtl_diffuse, Color mtl_specular, Color mtl_ambient, int mtl_shininess, float checkers_size, Color checkers_diffuse1, Color checkers_diffuse2, BufferedImage texture, float reflectance) {
         this.mtl_type = mtl_type;
         this.mtl_diffuse = mtl_diffuse;
         this.mtl_specular = mtl_specular;
@@ -27,13 +27,13 @@ public class SingleMaterialSurface implements ReflectionConstructed, SurfaceMat 
         this.checkers_diffuse1 = checkers_diffuse1;
         this.checkers_diffuse2 = checkers_diffuse2;
         this.texture = texture;
-        this.reflectence = reflectence;
+        this.reflectance = reflectance;
     }
 
     public SingleMaterialSurface makeCopyOfMaterial() {
         return new SingleMaterialSurface(mtl_type, mtl_diffuse, mtl_specular,
                 mtl_ambient, mtl_shininess, checkers_size, checkers_diffuse1,
-                checkers_diffuse2, texture, reflectence);
+                checkers_diffuse2, texture, reflectance);
     }
 
     public SingleMaterialSurface() {
@@ -46,7 +46,7 @@ public class SingleMaterialSurface implements ReflectionConstructed, SurfaceMat 
         this.checkers_diffuse1 = new Color(1, 1, 1, 1);
         this.checkers_diffuse2 = new Color(0.2f, 0.2f, 0.2f, 1);
         this.texture = null;
-        this.reflectence = 0;
+        this.reflectance = 0;
     }
 
     public String mtl_type;
@@ -58,7 +58,7 @@ public class SingleMaterialSurface implements ReflectionConstructed, SurfaceMat 
     public Color checkers_diffuse1;
     public Color checkers_diffuse2;
     public @FileTexture BufferedImage texture;
-    public int reflectence;
+    public float reflectance;
 
     /**
      * Override this if necessary
@@ -129,12 +129,12 @@ public class SingleMaterialSurface implements ReflectionConstructed, SurfaceMat 
         this.mtl_type = mtl_type;
     }
 
-    public int getReflectence() {
-        return reflectence;
+    public float getReflectance() {
+        return reflectance;
     }
 
-    public void setReflectence(int reflectence) {
-        this.reflectence = reflectence;
+    public void setReflectance(float reflectance) {
+        this.reflectance = reflectance;
     }
 
     public BufferedImage getTexture() {
