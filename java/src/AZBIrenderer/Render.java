@@ -176,7 +176,7 @@ public class Render {
                                             r = camera.CreateRay (y + (a + (float) Math.random()) * sampleDistY,
                                                     x + (b + (float) Math.random()) * sampleDistX);
                                             /* Save the color resulted from shooting it */
-                                            samples[a][b] = ShootRay(r);
+                                            samples[a][b] = ShootRay(r, scene.max_ray_bounce);
                                         }
                                     }
 
@@ -207,7 +207,7 @@ public class Render {
                                     float y = ((float) i) / resultHeight;
                                     float x = ((float) j) / resultWidth;
                                     r = camera.CreateRay(y, x);
-                                    Color pixel = ShootRay(r);
+                                    Color pixel = ShootRay(r, scene.max_ray_bounce);
                                     if (pixel != null) {
                                         color = pixel.getRGB();
                                     }
@@ -295,11 +295,8 @@ public class Render {
     /**
      * Shoot a ray and compute the color it produces
      */
-    public Color ShootRay(Ray r) {
+    public Color ShootRay(Ray r, int raybounces) {
         IntersectionData intersect = new IntersectionData();
-
-        IntersectionData lightIntersection = new IntersectionData();
-        lightIntersection.T = Float.MAX_VALUE;
         Ray lightray = new Ray();
 
         Color color = new Color(0, 0, 0, 1);
@@ -310,19 +307,18 @@ public class Render {
         float dist;
 
         if (shootAtSurfaces(surfaces, r, intersect)) {
-
+            //make sure it's all normalized, then remove this
+            intersect.normal = Normalize(intersect.normal);
             /*
              * rough draft still, uses only LightDirected and LightPoint
              */
             for (Light light : lights) {
-                //OPTIMIZE
                 dist = light.GetRay(intersect.point, lightray);
                 if (ShootLightAtSurfaces(surfaces, lightray, dist))
                 {
                     tc = light.EffectFromLight(intersect.point); //I(L) in the presentation
 
                     //diffuse component: K(d) * NL * I(L)
-                    intersect.normal = Normalize(intersect.normal);
                     diffuse = InnerProduct(intersect.normal, lightray.direction); //N*L
                     if (diffuse < 0) diffuse = 0;
 
@@ -331,21 +327,20 @@ public class Render {
                     specular1 = InnerProduct(H, intersect.normal);
                     specular2 = Math.pow(specular1, intersect.surface.getMtl_shininess());
 
-                    mtlDiffuse = intersect.surface.getMtl_diffuse();
+                    mtlDiffuse = intersect.surface.GetDiffuse(intersect.point);// getMtl_diffuse();
                     mtlSpecular = intersect.surface.getMtl_specular();
                     color.r += tc.r * (mtlDiffuse.r * diffuse + specular2 * mtlSpecular.r);
                     color.g += tc.g * (mtlDiffuse.g * diffuse + specular2 * mtlSpecular.g);
                     color.b += tc.b * (mtlDiffuse.b * diffuse + specular2 * mtlSpecular.b);
-
                 }
             }
 
-            if (intersect.surface.reflectance > 0)
+            if (raybounces > 0 && intersect.surface.reflectance > 0)
             {
-                float length = Math.abs(InnerProduct(intersect.normal, r.direction)) * 2;
-                Vector3 bounce = new Vector3(length * intersect.normal.x + r.direction.x, length * intersect.normal.y + r.direction.y, length * intersect.normal.z + r.direction.z);
+                float length = InnerProduct(intersect.normal, r.direction) * 2;
+                Vector3 bounce = Vector3.add(Vector3.mul(length, intersect.normal), r.direction);
                 Ray reflectray = new Ray(intersect.point, bounce);
-                Color reflectColor = ShootRay(reflectray);
+                Color reflectColor = ShootRay(reflectray, --raybounces);
                 if (reflectColor != null)
                 {
                     color.r += reflectColor.r * intersect.surface.reflectance;

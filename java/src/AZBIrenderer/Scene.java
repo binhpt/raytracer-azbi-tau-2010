@@ -15,6 +15,7 @@ public class Scene implements ReflectionConstructed {
         this.super_samp_width = 1;
         this.use_acceleration = false;
         this.mc_path_trace = false;
+        this.max_ray_bounce = 3;
     }
     
     public Color background_col;
@@ -25,6 +26,7 @@ public class Scene implements ReflectionConstructed {
     public boolean mc_path_trace;
     public int mc_path_trace_rec;
     public int mc_path_trace_num;
+    public int max_ray_bounce;
 
     public void fillMissing() { }
 }

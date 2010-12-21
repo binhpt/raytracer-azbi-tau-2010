@@ -105,6 +105,13 @@ public class Rectangle extends SingleMaterialSurface implements ReflectionConstr
 
             return true;
         }
+
+        public Color GetDiffuse(Vector3 point) {
+            if (this.surfaceMaterial.mtl_type.equals("flat"))
+                return this.surfaceMaterial.mtl_diffuse;
+
+            throw new UnsupportedOperationException("Not supported yet.");
+        }
     }
 
     /**

@@ -100,6 +100,10 @@ public class Mesh extends SingleMaterialSurface implements ReflectionConstructed
 
             return true;
         }
+
+        public Color GetDiffuse(Vector3 point) {
+            return this.surfaceMaterial.mtl_diffuse;
+        }
     }
 
     /**
