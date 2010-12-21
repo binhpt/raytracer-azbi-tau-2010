@@ -1,6 +1,6 @@
-
 package AZBIrenderer;
 
+import static AZBIrenderer.Vector3.*;
 /**
  * A base interface for geometric surfaces
  * @author Barak Itkin and Adam Zeira
@@ -20,5 +20,4 @@ public interface SurfaceGeometry {
      * @return Whether there is an intersection
      */
     boolean Intersection(final Ray r, IntersectionData intersect);
-
 }

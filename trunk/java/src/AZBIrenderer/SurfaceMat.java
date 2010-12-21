@@ -49,4 +49,5 @@ public interface SurfaceMat {
 
     void setTexture(BufferedImage texture);
 
+    public Color GetDiffuse(Vector3 point);
 }

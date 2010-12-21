@@ -10,5 +10,4 @@ package AZBIrenderer;
  * @author Barak Itkin
  */
 public interface Surface extends SurfaceMat, SurfaceGeometry {
-
 }

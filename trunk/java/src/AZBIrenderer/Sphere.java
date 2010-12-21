@@ -51,4 +51,24 @@ public class Sphere extends SingleMaterialSurface implements Surface {
 
     @Override
     public void fillMissing() { }
+
+    @Override
+    public Color GetDiffuse(Vector3 point)
+    {
+        if (this.mtl_type.equals("flat"))
+            return this.mtl_diffuse;
+
+        //initial draft
+        //checkers
+        //float threshold = 1 / this.checkers_size;
+        float theta = (float)Math.acos(point.z / this.radius);
+        float phi = (float)Math.atan(point.y / point.x);
+
+        int a = (int)Math.floor(theta / this.checkers_size) + (int)Math.floor(phi / this.checkers_size);
+
+        if (a % 2 == 0)
+            return new Color(0, 0, 0, 1);
+        else
+            return new Color(1, 1, 1, 1);
+    }
 }

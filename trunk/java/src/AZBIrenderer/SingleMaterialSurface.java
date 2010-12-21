@@ -144,4 +144,9 @@ public class SingleMaterialSurface implements ReflectionConstructed, SurfaceMat 
     public void setTexture(BufferedImage texture) {
         this.texture = texture;
     }
+
+    public Color GetDiffuse(Vector3 point)
+    {
+        return this.mtl_diffuse;
+    }
 }
