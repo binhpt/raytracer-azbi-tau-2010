@@ -268,7 +268,7 @@ public class Render {
         for (Surface surf : surfaces) //if there is a collision, and its T is smaller, this is the new closest collision
         {
             // If the intersection is when T is negative, then we doon't want it!
-            if (surf.Intersection(r, temp) && temp.T >= 0 && temp.T < closestIntersect.T) {
+            if (surf.Intersection(r, temp) && temp.T > 0.01f && temp.T < closestIntersect.T) {
                 closestIntersect.copyFrom(temp);
                 intersect = true;
             }
@@ -284,7 +284,7 @@ public class Render {
     public static boolean ShootLightAtSurfaces(List<? extends Surface> surfaces, Ray r, float maxT) {
         IntersectionData temp = new IntersectionData();
         for (Surface surf : surfaces) {
-            if (surf.Intersection(r, temp) && temp.T < maxT && temp.T > 0.001f)
+            if (surf.Intersection(r, temp) && temp.T < maxT && temp.T > 0.01f)
             {
                 return false;
             }
@@ -340,9 +340,18 @@ public class Render {
                 }
             }
 
-            if (intersect.surface.reflectence > 0)
+            if (intersect.surface.reflectance > 0)
             {
-                
+                float length = Math.abs(InnerProduct(intersect.normal, r.direction)) * 2;
+                Vector3 bounce = new Vector3(length * intersect.normal.x + r.direction.x, length * intersect.normal.y + r.direction.y, length * intersect.normal.z + r.direction.z);
+                Ray reflectray = new Ray(intersect.point, bounce);
+                Color reflectColor = ShootRay(reflectray);
+                if (reflectColor != null)
+                {
+                    color.r += reflectColor.r * intersect.surface.reflectance;
+                    color.g += reflectColor.g * intersect.surface.reflectance;
+                    color.b += reflectColor.b * intersect.surface.reflectance;
+                }
             }
 
             color.r += this.scene.ambient_light.r * intersect.surface.mtl_ambient.r;

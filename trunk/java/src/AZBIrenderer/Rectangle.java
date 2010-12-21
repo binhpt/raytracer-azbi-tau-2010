@@ -97,7 +97,7 @@ public class Rectangle extends SingleMaterialSurface implements ReflectionConstr
                 return false;
 
             //pass the normal that the camera sees
-            if (InnerProduct(normal, r.direction) < 0)
+            if (InnerProduct(normal, r.direction) <= 0)
                 intersect.normal = normal;
             else
                 intersect.normal = new Vector3(-normal.x, -normal.y, -normal.z);
