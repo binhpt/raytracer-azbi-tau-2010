@@ -338,16 +338,15 @@ public class Render {
 
             if (raybounces > 0 && intersect.surface.reflectance > 0)
             {
-                float length = InnerProduct(intersect.normal, r.direction) * 2;
+                float length = InnerProduct(intersect.normal, r.direction) * -2;
                 Vector3 bounce = Vector3.add(Vector3.mul(length, intersect.normal), r.direction);
                 Ray reflectray = new Ray(intersect.point, bounce);
                 Color reflectColor = ShootRay(reflectray, --raybounces);
-                if (reflectColor != null)
-                {
-                    color.r += reflectColor.r * intersect.surface.reflectance;
-                    color.g += reflectColor.g * intersect.surface.reflectance;
-                    color.b += reflectColor.b * intersect.surface.reflectance;
-                }
+                if (reflectColor == null)
+                    reflectColor = this.scene.background_col;
+                color.r += reflectColor.r * intersect.surface.reflectance;
+                color.g += reflectColor.g * intersect.surface.reflectance;
+                color.b += reflectColor.b * intersect.surface.reflectance;
             }
 
             color.r += this.scene.ambient_light.r * intersect.surface.mtl_ambient.r;
