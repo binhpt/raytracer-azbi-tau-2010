@@ -35,6 +35,11 @@ public class Cylinder extends SingleMaterialSurface implements Surface {
      */
     public @Point3d Vector3 ProjectedCenter;
 
+    /**
+     * The "zero" angle when calculating the texture coordinates
+     */
+    public Vector3 TextureX0, TextureY0;
+
     /*
      * You will want to see the attached math file in order to understand the
      * intersection calculation - since the method used here is a bit unusual
@@ -44,7 +49,7 @@ public class Cylinder extends SingleMaterialSurface implements Surface {
      * in range when the first isn't....
      */
     @Override
-    public boolean Intersection(Ray r, IntersectionData intersect) {
+    public boolean Intersection(Ray r, IntersectionData intersect, boolean doUV) {
         float T1, T2;
         Ray projectedRay = Math3D.flattenRay(r, direction);
         Vector3 toStart;
@@ -89,7 +94,16 @@ public class Cylinder extends SingleMaterialSurface implements Surface {
         }
         intersect.normal = Normalize(Math3D.flattenVec(toStart, direction));
         intersect.surface = this;
-        //intersect.col = Debug.getFromNormal(this, intersect.normal);
+
+        if (doUV)
+        {
+            intersect.u = len / this.length;
+            Vector3 d = Normalize(sub(intersect.point, this.start));
+            float y = InnerProduct(d, this.TextureY0);
+            float x = InnerProduct(d, this.TextureX0);
+            intersect.v = ((float) Math.atan2(y, x) + Math3D.PI) * Math3D.INV_PI2;
+        }
+
 
         return true;
     }
@@ -107,6 +121,18 @@ public class Cylinder extends SingleMaterialSurface implements Surface {
 
     @Override
     public void fillMissing() {
+        float temp;
         this.ProjectedCenter = Math3D.flattenPt(start, direction);
+        /* Some vector on the plane orthogonal to the cylinder's direction */
+        this.TextureX0 = CrossProduct(this.direction, Math3D.Zaxis);
+        temp = Norm(this.TextureX0);
+        /* If we picked something parallel to the direction in the cross-product
+         * try again
+         */
+        if (temp == 0)
+            this.TextureX0 = Normalize(CrossProduct(this.direction, Math3D.Xaxis));
+        else
+            this.TextureX0 = mul(1/temp, this.TextureX0);
+        this.TextureY0 = Normalize(CrossProduct(this.direction, this.TextureX0));
     }
 }

@@ -229,10 +229,10 @@ public class RenderWindow extends javax.swing.JFrame {
         try {
             FileChooser.showOpenDialog(this);
             File f = FileChooser.getSelectedFile();
-            FileHandling.setFile(f);
             if (f == null || !f.exists()) {
                 return;
             }
+            FileHandling.setFile(f);
             java.util.Scanner s = new Scanner(FileChooser.getSelectedFile());
             StringBuilder text = new StringBuilder();
             while (s.hasNextLine()) {

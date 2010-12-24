@@ -75,7 +75,7 @@ public class Rectangle extends SingleMaterialSurface implements ReflectionConstr
             return BoundingBox.create(p0, p1, p2, add(p1, v0));
         }
 
-        public boolean Intersection(Ray r, IntersectionData intersect) {
+        public boolean Intersection(Ray r, IntersectionData intersect, boolean doUV) {
             if (!Math3D.RayPlanintersection(r, normal, d, intersect))
                 return false;
 
@@ -89,11 +89,11 @@ public class Rectangle extends SingleMaterialSurface implements ReflectionConstr
 
             // Compute barycentric coordinates
             invDenom = 1 / (dot00 * dot11 - dot01 * dot01);
-            float u = (dot11 * dot02 - dot01 * dot12) * invDenom;
-            float v = (dot00 * dot12 - dot01 * dot02) * invDenom;
+            intersect.u = (dot11 * dot02 - dot01 * dot12) * invDenom;
+            intersect.v = (dot00 * dot12 - dot01 * dot02) * invDenom;
 
             // Check if point is in triangle
-            if (u < 0 || v < 0 || u > 1 || v > 1)
+            if (intersect.u < 0 || intersect.v < 0 || intersect.u > 1 || intersect.v > 1)
                 return false;
 
             //pass the normal that the camera sees

@@ -21,6 +21,14 @@ public class Color {
         this.a = a;
     }
 
+    public Color(int rgb)
+    {
+        this.a = ((rgb >> 24) & 0xff) / 255.0f;
+        this.r = ((rgb >> 16) & 0xff) / 255.0f;
+        this.g = ((rgb >> 8) & 0xff) / 255.0f;
+        this.b = (rgb & 0xff) / 255.0f;
+    }
+
     public void fillRGBA (float[] array)
     {
         array[0] = r;

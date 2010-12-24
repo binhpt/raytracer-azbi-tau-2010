@@ -74,7 +74,12 @@ public class Mesh extends SingleMaterialSurface implements ReflectionConstructed
             return BoundingBox.create(A, B, C);
         }
 
-        public boolean Intersection(Ray r, IntersectionData intersect) {
+        /* It's true that we are not supposed to implement u and v coordinates
+         * for triangular meshes, but since we already do it as a part of the
+         * calculation, then we might as well store them here for the future if
+         * for some reason we'll support UV unwrapping...
+         */
+        public boolean Intersection(Ray r, IntersectionData intersect, boolean doUV) {
             if (!Math3D.RayPlanintersection(r, normal, d, intersect)) {
                 return false;
             }
@@ -88,11 +93,11 @@ public class Mesh extends SingleMaterialSurface implements ReflectionConstructed
 
             // Compute barycentric coordinates
             invDenom = 1 / (dot00 * dot11 - dot01 * dot01);
-            float u = (dot11 * dot02 - dot01 * dot12) * invDenom;
-            float v = (dot00 * dot12 - dot01 * dot02) * invDenom;
+            intersect.u = (dot11 * dot02 - dot01 * dot12) * invDenom;
+            intersect.v = (dot00 * dot12 - dot01 * dot02) * invDenom;
 
             // Check if point is in triangle
-            if (u < 0 || v < 0 || u + v > 1)
+            if (intersect.u < 0 || intersect.v < 0 || intersect.u + intersect.v > 1)
                 return false;
 
             intersect.normal = normal;

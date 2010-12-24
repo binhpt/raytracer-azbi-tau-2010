@@ -19,5 +19,5 @@ public interface SurfaceGeometry {
      * @param intersect A location for storing the intersection data in
      * @return Whether there is an intersection
      */
-    boolean Intersection(final Ray r, IntersectionData intersect);
+    boolean Intersection(final Ray r, IntersectionData intersect, boolean doUV);
 }

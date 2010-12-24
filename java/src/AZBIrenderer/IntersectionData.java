@@ -26,7 +26,11 @@ public class IntersectionData {
      * the data of the surface hit
      */
     public SingleMaterialSurface surface;
-
+    /**
+     * The texture coordinates at the intersection
+     */
+    public float u, v;
+    
     public IntersectionData() {
     }
 
@@ -36,5 +40,7 @@ public class IntersectionData {
         this.normal = d.normal;
         this.surface = d.surface;
         this.T = d.T;
+        this.u = d.u;
+        this.v = d.v;
     }
 }
