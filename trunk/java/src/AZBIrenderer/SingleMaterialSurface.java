@@ -145,8 +145,26 @@ public class SingleMaterialSurface implements ReflectionConstructed, SurfaceMat 
         this.texture = texture;
     }
 
-    public Color GetDiffuse(Vector3 point)
-    {
-        return this.mtl_diffuse;
+    public Color GetDiffuse2(float u, float v) {
+        if (mtl_type.equalsIgnoreCase("flat"))
+            return mtl_diffuse;
+        else if (mtl_type.equals("checkers"))
+        {
+            int a = (int)Math.floor(u / this.checkers_size) + (int)Math.floor(v / this.checkers_size);
+
+            if (a % 2 == 0)
+                return this.checkers_diffuse1;
+            else
+                return this.checkers_diffuse2;
+
+        } else if (mtl_type.equalsIgnoreCase("texture")) {
+            // TODO - implement image supersampling!
+            return new Color(texture.getRGB((int)((texture.getWidth() - 1) * u), (int)((texture.getHeight() - 1) * v)));
+        } else {
+            System.err.println("Code should not be reached - bad material type...");
+            return mtl_diffuse;
+        }
     }
+
+
 }

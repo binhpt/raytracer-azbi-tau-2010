@@ -7,6 +7,15 @@ import static AZBIrenderer.Vector3.*;
  */
 public class Math3D {
 
+    public static final Vector3 Xaxis = new Vector3(1, 0, 0);
+    public static final Vector3 Yaxis = new Vector3(0, 1, 0);
+    public static final Vector3 Zaxis = new Vector3(0, 0, 1);
+
+    public static final float PI = (float) Math.PI;
+    public static final float PI2 = (float) (2 * Math.PI);
+    public static final float INV_PI = (float) (1 / Math.PI);
+    public static final float INV_PI2 = (float) (1 / (2 * Math.PI));
+
     /**
      * Compute the distance of a points from a ray
      */
@@ -75,4 +84,8 @@ public class Math3D {
         return true;
     }
 
+    public float normalizeValue(float val, float rangeStart, float rangeEnd)
+    {
+        return (val - rangeStart) / (rangeEnd - rangeStart);
+    }
 }
