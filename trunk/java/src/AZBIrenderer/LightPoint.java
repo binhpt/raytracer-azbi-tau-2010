@@ -25,8 +25,10 @@ public class LightPoint extends Light{
     public float GetRay(@Point3d Vector3 point, Ray ray) {
         float t;
         ray.origin = point;
-        ray.direction = Vector3.Normalize(Vector3.sub(pos, point));
+        
+        ray.direction = Vector3.sub(pos, point);
         t = Vector3.Norm(ray.direction);
+        ray.direction = Vector3.Normalize(ray.direction);
 
         return t;
     }

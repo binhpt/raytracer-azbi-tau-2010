@@ -285,7 +285,7 @@ public class Render {
     public static boolean ShootLightAtSurfaces(List<? extends Surface> surfaces, Ray r, float maxT) {
         IntersectionData temp = new IntersectionData();
         for (Surface surf : surfaces) {
-            if (surf.Intersection(r, temp, false) && temp.T < maxT && temp.T > 0.01f)
+            if (surf.Intersection(r, temp, false) && temp.T > 0.01f && temp.T < maxT)// && temp.T < maxT && temp.T > 0.01f
             {
                 return false;
             }
