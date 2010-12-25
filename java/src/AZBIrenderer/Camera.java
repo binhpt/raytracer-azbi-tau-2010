@@ -72,12 +72,12 @@ public class Camera implements ReflectionConstructed {
      */
     Ray CreateRay(float yratio, float xratio) {
         Ray r = new Ray();
-        r.origin = this.eye;
 
         Vector3 dest = new Vector3(bot_left);
         dest = add(dest, mul(xratio * screen_width, right_direction));
         dest = add(dest, mul((1 - yratio) * screen_height, up_direction));
 
+        r.origin = dest;
         r.direction = Normalize(sub(dest, this.eye));
         return r;
     }
