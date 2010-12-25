@@ -29,6 +29,13 @@ public class Color {
         this.b = (rgb & 0xff) / 255.0f;
     }
 
+    Color(float r, float g, float b) {
+        this.r = r;
+        this.g = g;
+        this.b = b;
+        this.a = 1;
+    }
+
     public void fillRGBA (float[] array)
     {
         array[0] = r;
