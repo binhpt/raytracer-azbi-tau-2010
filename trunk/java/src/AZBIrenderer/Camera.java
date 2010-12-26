@@ -77,7 +77,7 @@ public class Camera implements ReflectionConstructed {
         dest = add(dest, mul(xratio * screen_width, right_direction));
         dest = add(dest, mul((1 - yratio) * screen_height, up_direction));
 
-        r.origin = dest;
+        r.origin = eye;
         r.direction = Normalize(sub(dest, this.eye));
         return r;
     }
