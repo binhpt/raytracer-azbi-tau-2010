@@ -149,8 +149,8 @@ public class Mesh extends SingleMaterialSurface implements ReflectionConstructed
                 float xC = InnerProduct(tempC, this.v0_N), xB = InnerProduct(tempB, this.v0_N);
                 float xP = InnerProduct(v2, this.v0_N);
 
-                Vector3 lB = add(mul (yP / dot01, nB), mul(1- yP / dot00, nA));
-                Vector3 lC = add(mul (yP / dot00, nC), mul(1- yP / dot01, nA));
+                Vector3 lB = add(mul (yP / dot01, nB), mul(1- yP / dot01, nA));
+                Vector3 lC = add(mul (yP / dot00, nC), mul(1- yP / dot00, nA));
                 float Phi = (xP - xB) / (xC - xB);
                 intersect.normal = add(mul (Phi, lC), mul(1-Phi, lB));
             }
