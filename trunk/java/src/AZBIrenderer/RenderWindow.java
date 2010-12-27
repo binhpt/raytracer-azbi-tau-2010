@@ -13,7 +13,6 @@ import javax.swing.ImageIcon;
  * @author Barak Itkin
  */
 public class RenderWindow extends javax.swing.JFrame {
-
     /**
      * Contain a string for a config file part with objects that visualize the
      * X, Y and Z axises.
@@ -209,15 +208,21 @@ public class RenderWindow extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void RenderButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_RenderButtonActionPerformed
-        Render r = new Render((AxisCheckbox.isSelected() ? axises : "") + TextPane.getText());
-        long time = System.currentTimeMillis();
-        r.render(ImageScroll.getWidth(), ImageScroll.getHeight(), 4, 4, (Integer)ThreadCountSpin.getValue());
-        ImageView.setIcon(new ImageIcon(r.render));
-        ImageView.setText("");
-        time -= System.currentTimeMillis();
-        System.out.println("Rendering took " + -time + "ms");
-        renderResult = r.render;
+        ImageView.setIcon(null);
+        ImageView.setText("Rendering... Please wait(!)");
+        new Thread(new Runnable() {
 
+            public void run() {
+                Render r = new Render((AxisCheckbox.isSelected() ? axises : "") + TextPane.getText());
+                long time = System.currentTimeMillis();
+                r.render(ImageScroll.getWidth(), ImageScroll.getHeight(), 4, 4, (Integer)ThreadCountSpin.getValue());
+                ImageView.setText("");
+                ImageView.setIcon(new ImageIcon(r.render));
+                time -= System.currentTimeMillis();
+                System.out.println("Rendering took " + -time + "ms");
+                renderResult = r.render;
+            }
+        }).start();
     }//GEN-LAST:event_RenderButtonActionPerformed
 
     private void EditButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_EditButtonActionPerformed

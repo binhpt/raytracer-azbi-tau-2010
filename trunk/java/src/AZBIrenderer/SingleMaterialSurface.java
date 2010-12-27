@@ -42,7 +42,7 @@ public class SingleMaterialSurface implements ReflectionConstructed, SurfaceMat 
         this.mtl_specular = new Color(1, 1, 1, 1);
         this.mtl_ambient = new Color(0.1f, 0.1f, 0.1f, 1);
         this.mtl_shininess = 100;
-        this.checkers_size = 0.1f;
+        this.checkers_size = 0.1;
         this.checkers_diffuse1 = new Color(1, 1, 1, 1);
         this.checkers_diffuse2 = new Color(0.2f, 0.2f, 0.2f, 1);
         this.texture = null;

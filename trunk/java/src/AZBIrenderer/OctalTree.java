@@ -1,8 +1,6 @@
 package AZBIrenderer;
 
-import java.util.ArrayList;
 import static AZBIrenderer.Vector3.*;
-import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -40,12 +38,13 @@ public final class OctalTree {
         public BoxNode(Vector3 p1, Vector3 p2, int depth) {
             super(p1, p2);
             this.depth = depth;
+            doSubdivision();
         }
 
         private void doSubdivision() {
             if (!isLeaf()) {
                 this.children = new LinkedList<BoxNode>();
-                @Point3d Vector3 center = mul(0.5f, add(this.max, this.min));
+                @Point3d Vector3 center = mul(0.5, add(this.max, this.min));
                 double[][] c = {{max.x, max.y, max.z}, {min.x, min.y, min.z}};
                 for (int i = 0; i < 8; i++) {
                     BoxNode child = new BoxNode(center, new Vector3(c[i / 4 % 2][0], c[i / 2 % 2][1], c[i % 2][2]), depth - 1);
@@ -135,7 +134,7 @@ public final class OctalTree {
         }
 
         public void getObjects(Ray r, List<Surface> dest) {
-            if (OctalTree.this.root != this && !this.intersects(r))
+            if (!this.intersects(r))
                 return;
 
 
@@ -147,13 +146,6 @@ public final class OctalTree {
                 }
             }
         }
-
-//        @Override
-//        public boolean intersects(Ray r) {
-//            return Render.ShootLightAtSurfaces(faces, r, Float.MAX_VALUE, null);
-//        }
-
-
     }
 
     public OctalTree(List<Surface> geometry, int depth) {
@@ -169,21 +161,22 @@ public final class OctalTree {
             this.root.addObject(boxes[i++], surf);
         }
         this.root.optimize();
-        this.printRecursive(root, "");
     }
 
-    public void getObjects(Ray r, List<Surface> dest) {
-        root.getObjects(r, dest);
+    public List<Surface> getObjects(Ray r) {
+        List<Surface> dest = new LinkedList<Surface>();
+        for (BoxNode boxNode : root.children) {
+            boxNode.getObjects(r, dest);
+        }
+        return dest;
     }
 
-    public void printRecursive(BoxNode b, String indent) {
-        if (b == null) return;
+    public static void print(String indent, BoxNode b) {
         System.out.println(indent + b);
-        if (!b.isLeaf())
+        if (b.children != null)
             for (BoxNode child : b.children) {
-                printRecursive(child, indent+"  ");
+                print(indent + "  ", child);
             }
     }
-
 
 }

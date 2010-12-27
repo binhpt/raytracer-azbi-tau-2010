@@ -16,8 +16,8 @@ public class Math3D {
     public static final double INV_PI = (double) (1 / Math.PI);
     public static final double INV_PI2 = (double) (1 / (2 * Math.PI));
 
-    public static final float GEOM_EPSILON = 0.03f;
-    public static final float GEOM_MINUS_EPSILON = -GEOM_EPSILON;
+    public static final double GEOM_EPSILON = 0.03;
+    public static final double GEOM_MINUS_EPSILON = -GEOM_EPSILON;
 
     public static final Vector3 GEOM_EPSILON_VEC = new Vector3(GEOM_EPSILON,GEOM_EPSILON,GEOM_EPSILON);
 

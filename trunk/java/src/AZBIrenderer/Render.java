@@ -1,8 +1,5 @@
 package AZBIrenderer;
 
-import java.io.File;
-import java.io.IOException;
-import javax.imageio.ImageIO;
 import java.awt.Graphics2D;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
@@ -48,6 +45,7 @@ public class Render {
      * A list of all the geometric surfaces which should be rendered
      */
     public List<Surface> surfaces;
+    public OctalTree octree;
     /**
      * A list of all the lights
      */
@@ -93,6 +91,13 @@ public class Render {
         ConfigParser parser = new ConfigParser(this);
         parser.Parse(config);
 
+        if (scene.use_acceleration && surfaces.size() > 64)
+        {
+            System.out.println("Building Octree");
+            int depth = (int) (Math.log(surfaces.size()) / Math.log(64));
+            octree = new OctalTree(surfaces, depth);
+        }
+
         /* Create the result image */
         render = new BufferedImage(resultWidth, resultHeight, BufferedImage.TYPE_INT_ARGB);
         /* Fill it with a background color or a specified background image */
@@ -128,6 +133,7 @@ public class Render {
             }
         }
 
+        System.out.println("Start Rendering");
         /* Create the rendering threads */
         for (int i = 0; i < threads.length; i++) {
             threads[i] = new Thread(new Runnable() {
@@ -145,8 +151,8 @@ public class Render {
                     /* The distance between samples, in image relative (0-1)
                      * coordinates
                      */
-                    double sampleDistX = 1.0f / (sampleCount + 1) / resultWidth;
-                    double sampleDistY = 1.0f / (sampleCount + 1) / resultHeight;
+                    double sampleDistX = 1.0 / (sampleCount + 1) / resultWidth;
+                    double sampleDistY = 1.0 / (sampleCount + 1) / resultHeight;
 
                     /* Check that there are still some unrendered parts */
                     while ((part = partsDone.getAndIncrement()) < xParts * yParts) {
@@ -217,7 +223,9 @@ public class Render {
                                 im.setRGB(j - im.xStart, i - im.yStart, color);
                             }
                         }
+                    System.out.println("Finished part " + part + "/" + (xParts * yParts));
                     }
+                    System.out.println("Thread finished");
                 }
             });
 
@@ -236,6 +244,7 @@ public class Render {
             }
         }
 
+        System.out.println("Composing the final image");
         /* Create an image into which we accumulate the different parts of the
          * rendered image
          */
@@ -258,18 +267,18 @@ public class Render {
      * THE DIRECTION (SIGN) OF THE RAY MATTERS! ONLY TAKE INTERSECTIONS WHICH
      * ARE AT A POSITIVE T FROM THE ORIGIN OF THE RAY!
      */
-    public static boolean shootAtSurfaces(Iterable<? extends Surface> surfaces, Ray r,
-            IntersectionData closestIntersect) {
+    public boolean shootAtSurfaces(Ray r, IntersectionData closestIntersect) {
         boolean intersect = false;
         IntersectionData temp = new IntersectionData();
+        List<Surface> Rsurfaces = octree == null ? this.surfaces : octree.getObjects(r);
 
         closestIntersect.T = Double.MAX_VALUE;
 
-        for (Surface surf : surfaces) //if there is a collision, and its T is smaller, this is the new closest collision
+        for (Surface surf : Rsurfaces) //if there is a collision, and its T is smaller, this is the new closest collision
         {
             // If the intersection is when T is negative, then we doon't want it!
             // TODO: Make the comparision with the string less ugly!
-            if (surf.Intersection(r, temp, !surf.getMtl_type().equals("flat")) && temp.T > 0.001f && temp.T < closestIntersect.T) {
+            if (surf.Intersection(r, temp, !surf.getMtl_type().equals("flat")) && temp.T > 0.001 && temp.T < closestIntersect.T) {
                 closestIntersect.copyFrom(temp);
                 intersect = true;
             }
@@ -282,10 +291,11 @@ public class Render {
      * similar to shootAtSurfaces, but more efficient because it does less,
      * it just checks if there is an intersection or not
      */
-    public static boolean ShootLightAtSurfaces(List<? extends Surface> surfaces, Ray r, double maxT) {
+    public boolean ShootLightAtSurfaces(Ray r, double maxT) {
         IntersectionData temp = new IntersectionData();
-        for (Surface surf : surfaces) {
-            if (surf.Intersection(r, temp, false) && temp.T > 0.001f && temp.T < maxT)
+        List<Surface> Rsurfaces = octree == null ? this.surfaces : octree.getObjects(r);
+        for (Surface surf : Rsurfaces) {
+            if (surf.Intersection(r, temp, false) && temp.T > 0.001 && temp.T < maxT)
             {
                 return false;
             }
@@ -307,7 +317,7 @@ public class Render {
         Vector3 H;
         double dist;
 
-        if (shootAtSurfaces(surfaces, r, intersect)) {
+        if (shootAtSurfaces(r, intersect)) {
 
             mtlDiffuse = intersect.surface.GetDiffuse2(intersect.u, intersect.v);// getMtl_diffuse();
             mtlSpecular = intersect.surface.getMtl_specular();
@@ -319,7 +329,7 @@ public class Render {
              */
             for (Light light : lights) {
                 dist = light.GetRay(intersect.point, lightray);
-                if (ShootLightAtSurfaces(surfaces, lightray, dist))
+                if (ShootLightAtSurfaces(lightray, dist))
                 {
                     tc = light.EffectFromLight(intersect.point); //I(L) in the presentation
 
