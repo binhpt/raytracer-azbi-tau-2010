@@ -16,7 +16,7 @@ import java.util.Iterator;
  *
  * @author Adam Zeira & Barak Itkin
  */
-public class Vector3 implements Iterable<Float> {
+public class Vector3 implements Iterable<Double> {
 
     /**
      * An annotation for Vector3 fields which specifies that they are points and
@@ -28,13 +28,13 @@ public class Vector3 implements Iterable<Float> {
     /**
      * The coordinates of the vector
      */
-    public float x, y, z;
+    public double x, y, z;
 
     /**
      * An array based constructor for a 3d vectore
      * @param c an array holding {x, y, z} of the vector
      */
-    public Vector3 (float c[])
+    public Vector3 (double c[])
     {
         this.x = c[0];
         this.y = c[1];
@@ -47,7 +47,7 @@ public class Vector3 implements Iterable<Float> {
      * @param y the vectors y coordinate
      * @param z the vectors z coordinate
      */
-    public Vector3 (float x, float y, float z) {
+    public Vector3 (double x, double y, double z) {
         this.x = x;
         this.y = y;
         this.z = z;
@@ -76,8 +76,8 @@ public class Vector3 implements Iterable<Float> {
      * Make vectors iterable, exactly like lists and arrays
      * @return An iterator for this vector
      */
-    public Iterator<Float> iterator() {
-        return new Iterator<Float>() {
+    public Iterator<Double> iterator() {
+        return new Iterator<Double>() {
 
             int count = -1;
 
@@ -85,7 +85,7 @@ public class Vector3 implements Iterable<Float> {
                 return count < 2;
             }
 
-            public Float next() {
+            public Double next() {
                 switch (++count)
                 {
                     case 0:
@@ -124,7 +124,7 @@ public class Vector3 implements Iterable<Float> {
      * Vector Scalar addition
      * @return a new vector representing v1 + f*(1, 1, 1)
      */
-    public static Vector3 add (Vector3 v1, float f)
+    public static Vector3 add (Vector3 v1, double f)
     {
         return new Vector3 (
                 v1.x + f,
@@ -150,7 +150,7 @@ public class Vector3 implements Iterable<Float> {
      * Vector Scalar subtraction
      * @return a new vector representing v1 - f*(1, 1, 1)
      */
-    public static Vector3 sub (Vector3 v1, float f)
+    public static Vector3 sub (Vector3 v1, double f)
     {
         return new Vector3 (
                 v1.x - f,
@@ -163,7 +163,7 @@ public class Vector3 implements Iterable<Float> {
      * Vector Scalar multiplication
      * @return a new vector representing f * v1
      */
-    public static Vector3 mul (float f, Vector3 v1)
+    public static Vector3 mul (double f, Vector3 v1)
     {
         return new Vector3 (
                 v1.x * f,
@@ -179,7 +179,7 @@ public class Vector3 implements Iterable<Float> {
      * </pre>
      * @return &lt;v1, v2&gt;
      */
-    public static float InnerProduct(Vector3 v1, Vector3 v2)
+    public static double InnerProduct(Vector3 v1, Vector3 v2)
     {
         return  v1.x * v2.x +
                 v1.y * v2.y +
@@ -212,7 +212,7 @@ public class Vector3 implements Iterable<Float> {
     public static Vector3 Normalize(Vector3 v)
     {
         return mul (
-                (float)(1 / Math.sqrt(InnerProduct(v, v))),
+                (double)(1 / Math.sqrt(InnerProduct(v, v))),
                 v
                 );
     }
@@ -222,9 +222,9 @@ public class Vector3 implements Iterable<Float> {
      * @param v The vector to computer its length
      * @return the vectors length
      */
-    public static float Norm(Vector3 v)
+    public static double Norm(Vector3 v)
     {
-        return (float) Math.sqrt(InnerProduct(v, v));
+        return (double) Math.sqrt(InnerProduct(v, v));
     }
 
     /**

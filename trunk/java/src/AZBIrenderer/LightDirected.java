@@ -15,7 +15,7 @@ public class LightDirected extends Light{
     }
 
     //OPTIMIZE
-    public float GetRay(@Point3d Vector3 point, Ray ray)
+    public double GetRay(@Point3d Vector3 point, Ray ray)
     {
         ray.origin = point;
         ray.direction = reverseDirection;

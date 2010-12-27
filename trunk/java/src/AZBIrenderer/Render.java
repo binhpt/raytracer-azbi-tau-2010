@@ -109,7 +109,7 @@ public class Render {
          * to be switched/inverted - this is because of the right hand
          * coordinate system. See the Camera class for more details
          */
-        camera.screen_height = camera.screen_width * ((float) resultHeight / resultWidth);
+        camera.screen_height = camera.screen_width * ((double) resultHeight / resultWidth);
 
         camera.bot_left = add(camera.eye, mul(camera.screen_dist, camera.direction));
         camera.bot_left = sub(camera.bot_left, mul(camera.screen_width / 2, camera.right_direction));
@@ -145,8 +145,8 @@ public class Render {
                     /* The distance between samples, in image relative (0-1)
                      * coordinates
                      */
-                    float sampleDistX = 1.0f / (sampleCount + 1) / resultWidth;
-                    float sampleDistY = 1.0f / (sampleCount + 1) / resultHeight;
+                    double sampleDistX = 1.0f / (sampleCount + 1) / resultWidth;
+                    double sampleDistY = 1.0f / (sampleCount + 1) / resultHeight;
 
                     /* Check that there are still some unrendered parts */
                     while ((part = partsDone.getAndIncrement()) < xParts * yParts) {
@@ -167,14 +167,14 @@ public class Render {
                                     Color[][] samples = new Color[sampleCount][sampleCount];
 
                                     /* Find the location of the pixel */
-                                    float y = ((float) i) / resultHeight;
-                                    float x = ((float) j) / resultWidth;
+                                    double y = ((double) i) / resultHeight;
+                                    double x = ((double) j) / resultWidth;
 
                                     for (int a = 0; a < sampleCount; a++) {
                                         for (int b = 0; b < sampleCount; b++) {
                                             /* Create the ray to shoot */
-                                            r = camera.CreateRay (y + (a + (float) Math.random()) * sampleDistY,
-                                                    x + (b + (float) Math.random()) * sampleDistX);
+                                            r = camera.CreateRay (y + (a + (double) Math.random()) * sampleDistY,
+                                                    x + (b + (double) Math.random()) * sampleDistX);
                                             /* Save the color resulted from shooting it */
                                             samples[a][b] = ShootRay(r, scene.max_ray_bounce);
                                         }
@@ -204,8 +204,8 @@ public class Render {
 
                                 } else { /* We don't do super sampling */
                                     /* Find the location of the pixel */
-                                    float y = ((float) i) / resultHeight;
-                                    float x = ((float) j) / resultWidth;
+                                    double y = ((double) i) / resultHeight;
+                                    double x = ((double) j) / resultWidth;
                                     r = camera.CreateRay(y, x);
                                     Color pixel = ShootRay(r, scene.max_ray_bounce);
                                     if (pixel != null) {
@@ -263,7 +263,7 @@ public class Render {
         boolean intersect = false;
         IntersectionData temp = new IntersectionData();
 
-        closestIntersect.T = Float.MAX_VALUE;
+        closestIntersect.T = Double.MAX_VALUE;
 
         for (Surface surf : surfaces) //if there is a collision, and its T is smaller, this is the new closest collision
         {
@@ -282,7 +282,7 @@ public class Render {
      * similar to shootAtSurfaces, but more efficient because it does less,
      * it just checks if there is an intersection or not
      */
-    public static boolean ShootLightAtSurfaces(List<? extends Surface> surfaces, Ray r, float maxT) {
+    public static boolean ShootLightAtSurfaces(List<? extends Surface> surfaces, Ray r, double maxT) {
         IntersectionData temp = new IntersectionData();
         for (Surface surf : surfaces) {
             if (surf.Intersection(r, temp, false) && temp.T > 0.001f && temp.T < maxT)
@@ -305,7 +305,7 @@ public class Render {
 
         double diffuse, specular1, specular2;
         Vector3 H;
-        float dist;
+        double dist;
 
         if (shootAtSurfaces(surfaces, r, intersect)) {
 
@@ -340,7 +340,7 @@ public class Render {
 
             if (raybounces > 0 && intersect.surface.reflectance > 0)
             {
-                float length = InnerProduct(intersect.normal, r.direction) * -2;
+                double length = InnerProduct(intersect.normal, r.direction) * -2;
                 Vector3 bounce = Vector3.add(Vector3.mul(length, intersect.normal), r.direction);
                 Ray reflectray = new Ray(intersect.point, bounce);
                 Color reflectColor = ShootRay(reflectray, --raybounces);

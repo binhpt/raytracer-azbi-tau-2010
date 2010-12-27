@@ -11,7 +11,7 @@ public class Cylinder extends SingleMaterialSurface implements Surface {
     /**
      * Square root of 2, kept for preformance reasons
      */
-    public static final float SQRT2 = (float)Math.sqrt(2);
+    public static final double SQRT2 = (double)Math.sqrt(2);
 
     /**
      * The direction of the cylinder
@@ -24,11 +24,11 @@ public class Cylinder extends SingleMaterialSurface implements Surface {
     /**
      * The radius of the Cylinder
      */
-    public float radius;
+    public double radius;
     /**
      * The length of the Cylinder
      */
-    public float length;
+    public double length;
 
     /**
      * Kept for preformance reasons - see the mathematics file
@@ -50,16 +50,16 @@ public class Cylinder extends SingleMaterialSurface implements Surface {
      */
     @Override
     public boolean Intersection(Ray r, IntersectionData intersect, boolean doUV) {
-        float T1, T2;
+        double T1, T2;
         Ray projectedRay = Math3D.flattenRay(r, direction);
         Vector3 toStart;
-        float len;
+        double len;
 
-        float flattenedSize = Norm(Math3D.flattenVec(r.direction, direction));
+        double flattenedSize = Norm(Math3D.flattenVec(r.direction, direction));
 
         {
             //squared radius, squared distance
-            float d_square, R_square, P3P2_length, P1P2_length;
+            double d_square, R_square, P3P2_length, P1P2_length;
             Vector3 P1P0;
 
             P1P0 = sub(Math3D.flattenPt(this.start, this.direction), projectedRay.origin);
@@ -71,7 +71,7 @@ public class Cylinder extends SingleMaterialSurface implements Surface {
             R_square = this.radius * this.radius;
             if (d_square > R_square) return false;
 
-            P3P2_length = (float)Math.sqrt(R_square - d_square);
+            P3P2_length = (double)Math.sqrt(R_square - d_square);
 
             T1 = P1P2_length - P3P2_length;
             T2 = P1P2_length + P3P2_length;
@@ -99,9 +99,9 @@ public class Cylinder extends SingleMaterialSurface implements Surface {
         {
             intersect.u = len / this.length;
             Vector3 d = Normalize(sub(intersect.point, this.start));
-            float y = InnerProduct(d, this.TextureY0);
-            float x = InnerProduct(d, this.TextureX0);
-            intersect.v = ((float) Math.atan2(y, x) + Math3D.PI) * Math3D.INV_PI2;
+            double y = InnerProduct(d, this.TextureY0);
+            double x = InnerProduct(d, this.TextureX0);
+            intersect.v = ((double) Math.atan2(y, x) + Math3D.PI) * Math3D.INV_PI2;
         }
 
 
@@ -121,7 +121,7 @@ public class Cylinder extends SingleMaterialSurface implements Surface {
 
     @Override
     public void fillMissing() {
-        float temp;
+        double temp;
         this.ProjectedCenter = Math3D.flattenPt(start, direction);
         /* Some vector on the plane orthogonal to the cylinder's direction */
         this.TextureX0 = CrossProduct(this.direction, Math3D.Zaxis);

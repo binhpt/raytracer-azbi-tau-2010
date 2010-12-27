@@ -30,10 +30,10 @@ public class MeshParser {
     public static final int longestFormatName = 3;
 
     /**
-     * Read a list of space seperated floats from an input line, while skipping
+     * Read a list of space seperated doubles from an input line, while skipping
      * a given number of "words" (A "word" is any sequence of non-space characters)
      */
-    public static void readLine(String line, float[] dest, int skipCount) {
+    public static void readLine(String line, double[] dest, int skipCount) {
         String[] nums = line.replaceAll("\\s+", " ").trim().split(" ");
         for (int i = skipCount, j = 0; i < nums.length; i++, j++) {
             dest[j] = Float.parseFloat(nums[i]);
@@ -61,7 +61,7 @@ public class MeshParser {
      *     \ 3 vm1 vm2 vm3
      */
     public static RawMesh parseOFF(FileInputStream in) throws ParsingException {
-        float[] input = new float[3];
+        double[] input = new double[3];
         int[] inputW = new int[3];
         int n, m;
         RawMesh mesh;
@@ -122,7 +122,7 @@ public class MeshParser {
      *     \ 3 vm1 vm2 vm3
      */
     public static RawMesh parsePLY(FileInputStream in) throws ParsingException {
-        float[] input = new float[3];
+        double[] input = new double[3];
         int[] inputW = new int[3];
         int n, m;
         RawMesh mesh;

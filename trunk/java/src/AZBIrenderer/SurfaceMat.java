@@ -49,5 +49,5 @@ public interface SurfaceMat {
 
     void setTexture(BufferedImage texture);
 
-    public Color GetDiffuse2(float u, float v);
+    public Color GetDiffuse2(double u, double v);
 }

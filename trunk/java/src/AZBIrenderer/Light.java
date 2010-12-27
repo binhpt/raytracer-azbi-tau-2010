@@ -27,5 +27,5 @@ public abstract class Light implements ReflectionConstructed {
      * @param ray The ray to fill, with direction normalized
      * @return The multiplier of the vector required to reach the light
      */
-    public abstract float GetRay(@Point3d Vector3 point, Ray ray);
+    public abstract double GetRay(@Point3d Vector3 point, Ray ray);
 }

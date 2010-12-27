@@ -58,9 +58,9 @@ public class Mesh extends SingleMaterialSurface implements ReflectionConstructed
          * a Y axis, and v0_N as a X axis
          */
         public Vector3 v0_N;
-        public float dot00, dot01, dot11, invDenom;
+        public double dot00, dot01, dot11, invDenom;
         public Vector3 normal, nA, nB, nC;
-        public float d;
+        public double d;
         public boolean flat;
 
         public Triangle(SingleMaterialSurface sf, boolean flat,
@@ -105,8 +105,8 @@ public class Mesh extends SingleMaterialSurface implements ReflectionConstructed
             Vector3 v2 = sub(P, A);
 
             // Compute dot products
-            float dot02 = InnerProduct(v0, v2);
-            float dot12 = InnerProduct(v1, v2);
+            double dot02 = InnerProduct(v0, v2);
+            double dot12 = InnerProduct(v1, v2);
 
             // Compute barycentric coordinates
             invDenom = 1 / (dot00 * dot11 - dot01 * dot01);
@@ -143,15 +143,15 @@ public class Mesh extends SingleMaterialSurface implements ReflectionConstructed
                  */
                 Vector3 tempC = mul(InnerProduct(v2, v0), v0);
                 Vector3 tempB = mul(InnerProduct(v2, v0) / InnerProduct(v1, v0), v1);
-                float yP = InnerProduct(sub(P,A), this.v0);
+                double yP = InnerProduct(sub(P,A), this.v0);
 
 
-                float xC = InnerProduct(tempC, this.v0_N), xB = InnerProduct(tempB, this.v0_N);
-                float xP = InnerProduct(v2, this.v0_N);
+                double xC = InnerProduct(tempC, this.v0_N), xB = InnerProduct(tempB, this.v0_N);
+                double xP = InnerProduct(v2, this.v0_N);
 
                 Vector3 lB = add(mul (yP / dot01, nB), mul(1- yP / dot01, nA));
                 Vector3 lC = add(mul (yP / dot00, nC), mul(1- yP / dot00, nA));
-                float Phi = (xP - xB) / (xC - xB);
+                double Phi = (xP - xB) / (xC - xB);
                 intersect.normal = add(mul (Phi, lC), mul(1-Phi, lB));
             }
             intersect.surface = this.surfaceMaterial;
@@ -171,7 +171,7 @@ public class Mesh extends SingleMaterialSurface implements ReflectionConstructed
     /**
      * The scaling to apply to the mesh
      */
-    public float scale;
+    public double scale;
     /**
      * The shading type for this mesh
      */
