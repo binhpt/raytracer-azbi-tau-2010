@@ -13,7 +13,7 @@ public interface SurfaceMat {
 
     Color getCheckers_diffuse2();
 
-    float getCheckers_size();
+    double getCheckers_size();
 
     Color getMtl_ambient();
 
@@ -25,7 +25,7 @@ public interface SurfaceMat {
 
     String getMtl_type();
 
-    float getReflectance();
+    double getReflectance();
 
     BufferedImage getTexture();
 
@@ -33,7 +33,7 @@ public interface SurfaceMat {
 
     void setCheckers_diffuse2(Color checkers_diffuse2);
 
-    void setCheckers_size(float checkers_size);
+    void setCheckers_size(double checkers_size);
 
     void setMtl_ambient(Color mtl_ambient);
 
@@ -45,7 +45,7 @@ public interface SurfaceMat {
 
     void setMtl_type(String mtl_type);
 
-    void setReflectance(float reflectance);
+    void setReflectance(double reflectance);
 
     void setTexture(BufferedImage texture);
 

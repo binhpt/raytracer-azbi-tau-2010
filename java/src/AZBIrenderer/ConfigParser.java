@@ -3,7 +3,6 @@ package AZBIrenderer;
 import AZBIrenderer.Vector3.Point3d;
 import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.IOException;
 import java.io.StringReader;
 import java.lang.reflect.Field;
@@ -156,9 +155,9 @@ public class ConfigParser {
         Vector3 v = new Vector3();
 
         String[] components = line.trim().replaceAll("\\s+", " ").split(" ");
-        v.x = Float.parseFloat(components[0]);
-        v.y = Float.parseFloat(components[1]);
-        v.z = Float.parseFloat(components[2]);
+        v.x = Double.parseDouble(components[0]);
+        v.y = Double.parseDouble(components[1]);
+        v.z = Double.parseDouble(components[2]);
 
         return Vector3.Normalize(v);
     }
@@ -172,9 +171,9 @@ public class ConfigParser {
         @Point3d Vector3 v = new Vector3();
 
         String[] components = line.trim().replaceAll("\\s+", " ").split(" ");
-        v.x = Float.parseFloat(components[0]);
-        v.y = Float.parseFloat(components[1]);
-        v.z = Float.parseFloat(components[2]);
+        v.x = Double.parseDouble(components[0]);
+        v.y = Double.parseDouble(components[1]);
+        v.z = Double.parseDouble(components[2]);
 
         return v;
     }
@@ -206,13 +205,13 @@ public class ConfigParser {
     }
 
     /**
-     * Parse a float property.
+     * Parse a double property.
      * Provided for completness only.
-     * @param line A string containing the float property
-     * @return The matching float
+     * @param line A string containing the double property
+     * @return The matching double
      */
-    public float GetFloatParam(String line) {
-        return Float.parseFloat(line);
+    public double GetDoubleParam(String line) {
+        return Double.parseDouble(line);
     }
 
     /**
@@ -300,8 +299,8 @@ public class ConfigParser {
                     f = c.getField(fieldName);
                     if (f.getType() == int.class) {
                         f.setInt(obj, GetIntParam(props.get(key)));
-                    } else if (f.getType() == float.class) {
-                        f.setFloat(obj, GetFloatParam(props.get(key)));
+                    } else if (f.getType() == double.class) {
+                        f.setDouble(obj, GetDoubleParam(props.get(key)));
                     } else if (f.getType() == boolean.class) {
                         f.setBoolean(obj, GetBooleanParam(props.get(key)));
                     } else if (f.getType() == Vector3.class) {

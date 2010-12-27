@@ -17,7 +17,7 @@ import java.awt.image.BufferedImage;
  */
 public class SingleMaterialSurface implements ReflectionConstructed, SurfaceMat {
 
-    private SingleMaterialSurface(String mtl_type, Color mtl_diffuse, Color mtl_specular, Color mtl_ambient, int mtl_shininess, float checkers_size, Color checkers_diffuse1, Color checkers_diffuse2, BufferedImage texture, float reflectance) {
+    private SingleMaterialSurface(String mtl_type, Color mtl_diffuse, Color mtl_specular, Color mtl_ambient, int mtl_shininess, double checkers_size, Color checkers_diffuse1, Color checkers_diffuse2, BufferedImage texture, double reflectance) {
         this.mtl_type = mtl_type;
         this.mtl_diffuse = mtl_diffuse;
         this.mtl_specular = mtl_specular;
@@ -54,11 +54,11 @@ public class SingleMaterialSurface implements ReflectionConstructed, SurfaceMat 
     public Color mtl_specular;
     public Color mtl_ambient;
     public int mtl_shininess;
-    public float checkers_size;
+    public double checkers_size;
     public Color checkers_diffuse1;
     public Color checkers_diffuse2;
     public @FileTexture BufferedImage texture;
-    public float reflectance;
+    public double reflectance;
 
     /**
      * Override this if necessary
@@ -81,11 +81,11 @@ public class SingleMaterialSurface implements ReflectionConstructed, SurfaceMat 
         this.checkers_diffuse2 = checkers_diffuse2;
     }
 
-    public float getCheckers_size() {
+    public double getCheckers_size() {
         return checkers_size;
     }
 
-    public void setCheckers_size(float checkers_size) {
+    public void setCheckers_size(double checkers_size) {
         this.checkers_size = checkers_size;
     }
 
@@ -129,11 +129,11 @@ public class SingleMaterialSurface implements ReflectionConstructed, SurfaceMat 
         this.mtl_type = mtl_type;
     }
 
-    public float getReflectance() {
+    public double getReflectance() {
         return reflectance;
     }
 
-    public void setReflectance(float reflectance) {
+    public void setReflectance(double reflectance) {
         this.reflectance = reflectance;
     }
 

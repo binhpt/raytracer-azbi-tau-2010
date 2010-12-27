@@ -19,7 +19,7 @@ public class LightDirected extends Light{
     {
         ray.origin = point;
         ray.direction = reverseDirection;
-        return Float.POSITIVE_INFINITY;
+        return Double.POSITIVE_INFINITY;
     }
     
     public Vector3 direction;

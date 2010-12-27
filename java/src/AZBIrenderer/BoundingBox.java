@@ -34,8 +34,8 @@ public class BoundingBox {
      */
     public static BoundingBox create(BoundingBox... boxes)
     {
-        Vector3 max = new Vector3(Float.MIN_VALUE, Float.MIN_VALUE, Float.MIN_VALUE);
-        Vector3 min = new Vector3(Float.MAX_VALUE, Float.MAX_VALUE, Float.MAX_VALUE);
+        Vector3 max = new Vector3(Double.MIN_VALUE, Double.MIN_VALUE, Double.MIN_VALUE);
+        Vector3 min = new Vector3(Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE);
 
         for (BoundingBox box : boxes) {
             min = CoordinateMin(min, CoordinateMin(box.p1, box.p2));
@@ -51,8 +51,8 @@ public class BoundingBox {
      */
     public static BoundingBox create(@Point3d Vector3... pts)
     {
-        @Point3d Vector3 max = new Vector3(Float.MIN_VALUE, Float.MIN_VALUE, Float.MIN_VALUE);
-        @Point3d Vector3 min = new Vector3(Float.MAX_VALUE, Float.MAX_VALUE, Float.MAX_VALUE);
+        @Point3d Vector3 max = new Vector3(Double.MIN_VALUE, Double.MIN_VALUE, Double.MIN_VALUE);
+        @Point3d Vector3 min = new Vector3(Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE);
 
         for (@Point3d Vector3 pt : pts) {
             min = CoordinateMin(min, pt);
