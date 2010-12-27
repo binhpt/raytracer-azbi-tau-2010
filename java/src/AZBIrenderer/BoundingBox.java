@@ -25,8 +25,13 @@ public class BoundingBox {
      * Construct the box by specifying the two opposite corners
      */
     public BoundingBox(@Point3d Vector3 p1, @Point3d Vector3 p2) {
-        this.max = add(CoordinateMax(p1, p2), Math3D.GEOM_EPSILON_VEC);
-        this.min = sub(CoordinateMin(p1, p2), Math3D.GEOM_EPSILON_VEC);
+        this.max = CoordinateMax(p1, p2);
+        this.min = CoordinateMin(p1, p2);
+        Vector3 size = sub(max, min);
+        Vector3 eps = CoordinateMax(Math3D.GEOM_EPSILON_VEC, mul(Math3D.GEOM_EPSILON, size));
+//        Vector3 eps = new Vector3(0.1, 0.1, 0.1);
+        this.max = add(eps, max);
+        this.min = sub(min, eps);
     }
 
     public void copyFrom (BoundingBox other) {
@@ -41,9 +46,7 @@ public class BoundingBox {
      *
      */
     public boolean intersects(BoundingBox other) {
-        Vector3 center1 = mul(0.5f, add(min, max)), center2 = mul(0.5f, add(other.min, other.max));
-//        Vector3 radius1 = mul(0.5f, sub(center1, min)), radius2 = mul(0.5f, sub(center2, other.min));
-//        Vector3 temp1 = sub(center1, center2);
+        Vector3 center1 = mul(0.5, add(min, max)), center2 = mul(0.5, add(other.min, other.max));
         return !(other.max.x < this.min.x ||
                 other.max.y < this.min.y ||
                 other.max.z < this.min.z ||
@@ -67,9 +70,9 @@ public class BoundingBox {
          * Note that if the ray does not intersect one plane parallel to the T
          * axis, it also does not intersect the other plane parallel to that axis
          */
-        if (Math3D.RayPlanintersection(r, Math3D.Xaxis, min.x, a))
+        if (Math3D.RayPlanintersection(r, Math3D.Xaxis, -min.x, a))
         {
-            Math3D.RayPlanintersection(r, Math3D.Xaxis, max.x, b);
+            Math3D.RayPlanintersection(r, Math3D.Xaxis, -max.x, b);
             if ((a.T > Math3D.GEOM_MINUS_EPSILON
                 && min.y <= a.point.y && min.z <= a.point.z
                 && max.y >= a.point.y && max.z >= a.point.z)
@@ -80,9 +83,9 @@ public class BoundingBox {
                 return true;
         }
 
-        if (Math3D.RayPlanintersection(r, Math3D.Yaxis, min.y, a))
+        if (Math3D.RayPlanintersection(r, Math3D.Yaxis, -min.y, a))
         {
-            Math3D.RayPlanintersection(r, Math3D.Yaxis, max.y, b);
+            Math3D.RayPlanintersection(r, Math3D.Yaxis, -max.y, b);
             if ((a.T > Math3D.GEOM_MINUS_EPSILON
                 && min.x <= a.point.x && min.z <= a.point.z
                 && max.x >= a.point.x && max.z >= a.point.z)
@@ -93,9 +96,9 @@ public class BoundingBox {
                 return true;
         }
 
-        if (Math3D.RayPlanintersection(r, Math3D.Zaxis, min.z, a))
+        if (Math3D.RayPlanintersection(r, Math3D.Zaxis, -min.z, a))
         {
-            Math3D.RayPlanintersection(r, Math3D.Zaxis, max.z, b);
+            Math3D.RayPlanintersection(r, Math3D.Zaxis, -max.z, b);
             if ((a.T > Math3D.GEOM_MINUS_EPSILON
                 && min.x <= a.point.x && min.y <= a.point.y
                 && max.x >= a.point.x && max.y >= a.point.y)

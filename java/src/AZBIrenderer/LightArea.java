@@ -21,8 +21,8 @@ public class LightArea implements ReflectionConstructed, ReflectionWrapper {
         int N = (int) this.grid_width, count = N*N;
         Color part = new Color(color.r/count, color.g/count, color.b/count);
 
-        Vector3 u = Vector3.mul(1.0f/(N-1), Vector3.sub(this.p1, this.p0));
-        Vector3 v = Vector3.mul(1.0f/(N-1), Vector3.sub(this.p2, this.p0));
+        Vector3 u = Vector3.mul(1.0/(N-1), Vector3.sub(this.p1, this.p0));
+        Vector3 v = Vector3.mul(1.0/(N-1), Vector3.sub(this.p2, this.p0));
 
         this.lights = new LightPoint[N*N];
 
