@@ -11,21 +11,21 @@ public class Math3D {
     public static final Vector3 Yaxis = new Vector3(0, 1, 0);
     public static final Vector3 Zaxis = new Vector3(0, 0, 1);
 
-    public static final float PI = (float) Math.PI;
-    public static final float PI2 = (float) (2 * Math.PI);
-    public static final float INV_PI = (float) (1 / Math.PI);
-    public static final float INV_PI2 = (float) (1 / (2 * Math.PI));
+    public static final double PI = (double) Math.PI;
+    public static final double PI2 = (double) (2 * Math.PI);
+    public static final double INV_PI = (double) (1 / Math.PI);
+    public static final double INV_PI2 = (double) (1 / (2 * Math.PI));
 
     /**
      * Compute the distance of a points from a ray
      */
-    public static float Point2RayDist (Vector3 p, Ray r)
+    public static double Point2RayDist (Vector3 p, Ray r)
     {
         Vector3 M = sub(p,r.origin);
-        float temp = InnerProduct(r.direction, M);
-        float temp3 = InnerProduct(M, M) - temp*temp;
+        double temp = InnerProduct(r.direction, M);
+        double temp3 = InnerProduct(M, M) - temp*temp;
         double temp2 = Math.sqrt(Math.abs(temp3));
-        return (float) temp2;
+        return (double) temp2;
     }
 
     /**
@@ -71,9 +71,9 @@ public class Math3D {
      * @param result An object to store the result in
      * @return Whether the plane and the ray intersect
      */
-    public static boolean RayPlanintersection (Ray r, Vector3 normal, float d, IntersectionData result)
+    public static boolean RayPlanintersection (Ray r, Vector3 normal, double d, IntersectionData result)
     {
-        float SABC = InnerProduct(r.direction, normal);
+        double SABC = InnerProduct(r.direction, normal);
 
         if (SABC == 0)
             return false;
@@ -84,7 +84,7 @@ public class Math3D {
         return true;
     }
 
-    public float normalizeValue(float val, float rangeStart, float rangeEnd)
+    public double normalizeValue(double val, double rangeStart, double rangeEnd)
     {
         return (val - rangeStart) / (rangeEnd - rangeStart);
     }

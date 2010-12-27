@@ -19,12 +19,12 @@ public class Disc extends SingleMaterialSurface implements Surface {
     /**
      * The radius of the Disc
      */
-    public float radius;
+    public double radius;
     /**
      * The variable d in the plane equation:
      * <pre>Ax + By + Cz + d = 0</pre>
      */
-    public float d;
+    public double d;
 
     /**
      * The "zero" angle when calculating the texture coordinates
@@ -36,7 +36,7 @@ public class Disc extends SingleMaterialSurface implements Surface {
         if (!Math3D.RayPlanintersection(r, normal, d, intersect))
             return false;
 
-        float rad = Norm(sub(intersect.point, this.center));
+        double rad = Norm(sub(intersect.point, this.center));
 
         if (rad > radius)
             return false;
@@ -48,9 +48,9 @@ public class Disc extends SingleMaterialSurface implements Surface {
         {
             intersect.u = rad / radius;
             Vector3 d = Normalize(sub(intersect.point, this.center));
-            float y = InnerProduct(d, this.TextureY0);
-            float x = InnerProduct(d, this.TextureX0);
-            intersect.v = ((float) Math.atan2(y, x) + Math3D.PI) * Math3D.INV_PI2;
+            double y = InnerProduct(d, this.TextureY0);
+            double x = InnerProduct(d, this.TextureX0);
+            intersect.v = ((double) Math.atan2(y, x) + Math3D.PI) * Math3D.INV_PI2;
         }
 
         return true;
@@ -69,7 +69,7 @@ public class Disc extends SingleMaterialSurface implements Surface {
         this.normal = Vector3.Normalize(normal);
             /* Some vector on the disc planen */
         this.TextureX0 = CrossProduct(this.normal, Math3D.Zaxis);
-        float temp = Norm(this.TextureX0);
+        double temp = Norm(this.TextureX0);
         /* If we picked something parallel to the direction in the cross-product
          * try again
          */

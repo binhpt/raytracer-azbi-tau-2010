@@ -145,7 +145,7 @@ public class SingleMaterialSurface implements ReflectionConstructed, SurfaceMat 
         this.texture = texture;
     }
 
-    public Color GetDiffuse2(float u, float v) {
+    public Color GetDiffuse2(double u, double v) {
         if (mtl_type.equalsIgnoreCase("flat"))
             return mtl_diffuse;
         else if (mtl_type.equals("checkers"))

@@ -48,15 +48,15 @@ public class Camera implements ReflectionConstructed {
     /**
      * The distance of the image plane from the eye (aka f)
      */
-    public float screen_dist;
+    public double screen_dist;
     /**
      * The width of the screen in world units
      */
-    public float screen_width;
+    public double screen_width;
     /**
      * The height of the screen in world units
      */
-    public float screen_height;
+    public double screen_height;
     /**
      * the bottom left corner of the projected screen
      */
@@ -70,7 +70,7 @@ public class Camera implements ReflectionConstructed {
      *               coordinates in javas screen coordinate system
      * @return The ray from the cameras eye which goes through that point
      */
-    Ray CreateRay(float yratio, float xratio) {
+    Ray CreateRay(double yratio, double xratio) {
         Ray r = new Ray();
 
         Vector3 dest = new Vector3(bot_left);

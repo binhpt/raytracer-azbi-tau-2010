@@ -15,12 +15,12 @@ public class Sphere extends SingleMaterialSurface implements Surface {
     /**
      * The radius of the sphere
      */
-    public float radius;
+    public double radius;
 
     @Override
     public boolean Intersection(Ray r, IntersectionData intersect, boolean doUV) {
          //squared radius, squared distance
-        float d_square, R_square, P3P2_length, P1P2_length;
+        double d_square, R_square, P3P2_length, P1P2_length;
         Vector3 P1P0;
 
         P1P0 = sub(this.center, r.origin);
@@ -32,7 +32,7 @@ public class Sphere extends SingleMaterialSurface implements Surface {
         R_square = this.radius * this.radius;
         if (d_square > R_square) return false;
 
-        P3P2_length = (float)Math.sqrt(R_square - d_square);
+        P3P2_length = (double)Math.sqrt(R_square - d_square);
 
         intersect.T = P1P2_length - P3P2_length;
 	intersect.point = add(r.origin, mul (intersect.T, r.direction));
@@ -42,11 +42,11 @@ public class Sphere extends SingleMaterialSurface implements Surface {
         if (doUV)
         {
             Vector3 d = Normalize(sub(intersect.point, this.center));
-            float z = InnerProduct(d, Math3D.Zaxis);
-            float y = InnerProduct(d, Math3D.Yaxis);
-            float x = InnerProduct(d, Math3D.Xaxis);
-            intersect.u = ((float) Math.atan2(y, x) + Math3D.PI) * Math3D.INV_PI2;
-            intersect.v = (float) Math.acos((intersect.point.z - this.center.z) / this.radius) * Math3D.INV_PI;
+            double z = InnerProduct(d, Math3D.Zaxis);
+            double y = InnerProduct(d, Math3D.Yaxis);
+            double x = InnerProduct(d, Math3D.Xaxis);
+            intersect.u = ((double) Math.atan2(y, x) + Math3D.PI) * Math3D.INV_PI2;
+            intersect.v = (double) Math.acos((intersect.point.z - this.center.z) / this.radius) * Math3D.INV_PI;
         }
 
         return true;

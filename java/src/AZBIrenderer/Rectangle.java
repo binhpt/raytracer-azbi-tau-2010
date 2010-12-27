@@ -45,12 +45,12 @@ public class Rectangle extends SingleMaterialSurface implements ReflectionConstr
          * The variable d in the plane equation:
          * <pre>Ax + By + Cz + d = 0</pre>
          */
-        public float d;
+        public double d;
 
         /**
          * Variables cached for performance
          */
-        public float dot00, dot01, dot11, invDenom;
+        public double dot00, dot01, dot11, invDenom;
 
         public RectangleFace(SingleMaterialSurface sf,
                 Vector3 p0, Vector3 p1, Vector3 p2) {
@@ -84,8 +84,8 @@ public class Rectangle extends SingleMaterialSurface implements ReflectionConstr
             Vector3 v2 = sub(P, p0);
 
             // Compute dot products
-            float dot02 = InnerProduct(v0, v2);
-            float dot12 = InnerProduct(v1, v2);
+            double dot02 = InnerProduct(v0, v2);
+            double dot12 = InnerProduct(v1, v2);
 
             // Compute barycentric coordinates
             invDenom = 1 / (dot00 * dot11 - dot01 * dot01);

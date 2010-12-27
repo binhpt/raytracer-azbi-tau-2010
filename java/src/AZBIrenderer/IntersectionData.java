@@ -21,7 +21,7 @@ public class IntersectionData {
      * A value satisfying the following identity (psedo code, for a Ray r):
      * <pre>r.origin + T * r.direction = this.Point </pre>
      */
-    public float T;
+    public double T;
     /*
      * the data of the surface hit
      */
@@ -29,7 +29,7 @@ public class IntersectionData {
     /**
      * The texture coordinates at the intersection
      */
-    public float u, v;
+    public double u, v;
     
     public IntersectionData() {
     }

@@ -16,14 +16,14 @@ public class LightPoint extends Light{
 
     @Override
     public Color EffectFromLight(@Point3d Vector3 point) {
-        float d = (float)Math.sqrt(Math.pow(point.x - pos.x, 2) + Math.pow(point.y - pos.y, 2) + Math.pow(point.z - pos.z, 2));
-        float atten = this.attenuation.x + d * attenuation.y + d * d * attenuation.z;
-        return new Color(color.r / atten, color.g / atten, color.b / atten, 1f);
+        double d = (double)Math.sqrt(Math.pow(point.x - pos.x, 2) + Math.pow(point.y - pos.y, 2) + Math.pow(point.z - pos.z, 2));
+        double atten = this.attenuation.x + d * attenuation.y + d * d * attenuation.z;
+        return new Color(color.r / (float)atten, color.g / (float)atten, color.b / (float)atten, 1f);
     }
 
     @Override
-    public float GetRay(@Point3d Vector3 point, Ray ray) {
-        float t;
+    public double GetRay(@Point3d Vector3 point, Ray ray) {
+        double t;
         ray.origin = point;
         
         ray.direction = Vector3.sub(pos, point);
