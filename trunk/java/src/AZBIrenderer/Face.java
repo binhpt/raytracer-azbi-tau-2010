@@ -24,7 +24,7 @@ public abstract class Face implements Surface {
     }
 
     @Override
-    public void setReflectance(float reflectance) {
+    public void setReflectance(double reflectance) {
         surfaceMaterial.setReflectance(reflectance);
     }
 
@@ -54,7 +54,7 @@ public abstract class Face implements Surface {
     }
 
     @Override
-    public void setCheckers_size(float checkers_size) {
+    public void setCheckers_size(double checkers_size) {
         surfaceMaterial.setCheckers_size(checkers_size);
     }
 
@@ -74,7 +74,7 @@ public abstract class Face implements Surface {
     }
 
     @Override
-    public float getReflectance() {
+    public double getReflectance() {
         return surfaceMaterial.getReflectance();
     }
 
@@ -104,7 +104,7 @@ public abstract class Face implements Surface {
     }
 
     @Override
-    public float getCheckers_size() {
+    public double getCheckers_size() {
         return surfaceMaterial.getCheckers_size();
     }
 

@@ -9,7 +9,7 @@ public class LightArea implements ReflectionConstructed, ReflectionWrapper {
 
     public Color color;
     public @Vector3.Point3d Vector3 p0, p1, p2;
-    public float grid_width;
+    public double grid_width;
 
     LightPoint[] lights;
 

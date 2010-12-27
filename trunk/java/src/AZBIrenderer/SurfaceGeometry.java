@@ -1,6 +1,4 @@
 package AZBIrenderer;
-
-import static AZBIrenderer.Vector3.*;
 /**
  * A base interface for geometric surfaces
  * @author Barak Itkin and Adam Zeira
