@@ -118,7 +118,7 @@ public abstract class Face implements Surface {
         return surfaceMaterial.getCheckers_diffuse1();
     }
 
-    public Color GetDiffuse2(float u, float v) {
+    public Color GetDiffuse2(double u, double v) {
         return surfaceMaterial.GetDiffuse2(u, v);
     }
 
