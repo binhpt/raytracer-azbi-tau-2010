@@ -190,7 +190,7 @@ public class Mesh extends SingleMaterialSurface implements ReflectionConstructed
         this.triangles = new Triangle[mesh.faces.length];
 
         BoundingBox temp = BoundingBox.create(mesh.vertices);
-        @Point3d Vector3 center = mul(1 / 2, add(temp.p1, temp.p2));
+        @Point3d Vector3 center = mul(1 / 2, add(temp.max, temp.min));
         boolean flat = (this.shader == Shader.FLAT);
 
         for (int i = 0; i < mesh.vertices.length; i++) {
