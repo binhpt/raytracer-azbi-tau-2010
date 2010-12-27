@@ -269,7 +269,7 @@ public class Render {
         {
             // If the intersection is when T is negative, then we doon't want it!
             // TODO: Make the comparision with the string less ugly!
-            if (surf.Intersection(r, temp, !surf.getMtl_type().equals("flat")) && temp.T > 0.01f && temp.T < closestIntersect.T) {
+            if (surf.Intersection(r, temp, !surf.getMtl_type().equals("flat")) && temp.T > 0.001f && temp.T < closestIntersect.T) {
                 closestIntersect.copyFrom(temp);
                 intersect = true;
             }
@@ -285,7 +285,7 @@ public class Render {
     public static boolean ShootLightAtSurfaces(List<? extends Surface> surfaces, Ray r, float maxT) {
         IntersectionData temp = new IntersectionData();
         for (Surface surf : surfaces) {
-            if (surf.Intersection(r, temp, false) && temp.T > 0.01f && temp.T < maxT)// && temp.T < maxT && temp.T > 0.01f
+            if (surf.Intersection(r, temp, false) && temp.T > 0.001f && temp.T < maxT)
             {
                 return false;
             }
@@ -308,6 +308,10 @@ public class Render {
         float dist;
 
         if (shootAtSurfaces(surfaces, r, intersect)) {
+
+            mtlDiffuse = intersect.surface.GetDiffuse2(intersect.u, intersect.v);// getMtl_diffuse();
+            mtlSpecular = intersect.surface.getMtl_specular();
+            
             //make sure it's all normalized, then remove this
             intersect.normal = Normalize(intersect.normal);
             /*
@@ -328,8 +332,6 @@ public class Render {
                     specular1 = InnerProduct(H, intersect.normal);
                     specular2 = Math.pow(specular1, intersect.surface.getMtl_shininess());
 
-                    mtlDiffuse = intersect.surface.GetDiffuse2(intersect.u, intersect.v);// getMtl_diffuse();
-                    mtlSpecular = intersect.surface.getMtl_specular();
                     color.r += tc.r * (mtlDiffuse.r * diffuse + specular2 * mtlSpecular.r);
                     color.g += tc.g * (mtlDiffuse.g * diffuse + specular2 * mtlSpecular.g);
                     color.b += tc.b * (mtlDiffuse.b * diffuse + specular2 * mtlSpecular.b);
