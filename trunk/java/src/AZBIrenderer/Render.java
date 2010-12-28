@@ -318,20 +318,20 @@ public class Render {
         Color color = new Color(0, 0, 0, 1);
         Color tc, mtlDiffuse, mtlSpecular;
 
-        double diffuse, specular1, specular2;
-        Vector3 H;
-        double dist;
+        double diffuse, specular1, specular2, dist;
 
+        //if the ray (from the camera or a reflection) intersects with something
         if (shootAtSurfaces(r, intersect)) {
 
-            mtlDiffuse = intersect.surface.GetDiffuse2(intersect.u, intersect.v);// getMtl_diffuse();
+            mtlDiffuse = intersect.surface.GetDiffuse2(intersect.u, intersect.v);
             mtlSpecular = intersect.surface.getMtl_specular();
             
-            //make sure it's all normalized, then remove this
             intersect.normal = Normalize(intersect.normal);
 
+            //now that we have a point of intersection, see what lights in the scene effect it
             for (Light light : lights) {
 
+                //hemisphere, a special case, no need to check collision etc
                 if (light instanceof LightHemisphere)
                 {
                     tc = light.EffectFromLight(intersect.normal);
@@ -339,6 +339,8 @@ public class Render {
                     color.g += tc.g * mtlDiffuse.g;
                     color.b += tc.b * mtlDiffuse.b;
                 }
+                
+                //all other ights
                 else
                 {
                     ////////////////////////////////////////////////////////////
@@ -346,8 +348,10 @@ public class Render {
                     /// explanation                                          ///
                     ////////////////////////////////////////////////////////////
                     dist = light.GetRay(intersect.point, lightrays);
+                    //for lights with many rays. iterate over each one
                     for (Ray lightray : lightrays)
                     {
+                        //check if the light ray reaches our point. add the lights specular and diffuse
                         if (ShootLightAtSurfaces(lightray, dist))
                         {
                             tc = light.EffectFromLight(intersect.point); //I(L) in the presentation
@@ -395,6 +399,7 @@ public class Render {
                 }
             }
 
+            //handle reflection. self explanatory, as done in class
             if (raybounces > 0 && intersect.surface.reflectance > 0)
             {
                 double length = InnerProduct(intersect.normal, r.direction) * -2;
@@ -408,10 +413,12 @@ public class Render {
                 color.b += reflectColor.b * intersect.surface.reflectance;
             }
 
+            //ambient light
             color.r += this.scene.ambient_light.r * intersect.surface.mtl_ambient.r;
             color.g += this.scene.ambient_light.g * intersect.surface.mtl_ambient.g;
             color.b += this.scene.ambient_light.b * intersect.surface.mtl_ambient.b;
 
+            //clamp the color
             if (color.r > 1f) color.r = 1;
             if (color.g > 1f) color.g = 1;
             if (color.b > 1f) color.b = 1;

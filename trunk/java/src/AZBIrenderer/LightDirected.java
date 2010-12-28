@@ -15,14 +15,14 @@ public class LightDirected extends Light{
         return this.color;
     }
 
-    //OPTIMIZE
     public double GetRay(@Point3d Vector3 point, LinkedList<Ray> rays)
     {
         Ray r = new Ray(point, reverseDirection);
         rays.add(r);
         return Double.POSITIVE_INFINITY;
     }
-    
+
+    /* the direction of the light */
     public Vector3 direction;
     public Vector3 reverseDirection; //for efficiency
 
