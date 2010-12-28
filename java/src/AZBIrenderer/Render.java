@@ -343,7 +343,9 @@ public class Render {
 
                         //diffuse component: K(d) * NL * I(L)
                         diffuse = InnerProduct(intersect.normal, lightray.direction); //N*L
-                        if (diffuse < 0) diffuse = 0;
+                        // If there is no diffuse since we are in the opposite
+                        // direction, there is also no specular so just skip...
+                        if (diffuse < 0) continue;
 
                         //cheap specular component: K(s) * (HN)^n *I(L)
                         /*H = Normalize(sub(r.direction, lightray.direction));
