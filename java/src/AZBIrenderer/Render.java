@@ -17,6 +17,7 @@ import static AZBIrenderer.Vector3.*;
  */
 public class Render {
 
+    public static double min_intersect_T = 0.00001;
     /**
      * A class for representing a part of an image that should be rendered
      */
@@ -282,7 +283,7 @@ public class Render {
         for (Surface surf : Rsurfaces) //if there is a collision, and its T is smaller, this is the new closest collision
         {
             // If the intersection is when T is negative, then we doon't want it!
-            if (surf.Intersection(r, temp, !surf.getMtl_type().equals("flat")) && temp.T > 0 && temp.T < closestIntersect.T) {
+            if (surf.Intersection(r, temp, !surf.getMtl_type().equals("flat")) && temp.T > min_intersect_T && temp.T < closestIntersect.T) {
                 closestIntersect.copyFrom(temp);
                 intersect = true;
             }
@@ -299,7 +300,7 @@ public class Render {
         IntersectionData temp = new IntersectionData();
         List<Surface> Rsurfaces = octree == null ? this.surfaces : octree.getObjects(r);
         for (Surface surf : Rsurfaces) {
-            if (surf.Intersection(r, temp, false) && temp.T > 0.001 && temp.T < maxT)
+            if (surf.Intersection(r, temp, false) && temp.T > min_intersect_T && temp.T < maxT)
             {
                 return false;
             }
