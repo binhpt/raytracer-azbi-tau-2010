@@ -201,6 +201,7 @@ public class ConfigParser {
      * @return The matching int
      */
     public int GetIntParam(String line) {
+        line = line.trim().replaceAll("\\s+", " ");
         return Integer.parseInt(line);
     }
 
@@ -211,6 +212,7 @@ public class ConfigParser {
      * @return The matching double
      */
     public double GetDoubleParam(String line) {
+        line = line.trim().replaceAll("\\s+", " ");
         return Double.parseDouble(line);
     }
 
@@ -221,6 +223,7 @@ public class ConfigParser {
      * @return The matching float
      */
     public float GetFloatParam(String line) {
+        line = line.trim().replaceAll("\\s+", " ");
         return Float.parseFloat(line);
     }
 
@@ -230,6 +233,7 @@ public class ConfigParser {
      * @return The matching boolean
      */
     public boolean GetBooleanParam(String line) {
+        line = line.trim().replaceAll("\\s+", " ");
         return Integer.parseInt(line) == 1;
     }
 
@@ -239,6 +243,7 @@ public class ConfigParser {
      * @return The matching boolean
      */
     public BufferedImage GetTextureParam(String line) {
+        line = line.trim();
         try {
             return javax.imageio.ImageIO.read(FileHandling.forPath(line));
         } catch (IOException ex) {
