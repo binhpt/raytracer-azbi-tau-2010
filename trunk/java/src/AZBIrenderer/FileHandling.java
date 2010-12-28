@@ -26,6 +26,7 @@ public class FileHandling {
      */
     public static File forPath(String p)
     {
+        System.out.println(path+p);
         return new File(path + p);
     }
 
