@@ -182,6 +182,8 @@ public class Render {
                                             r = camera.CreateRay (y + (a + (double) Math.random()) * sampleDistY,
                                                     x + (b + (double) Math.random()) * sampleDistX);
                                             /* Save the color resulted from shooting it */
+                                            if (j==195 && i==195)
+                                                System.err.println("here");
                                             samples[a][b] = ShootRay(r, scene.max_ray_bounce);
                                         }
                                     }
@@ -274,11 +276,13 @@ public class Render {
 
         closestIntersect.T = Double.MAX_VALUE;
 
+        r.origin = add(r.origin, mul(Math3D.GEOM_EPSILON, r.direction));
+
         for (Surface surf : Rsurfaces) //if there is a collision, and its T is smaller, this is the new closest collision
         {
             // If the intersection is when T is negative, then we doon't want it!
             // TODO: Make the comparision with the string less ugly!
-            if (surf.Intersection(r, temp, !surf.getMtl_type().equals("flat")) && temp.T > 0.001 && temp.T < closestIntersect.T) {
+            if (surf.Intersection(r, temp, !surf.getMtl_type().equals("flat")) && temp.T > 0 && temp.T < closestIntersect.T) {
                 closestIntersect.copyFrom(temp);
                 intersect = true;
             }
@@ -374,17 +378,11 @@ public class Render {
                         // expensive specular component: K(s) * (VR)^n *I(L)
                         Vector3 ref = Vector3.sub(Vector3.mul(InnerProduct(lightray.direction, intersect.normal) * 2, intersect.normal), lightray.direction);
                         specular1 = Vector3.InnerProduct(r.direction, ref);
-                        specular2 = Math.pow(specular1, intersect.surface.getMtl_shininess());
-
+                        specular2 = Math.pow(Math.abs(specular1), intersect.surface.getMtl_shininess());
 
                         //////////////////////////////////////////////////
                         /// POSTTEST - put here                        ///
                         //////////////////////////////////////////////////
-                        
-                        // If the specular is negative, specular2 may actually
-                        // be positive if the power is even - and this will give
-                        // us a specular which is not needed!
-                        if (specular1 <= 0) specular2 = 0;
 
                         color.r += tc.r * (mtlDiffuse.r * diffuse + specular2 * mtlSpecular.r);
                         color.g += tc.g * (mtlDiffuse.g * diffuse + specular2 * mtlSpecular.g);

@@ -116,7 +116,7 @@ public class RenderWindow extends javax.swing.JFrame {
 
         TextEditorWindow.getContentPane().add(TextScroll, java.awt.BorderLayout.CENTER);
 
-        FileChooser.setCurrentDirectory(null);
+        FileChooser.setCurrentDirectory(new File("."));
         FileChooser.setDialogTitle("Choose a file");
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -161,7 +161,6 @@ public class RenderWindow extends javax.swing.JFrame {
         });
         ImageToolbar.add(EditButton);
 
-        ImageScroll.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
         ImageScroll.setMinimumSize(new java.awt.Dimension(50, 50));
 
         ImageView.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
@@ -215,7 +214,7 @@ public class RenderWindow extends javax.swing.JFrame {
             public void run() {
                 Render r = new Render((AxisCheckbox.isSelected() ? axises : "") + TextPane.getText());
                 long time = System.currentTimeMillis();
-                r.render(ImageScroll.getWidth(), ImageScroll.getHeight(), 4, 4, (Integer)ThreadCountSpin.getValue());
+                r.render(ImageScroll.getWidth()-2, ImageScroll.getHeight()-2, 4, 4, (Integer)ThreadCountSpin.getValue());
                 ImageView.setText("");
                 ImageView.setIcon(new ImageIcon(r.render));
                 time -= System.currentTimeMillis();
