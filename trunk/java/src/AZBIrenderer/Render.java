@@ -205,9 +205,9 @@ public class Render {
                                     /* Store the result in the variable representing
                                      * the color of this pixel
                                      */
-                                    color = new Color(red / samplesPerPixel,
-                                            green / samplesPerPixel,
-                                            blue / samplesPerPixel,
+                                    color = new Color(red / hits,
+                                            green / hits,
+                                            blue / hits,
                                             hits / (float) samplesPerPixel).getRGB();
 
                                 } else { /* We don't do super sampling */
