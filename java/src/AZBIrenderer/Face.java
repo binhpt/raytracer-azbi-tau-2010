@@ -24,7 +24,7 @@ public abstract class Face implements Surface {
     }
 
     @Override
-    public void setReflectance(double reflectance) {
+    public void setReflectance(float reflectance) {
         surfaceMaterial.setReflectance(reflectance);
     }
 
@@ -74,7 +74,7 @@ public abstract class Face implements Surface {
     }
 
     @Override
-    public double getReflectance() {
+    public float getReflectance() {
         return surfaceMaterial.getReflectance();
     }
 
