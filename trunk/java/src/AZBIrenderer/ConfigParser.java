@@ -215,6 +215,16 @@ public class ConfigParser {
     }
 
     /**
+     * Parse a float property.
+     * Provided for completness only.
+     * @param line A string containing the float property
+     * @return The matching float
+     */
+    public float GetFloatParam(String line) {
+        return Float.parseFloat(line);
+    }
+
+    /**
      * Parse a boolean property (provided as '0' or '1')
      * @param line A string containing the boolean property
      * @return The matching boolean
@@ -301,6 +311,8 @@ public class ConfigParser {
                         f.setInt(obj, GetIntParam(props.get(key)));
                     } else if (f.getType() == double.class) {
                         f.setDouble(obj, GetDoubleParam(props.get(key)));
+                    } else if (f.getType() == float.class) {
+                        f.setFloat(obj, GetFloatParam(props.get(key)));
                     } else if (f.getType() == boolean.class) {
                         f.setBoolean(obj, GetBooleanParam(props.get(key)));
                     } else if (f.getType() == Vector3.class) {
@@ -310,7 +322,7 @@ public class ConfigParser {
                             f.set(obj, GetVectorParam(props.get(key)));
                     } else if (f.getType() == Color.class) {
                         f.set(obj, GetColorParam(props.get(key)));
-                    } else if (f.getType() == BufferedImage.class) {
+                    } else if (f.getType() == BufferedImage.class && f.getAnnotation(FileTexture.class) != null) {
                         f.set(obj, GetTextureParam(props.get(key)));
                     } else if (f.getType() == Mesh.Shader.class) {
                         f.set(obj, GetShaderParam(props.get(key)));
