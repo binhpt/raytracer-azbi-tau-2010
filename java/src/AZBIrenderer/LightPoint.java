@@ -2,6 +2,7 @@
 package AZBIrenderer;
 
 import AZBIrenderer.Vector3.Point3d;
+import java.util.LinkedList;
 
 /**
  * A class for representing point lights
@@ -22,14 +23,17 @@ public class LightPoint extends Light{
     }
 
     @Override
-    public double GetRay(@Point3d Vector3 point, Ray ray) {
+    public double GetRay(@Point3d Vector3 point, LinkedList<Ray> rays) {
         double t;
+
+        Ray ray = new Ray();
         ray.origin = point;
-        
         ray.direction = Vector3.sub(pos, point);
         t = Vector3.Norm(ray.direction);
         ray.direction = Vector3.Normalize(ray.direction);
 
+        rays.add(ray);
+        
         return t;
     }
 

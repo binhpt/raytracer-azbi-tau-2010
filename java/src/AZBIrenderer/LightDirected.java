@@ -1,6 +1,7 @@
 package AZBIrenderer;
 
 import AZBIrenderer.Vector3.Point3d;
+import java.util.LinkedList;
 
 /**
  * A class for representing directed lights (aka Sun lights), which are
@@ -15,10 +16,10 @@ public class LightDirected extends Light{
     }
 
     //OPTIMIZE
-    public double GetRay(@Point3d Vector3 point, Ray ray)
+    public double GetRay(@Point3d Vector3 point, LinkedList<Ray> rays)
     {
-        ray.origin = point;
-        ray.direction = reverseDirection;
+        Ray r = new Ray(point, reverseDirection);
+        rays.add(r);
         return Double.POSITIVE_INFINITY;
     }
     
