@@ -333,10 +333,10 @@ public class Render {
 
                 if (light instanceof LightHemisphere)
                 {
-                    tc = Color.mul(light.EffectFromLight(intersect.normal), mtlDiffuse);
-                    color.r += tc.r;
-                    color.g += tc.g;
-                    color.b += tc.b;
+                    tc = light.EffectFromLight(intersect.normal);
+                    color.r += tc.r * mtlDiffuse.r;
+                    color.g += tc.g * mtlDiffuse.g;
+                    color.b += tc.b * mtlDiffuse.b;
                 }
                 else
                 {
