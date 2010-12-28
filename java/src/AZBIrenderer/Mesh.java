@@ -104,8 +104,6 @@ public class Mesh extends SingleMaterialSurface implements ReflectionConstructed
                 this.v0 = sub(this.C, this.A);
                 this.v1 = sub(this.B, this.A);
 
-                this.normal = Normalize(CrossProduct(v0, v1));
-
                 this.dot00 = InnerProduct(this.v0, this.v0);
                 this.dot01 = InnerProduct(this.v0, this.v1);
                 this.dot11 = InnerProduct(this.v1, this.v1);

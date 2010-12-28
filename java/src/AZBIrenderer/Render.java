@@ -336,24 +336,55 @@ public class Render {
                 }
                 else
                 {
+                    ////////////////////////////////////////////////////////////
+                    /// Lighting - see the documentation file for a detailed ///
+                    /// explanation                                          ///
+                    ////////////////////////////////////////////////////////////
+
                     dist = light.GetRay(intersect.point, lightray);
                     if (ShootLightAtSurfaces(lightray, dist))
                     {
                         tc = light.EffectFromLight(intersect.point); //I(L) in the presentation
 
-                        //diffuse component: K(d) * NL * I(L)
+                        // diffuse component: K(d) * NL * I(L)
+                        // Note that lightray.direction is the direction from
+                        // from the point to the light source!
                         diffuse = InnerProduct(intersect.normal, lightray.direction); //N*L
-                        // If there is no diffuse since we are in the opposite
-                        // direction, there is also no specular so just skip...
-                        if (diffuse < 0) continue;
 
-                        //cheap specular component: K(s) * (HN)^n *I(L)
-                        /*H = Normalize(sub(r.direction, lightray.direction));
-                        specular1 = InnerProduct(H, intersect.normal);*/
-                        //expensive specular component: K(s) * (VR)^n *I(L)
+                        //////////////////////////////////////////////////
+                        /// PRETEST - start                            ///
+                        //////////////////////////////////////////////////
+
+                        // sign(-diffuse) = whether the light to the point (from the source) is
+                        //                  the same direction as the normal
+                        // sign(<N,R>) = whether the ray from the camera is the same direction
+                        //               as the normal
+                        // We want to check that both the light and viewer are on the front side
+                        // of the surface
+                        if (- diffuse > 0 || InnerProduct(intersect.normal, r.direction) > 0) continue;
+
+                        //////////////////////////////////////////////////
+                        /// PRETEST - end                              ///
+                        //////////////////////////////////////////////////
+
+//                        // cheap specular component: K(s) * (HN)^n *I(L)
+//                        H = Normalize(sub(r.direction, lightray.direction));
+//                        specular1 = InnerProduct(H, intersect.normal);
+                        
+                        // expensive specular component: K(s) * (VR)^n *I(L)
                         Vector3 ref = Vector3.sub(Vector3.mul(InnerProduct(lightray.direction, intersect.normal) * 2, intersect.normal), lightray.direction);
                         specular1 = Vector3.InnerProduct(r.direction, ref);
                         specular2 = Math.pow(specular1, intersect.surface.getMtl_shininess());
+
+
+                        //////////////////////////////////////////////////
+                        /// POSTTEST - put here                        ///
+                        //////////////////////////////////////////////////
+                        
+                        // If the specular is negative, specular2 may actually
+                        // be positive if the power is even - and this will give
+                        // us a specular which is not needed!
+                        if (specular1 <= 0) specular2 = 0;
 
                         color.r += tc.r * (mtlDiffuse.r * diffuse + specular2 * mtlSpecular.r);
                         color.g += tc.g * (mtlDiffuse.g * diffuse + specular2 * mtlSpecular.g);
