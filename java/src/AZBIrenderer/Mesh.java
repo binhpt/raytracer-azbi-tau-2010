@@ -35,7 +35,7 @@ public class Mesh extends SingleMaterialSurface implements ReflectionConstructed
     public Mesh() {
         this.scale = 1;
         this.pos = new Vector3();
-        this.shader = Shader.FLAT;
+        this.shader = Shader.PHONG;
     }
 
 
@@ -73,18 +73,57 @@ public class Mesh extends SingleMaterialSurface implements ReflectionConstructed
             this.B = B;
             this.C = C;
 
-            this.v0 = sub(C, A);
-            this.v1 = sub(B, A);
+            this.v0 = sub(this.C, this.A);
+            this.v1 = sub(this.B, this.A);
+
+            this.normal = Normalize(CrossProduct(v0, v1));
 
             this.dot00 = InnerProduct(this.v0, this.v0);
             this.dot01 = InnerProduct(this.v0, this.v1);
             this.dot11 = InnerProduct(this.v1, this.v1);
 
-            this.normal = Normalize(CrossProduct(v0, v1));
             this.d = -InnerProduct(this.normal, this.A);
 
             this.invDenom = 1 / (dot00 * dot01 - dot11 * dot11);
-            this.v0_N = Normalize(CrossProduct(this.v0, this.normal));
+            if (dot01 != 0)
+                this.v0_N = Normalize(CrossProduct(this.v0, this.normal));
+            else
+                this.v0_N = v1;
+        }
+
+        // Must be called if phong is used!
+        public void optimize() {
+            if (InnerProduct(v1, v0) == 0) // This will cause havoc in Phong! So make sure it doesn't happen!
+                // It's important to calculate the normal before this change!
+            {
+                Vector3 temp = this.A;
+                this.A = B;
+                this.B = C;
+                this.C = temp;
+
+                this.v0 = sub(this.C, this.A);
+                this.v1 = sub(this.B, this.A);
+
+                this.normal = Normalize(CrossProduct(v0, v1));
+
+                this.dot00 = InnerProduct(this.v0, this.v0);
+                this.dot01 = InnerProduct(this.v0, this.v1);
+                this.dot11 = InnerProduct(this.v1, this.v1);
+
+                this.d = -InnerProduct(this.normal, this.A);
+
+                this.invDenom = 1 / (dot00 * dot01 - dot11 * dot11);
+                if (dot01 != 0)
+                    this.v0_N = Normalize(CrossProduct(this.v0, this.normal));
+                else
+                    this.v0_N = v1;
+
+                temp = this.nA;
+                this.nA = this.nB;
+                this.nB = this.nC;
+                this.nC = temp;
+            }
+
         }
 
         public AZBIrenderer.BoundingBox BoundingBox() {
@@ -130,10 +169,10 @@ public class Mesh extends SingleMaterialSurface implements ReflectionConstructed
                  *   |  \             v1 = B-A
                  *   | P \            v2 = P-A
                  * tC*-*--*---*tB
-                 *   |     \ /        yB = InnerProduct(v1, this.v0) ==> dot01
+                 *   |c    \ /        yB = InnerProduct(v1, this.v0) ==> dot01
                  *   |      *         yC = InnerProduct(v0, this.v0) ==> dot00
                  *   |     / B
-                 *   |    /
+                 *  a|    /b
                  *   |   /
                  *   |  /
                  *   | /
@@ -141,18 +180,13 @@ public class Mesh extends SingleMaterialSurface implements ReflectionConstructed
                  *   *----------->v0_N
                  *   A
                  */
-                Vector3 tempC = mul(InnerProduct(v2, v0), v0);
-                Vector3 tempB = mul(InnerProduct(v2, v0) / InnerProduct(v1, v0), v1);
-                double yP = InnerProduct(sub(P,A), this.v0);
 
-
-                double xC = InnerProduct(tempC, this.v0_N), xB = InnerProduct(tempB, this.v0_N);
-                double xP = InnerProduct(v2, this.v0_N);
-
-                Vector3 lB = add(mul (yP / dot01, nB), mul(1- yP / dot01, nA));
-                Vector3 lC = add(mul (yP / dot00, nC), mul(1- yP / dot00, nA));
-                double Phi = (xP - xB) / (xC - xB);
-                intersect.normal = add(mul (Phi, lC), mul(1-Phi, lB));
+                // DO NOT DO betta = dot02/dot01, since if dot01=0 it's a problem
+                double alpha = dot02/dot00, betta = dot02/dot01;
+                Vector3 lB = add(mul (betta, nB), mul(1- betta, nA));
+                Vector3 lC = add(mul (alpha, nC), mul(1- alpha, nA));
+                double phi = InnerProduct(v2, v0_N) / (betta * InnerProduct(v1, v0_N));
+                intersect.normal = add(mul(phi, lB), mul(1-phi, lC));
             }
             intersect.surface = this.surfaceMaterial;
 
@@ -244,5 +278,8 @@ public class Mesh extends SingleMaterialSurface implements ReflectionConstructed
     @Override
     public void fillMissing() {
         initFromRawMesh(MeshParser.parse(filename));
+        for (Triangle face : triangles) {
+            face.optimize();
+        }
     }
 }
