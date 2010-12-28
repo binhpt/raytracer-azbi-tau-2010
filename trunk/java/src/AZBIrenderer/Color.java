@@ -70,4 +70,13 @@ public class Color {
         return new Color(a.r + b.r, a.g + b.g, a.b + b.b, a.a + b.a);
     }
 
+    public static Color mul(Color a, Color b)
+    {
+        return new Color(a.r * b.r, a.g * b.g, a.b * b.b, a.a * b.a);
+    }
+
+    public static Color mul(float f, Color b)
+    {
+        return new Color(f * b.r, f * b.g, f * b.b, f * b.a);
+    }
 }

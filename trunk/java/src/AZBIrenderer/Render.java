@@ -328,23 +328,35 @@ public class Render {
              * rough draft still, uses only LightDirected and LightPoint
              */
             for (Light light : lights) {
-                dist = light.GetRay(intersect.point, lightray);
-                if (ShootLightAtSurfaces(lightray, dist))
+
+                if (light instanceof LightHemisphere)
                 {
-                    tc = light.EffectFromLight(intersect.point); //I(L) in the presentation
+                    tc = light.EffectFromLight(intersect.normal);
+                    
+                    color.r += tc.r;
+                    color.g += tc.g;
+                    color.b += tc.b;
+                }
+                else
+                {
+                    dist = light.GetRay(intersect.point, lightray);
+                    if (ShootLightAtSurfaces(surfaces, lightray, dist))
+                    {
+                        tc = light.EffectFromLight(intersect.point); //I(L) in the presentation
 
-                    //diffuse component: K(d) * NL * I(L)
-                    diffuse = InnerProduct(intersect.normal, lightray.direction); //N*L
-                    if (diffuse < 0) diffuse = 0;
+                        //diffuse component: K(d) * NL * I(L)
+                        diffuse = InnerProduct(intersect.normal, lightray.direction); //N*L
+                        if (diffuse < 0) diffuse = 0;
 
-                    //specular component: K(s) * (VR)^n *I(L)
-                    H = Normalize(sub(r.direction, lightray.direction));
-                    specular1 = InnerProduct(H, intersect.normal);
-                    specular2 = Math.pow(specular1, intersect.surface.getMtl_shininess());
+                        //specular component: K(s) * (VR)^n *I(L)
+                        H = Normalize(sub(r.direction, lightray.direction));
+                        specular1 = InnerProduct(H, intersect.normal);
+                        specular2 = Math.pow(specular1, intersect.surface.getMtl_shininess());
 
-                    color.r += tc.r * (mtlDiffuse.r * diffuse + specular2 * mtlSpecular.r);
-                    color.g += tc.g * (mtlDiffuse.g * diffuse + specular2 * mtlSpecular.g);
-                    color.b += tc.b * (mtlDiffuse.b * diffuse + specular2 * mtlSpecular.b);
+                        color.r += tc.r * (mtlDiffuse.r * diffuse + specular2 * mtlSpecular.r);
+                        color.g += tc.g * (mtlDiffuse.g * diffuse + specular2 * mtlSpecular.g);
+                        color.b += tc.b * (mtlDiffuse.b * diffuse + specular2 * mtlSpecular.b);
+                    }
                 }
             }
 

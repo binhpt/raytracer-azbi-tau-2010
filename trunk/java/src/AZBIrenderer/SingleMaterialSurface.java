@@ -17,7 +17,7 @@ import java.awt.image.BufferedImage;
  */
 public class SingleMaterialSurface implements ReflectionConstructed, SurfaceMat {
 
-    private SingleMaterialSurface(String mtl_type, Color mtl_diffuse, Color mtl_specular, Color mtl_ambient, int mtl_shininess, double checkers_size, Color checkers_diffuse1, Color checkers_diffuse2, BufferedImage texture, double reflectance) {
+    private SingleMaterialSurface(String mtl_type, Color mtl_diffuse, Color mtl_specular, Color mtl_ambient, int mtl_shininess, double checkers_size, Color checkers_diffuse1, Color checkers_diffuse2, BufferedImage texture, float reflectance) {
         this.mtl_type = mtl_type;
         this.mtl_diffuse = mtl_diffuse;
         this.mtl_specular = mtl_specular;
@@ -58,7 +58,7 @@ public class SingleMaterialSurface implements ReflectionConstructed, SurfaceMat 
     public Color checkers_diffuse1;
     public Color checkers_diffuse2;
     public @FileTexture BufferedImage texture;
-    public double reflectance;
+    public float reflectance;
 
     /**
      * Override this if necessary
@@ -129,11 +129,11 @@ public class SingleMaterialSurface implements ReflectionConstructed, SurfaceMat 
         this.mtl_type = mtl_type;
     }
 
-    public double getReflectance() {
+    public float getReflectance() {
         return reflectance;
     }
 
-    public void setReflectance(double reflectance) {
+    public void setReflectance(float reflectance) {
         this.reflectance = reflectance;
     }
 
