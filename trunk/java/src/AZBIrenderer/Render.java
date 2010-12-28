@@ -324,9 +324,7 @@ public class Render {
             
             //make sure it's all normalized, then remove this
             intersect.normal = Normalize(intersect.normal);
-            /*
-             * rough draft still, uses only LightDirected and LightPoint
-             */
+
             for (Light light : lights) {
 
                 if (light instanceof LightHemisphere)
@@ -340,7 +338,7 @@ public class Render {
                 else
                 {
                     dist = light.GetRay(intersect.point, lightray);
-                    if (ShootLightAtSurfaces(surfaces, lightray, dist))
+                    if (ShootLightAtSurfaces(lightray, dist))
                     {
                         tc = light.EffectFromLight(intersect.point); //I(L) in the presentation
 
