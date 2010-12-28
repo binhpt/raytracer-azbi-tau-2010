@@ -65,7 +65,10 @@ public class Cylinder extends SingleMaterialSurface implements Surface {
             P1P0 = sub(Math3D.flattenPt(this.start, this.direction), projectedRay.origin);
             P1P2_length = InnerProduct(P1P0, projectedRay.direction);
 
-            if (P1P2_length < 0) return false;
+            // In a cylinder, we actually interested in the intersection, even
+            // if for a sphere it was a negative T, since the second intersection
+            // may actually have a positive T.
+            // if (P1P2_length < 0) return false;
 
             d_square = InnerProduct(P1P0, P1P0) - P1P2_length * P1P2_length;
             R_square = this.radius * this.radius;
