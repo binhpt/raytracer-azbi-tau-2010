@@ -346,9 +346,12 @@ public class Render {
                         diffuse = InnerProduct(intersect.normal, lightray.direction); //N*L
                         if (diffuse < 0) diffuse = 0;
 
-                        //specular component: K(s) * (VR)^n *I(L)
-                        H = Normalize(sub(r.direction, lightray.direction));
-                        specular1 = InnerProduct(H, intersect.normal);
+                        //cheap specular component: K(s) * (HN)^n *I(L)
+                        /*H = Normalize(sub(r.direction, lightray.direction));
+                        specular1 = InnerProduct(H, intersect.normal);*/
+                        //expensive specular component: K(s) * (VR)^n *I(L)
+                        Vector3 ref = Vector3.sub(Vector3.mul(InnerProduct(lightray.direction, intersect.normal) * 2, intersect.normal), lightray.direction);
+                        specular1 = Vector3.InnerProduct(r.direction, ref);
                         specular2 = Math.pow(specular1, intersect.surface.getMtl_shininess());
 
                         color.r += tc.r * (mtlDiffuse.r * diffuse + specular2 * mtlSpecular.r);
