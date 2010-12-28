@@ -26,6 +26,9 @@ public class Scene implements ReflectionConstructed {
     public boolean mc_path_trace;
     public int mc_path_trace_rec;
     public int mc_path_trace_num;
+    /**
+     * Defines the maximal amount of ray bounces
+     */
     public int max_ray_bounce;
 
     public void fillMissing() { }

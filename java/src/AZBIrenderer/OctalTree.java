@@ -5,34 +5,40 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- * A highly optimized lazy octal tree.
- * <ol>
- *  <li>Feed in all the objects.</li>
- *  <li>Call the subdivide method. Once called, it mustn't be called again, and
- *      no objects should be added.</li>
- *  <li>Ask for the objects relevant to the given ray</li>
- * </ol>
- *
- * The optimization of the octal tree goes like this:
- * <ul>
- *  <li>A box node with no children will be deleted!</li>
- *  <li>A box node with a single child, will be replaced by it's single child</li>
- * </ul>
+ * A highly optimized octal tree.
  * @author Barak Itkin
  */
 public final class OctalTree {
 
+    /**
+     * The root node of the octal tree - representing the outtermost boundingbox
+     */
     public BoxNode root;
 
+    /**
+     * An interface telling how a certain node in the octal tree can be
+     * optimized
+     */
     public enum OptimizeHow {
         I_AM_EMPTY, I_HAVE_FEW_SURFACES, I_HAVE_ONE_CHILD, NOTHING;
     }
 
+    /**
+     * The node of an octal tree
+     */
     public final class BoxNode extends BoundingBox {
-        
+
+        /**
+         * The actual surfaces kept by the octree
+         */
         public List<Surface> content;
+        /**
+         * The child nodes of the octree structure itself
+         */
         public List<BoxNode> children;
-        public BoxNode parent;
+        /**
+         * The maximal depth of the subchildren. 0 Means a leaf.
+         */
         public int depth;
 
         public BoxNode(Vector3 p1, Vector3 p2, int depth) {
@@ -41,6 +47,9 @@ public final class OctalTree {
             doSubdivision();
         }
 
+        /**
+         * Split the node to 8 children
+         */
         private void doSubdivision() {
             if (!isLeaf()) {
                 this.children = new LinkedList<BoxNode>();
@@ -48,7 +57,6 @@ public final class OctalTree {
                 double[][] c = {{max.x, max.y, max.z}, {min.x, min.y, min.z}};
                 for (int i = 0; i < 8; i++) {
                     BoxNode child = new BoxNode(center, new Vector3(c[i / 4 % 2][0], c[i / 2 % 2][1], c[i % 2][2]), depth - 1);
-                    child.parent = this;
                     children.add(child);
                 }
             } else {
@@ -60,6 +68,11 @@ public final class OctalTree {
             return this.depth == 0;
         }
 
+        /**
+         * Add an object to the octree rooted at this node
+         * @param bounds The bounding box of the object
+         * @param obj The surface to add
+         */
         public void addObject(BoundingBox bounds, Surface obj) {
             if (!this.intersects(bounds))
                 return;
@@ -77,6 +90,11 @@ public final class OctalTree {
             }
         }
 
+        /**
+         * Optimize an octal tree, to make access faster. See inline
+         * documentation for detailed explanation.
+         * @return How this node can be optimized
+         */
         public OptimizeHow optimize () {
             if (this.children != null && this.children.isEmpty())
                 this.children =null;
@@ -133,6 +151,12 @@ public final class OctalTree {
             return OptimizeHow.NOTHING;
         }
 
+        /**
+         * Retrieve the objects in the octree rooted at this node, which may
+         * intersect with a given ray
+         * @param r The ray to intersect
+         * @param dest A list to store the relevant objects in
+         */
         public void getObjects(Ray r, List<Surface> dest) {
             if (!this.intersects(r))
                 return;
@@ -148,6 +172,10 @@ public final class OctalTree {
         }
     }
 
+    /**
+     * Construct an octree for a given list of geometric surfaces, and a given
+     * maximal depth
+     */
     public OctalTree(List<Surface> geometry, int depth) {
         BoundingBox[] boxes = new BoundingBox[geometry.size()];
         int i = 0;
@@ -163,6 +191,9 @@ public final class OctalTree {
         this.root.optimize();
     }
 
+    /**
+     * A wrapper around {@link BoxNode.getObjects}
+     */
     public List<Surface> getObjects(Ray r) {
         List<Surface> dest = new LinkedList<Surface>();
         for (BoxNode boxNode : root.children) {
@@ -171,6 +202,9 @@ public final class OctalTree {
         return dest;
     }
 
+    /**
+     * For debugging, print the tree structure
+     */
     public static void print(String indent, BoxNode b) {
         System.out.println(indent + b);
         if (b.children != null)

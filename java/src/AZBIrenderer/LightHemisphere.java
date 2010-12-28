@@ -1,14 +1,12 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 
 package AZBIrenderer;
 import java.util.LinkedList;
 
 /**
- *
- * @author adam
+ * Hemispherical lighting.
+ * This class recieves a special treatment in the Render core, so it does not
+ * implement exactly the Light interface
+ * @author Adam Zeira
  */
 public class LightHemisphere extends Light{
 

@@ -212,7 +212,7 @@ public class Vector3 implements Iterable<Double> {
     public static Vector3 Normalize(Vector3 v)
     {
         return mul (
-                (double)(1 / Math.sqrt(InnerProduct(v, v))),
+                (1 / Math.sqrt(InnerProduct(v, v))),
                 v
                 );
     }
@@ -224,7 +224,7 @@ public class Vector3 implements Iterable<Double> {
      */
     public static double Norm(Vector3 v)
     {
-        return (double) Math.sqrt(InnerProduct(v, v));
+        return Math.sqrt(InnerProduct(v, v));
     }
 
     /**

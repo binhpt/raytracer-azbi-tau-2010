@@ -17,7 +17,7 @@ public class LightPoint extends Light{
 
     @Override
     public Color EffectFromLight(@Point3d Vector3 point) {
-        double d = (double)Math.sqrt(Math.pow(point.x - pos.x, 2) + Math.pow(point.y - pos.y, 2) + Math.pow(point.z - pos.z, 2));
+        double d = Math.sqrt(Math.pow(point.x - pos.x, 2) + Math.pow(point.y - pos.y, 2) + Math.pow(point.z - pos.z, 2));
         double atten = this.attenuation.x + d * attenuation.y + d * d * attenuation.z;
         return new Color(color.r / (float)atten, color.g / (float)atten, color.b / (float)atten, 1f);
     }
