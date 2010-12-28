@@ -345,7 +345,6 @@ public class Render {
                     /// Lighting - see the documentation file for a detailed ///
                     /// explanation                                          ///
                     ////////////////////////////////////////////////////////////
-
                     dist = light.GetRay(intersect.point, lightrays);
                     for (Ray lightray : lightrays)
                     {
