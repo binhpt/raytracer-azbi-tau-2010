@@ -92,7 +92,7 @@ public class Mesh extends SingleMaterialSurface implements ReflectionConstructed
         }
 
         // Must be called if phong is used!
-        public void optimize() {
+        public void prepareForPhong() {
             if (InnerProduct(v1, v0) == 0) // This will cause havoc in Phong! So make sure it doesn't happen!
                 // It's important to calculate the normal before this change!
             {
@@ -179,7 +179,8 @@ public class Mesh extends SingleMaterialSurface implements ReflectionConstructed
                  *   A
                  */
 
-                // DO NOT DO betta = dot02/dot01, since if dot01=0 it's a problem
+                // dot01=0 it's a problem, that's why we avoid it in the
+                // prepare for phong function above
                 double alpha = dot02/dot00, betta = dot02/dot01;
                 Vector3 lB = add(mul (betta, nB), mul(1- betta, nA));
                 Vector3 lC = add(mul (alpha, nC), mul(1- alpha, nA));
@@ -277,7 +278,7 @@ public class Mesh extends SingleMaterialSurface implements ReflectionConstructed
     public void fillMissing() {
         initFromRawMesh(MeshParser.parse(filename));
         for (Triangle face : triangles) {
-            face.optimize();
+            face.prepareForPhong();
         }
     }
 }

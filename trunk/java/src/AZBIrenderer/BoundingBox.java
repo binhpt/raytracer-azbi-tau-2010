@@ -28,25 +28,29 @@ public class BoundingBox {
         this.max = CoordinateMax(p1, p2);
         this.min = CoordinateMin(p1, p2);
         Vector3 size = sub(max, min);
+        // Enlarge the box by percent, or a constant factor - the bigger
         Vector3 eps = CoordinateMax(Math3D.GEOM_EPSILON_VEC, mul(Math3D.GEOM_EPSILON, size));
-//        Vector3 eps = new Vector3(0.1, 0.1, 0.1);
         this.max = add(eps, max);
         this.min = sub(min, eps);
     }
 
+    /**
+     * Copy the size and place from another box
+     * @param other The other box
+     */
     public void copyFrom (BoundingBox other) {
         this.min = other.min;
         this.max = other.max;
     }
-    /* No intersection:
-     * other.min <= other.max <= this.min <= this.max
-     * this.min <= this.max <= other.min <= other.max
-     *
-     * this.min <= this.min <= other.max <= this.max
-     *
+
+    /**
+     * Test whether two bounding boxes intersect. Based on the observation that
+     * any two boxes which don't intersect, and are parallel to the axes, have
+     * a coordinate T in which b.max.T < a.min.T
+     * @param other The box to check the intersection with
+     * @return Whether there is an intersection
      */
     public boolean intersects(BoundingBox other) {
-        Vector3 center1 = mul(0.5, add(min, max)), center2 = mul(0.5, add(other.min, other.max));
         return !(other.max.x < this.min.x ||
                 other.max.y < this.min.y ||
                 other.max.z < this.min.z ||
@@ -54,6 +58,12 @@ public class BoundingBox {
                 this.max.y < other.min.y ||
                 this.max.z < other.min.z);
     }
+
+    /**
+     * Check for the intersection of a ray and a bounding box.
+     * @param r The ray to check
+     * @return Whether there is an intersection
+     */
 
     /*
      * The code is ugly, since it should be fast. It's done for every ray in the
@@ -67,9 +77,11 @@ public class BoundingBox {
         IntersectionData a = new IntersectionData(), b = new IntersectionData();
 
         /* Find the interrsection of the ray with the 6 cube planes
-         * Note that if the ray does not intersect one plane parallel to the T
-         * axis, it also does not intersect the other plane parallel to that axis
+         * Note that if the ray does not intersect one plane orthogonal to the T
+         * axis, it also does not intersect the other plane orthogonal to that axis
          */
+
+        // Xaxis is the normal
         if (Math3D.RayPlanintersection(r, Math3D.Xaxis, -min.x, a))
         {
             Math3D.RayPlanintersection(r, Math3D.Xaxis, -max.x, b);
@@ -83,6 +95,7 @@ public class BoundingBox {
                 return true;
         }
 
+        // Yaxis is the normal
         if (Math3D.RayPlanintersection(r, Math3D.Yaxis, -min.y, a))
         {
             Math3D.RayPlanintersection(r, Math3D.Yaxis, -max.y, b);
@@ -96,6 +109,7 @@ public class BoundingBox {
                 return true;
         }
 
+        // Zaxis is the normal
         if (Math3D.RayPlanintersection(r, Math3D.Zaxis, -min.z, a))
         {
             Math3D.RayPlanintersection(r, Math3D.Zaxis, -max.z, b);

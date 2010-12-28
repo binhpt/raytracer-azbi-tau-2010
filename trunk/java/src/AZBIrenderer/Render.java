@@ -180,8 +180,8 @@ public class Render {
                                     for (int a = 0; a < sampleCount; a++) {
                                         for (int b = 0; b < sampleCount; b++) {
                                             /* Create the ray to shoot */
-                                            r = camera.CreateRay (y + (a + (double) Math.random()) * sampleDistY,
-                                                    x + (b + (double) Math.random()) * sampleDistX);
+                                            r = camera.CreateRay (y + (a + Math.random()) * sampleDistY,
+                                                    x + (b + Math.random()) * sampleDistX);
                                             /* Save the color resulted from shooting it */
                                             if (j==195 && i==195)
                                                 System.err.println("here");
@@ -282,7 +282,6 @@ public class Render {
         for (Surface surf : Rsurfaces) //if there is a collision, and its T is smaller, this is the new closest collision
         {
             // If the intersection is when T is negative, then we doon't want it!
-            // TODO: Make the comparision with the string less ugly!
             if (surf.Intersection(r, temp, !surf.getMtl_type().equals("flat")) && temp.T > 0 && temp.T < closestIntersect.T) {
                 closestIntersect.copyFrom(temp);
                 intersect = true;

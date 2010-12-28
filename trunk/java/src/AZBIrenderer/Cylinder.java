@@ -11,7 +11,7 @@ public class Cylinder extends SingleMaterialSurface implements Surface {
     /**
      * Square root of 2, kept for preformance reasons
      */
-    public static final double SQRT2 = (double)Math.sqrt(2);
+    public static final double SQRT2 = Math.sqrt(2);
 
     /**
      * The direction of the cylinder
@@ -74,7 +74,7 @@ public class Cylinder extends SingleMaterialSurface implements Surface {
             R_square = this.radius * this.radius;
             if (d_square > R_square) return false;
 
-            P3P2_length = (double)Math.sqrt(R_square - d_square);
+            P3P2_length = Math.sqrt(R_square - d_square);
 
             T1 = P1P2_length - P3P2_length;
             T2 = P1P2_length + P3P2_length;
@@ -104,7 +104,7 @@ public class Cylinder extends SingleMaterialSurface implements Surface {
             Vector3 d = Normalize(sub(intersect.point, this.start));
             double y = InnerProduct(d, this.TextureY0);
             double x = InnerProduct(d, this.TextureX0);
-            intersect.v = ((double) Math.atan2(y, x) + Math3D.PI) * Math3D.INV_PI2;
+            intersect.v = ( Math.atan2(y, x) + Math3D.PI) * Math3D.INV_PI2;
         }
 
 

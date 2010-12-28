@@ -50,7 +50,7 @@ public class Disc extends SingleMaterialSurface implements Surface {
             Vector3 d = Normalize(sub(intersect.point, this.center));
             double y = InnerProduct(d, this.TextureY0);
             double x = InnerProduct(d, this.TextureX0);
-            intersect.v = ((double) Math.atan2(y, x) + Math3D.PI) * Math3D.INV_PI2;
+            intersect.v = ( Math.atan2(y, x) + Math3D.PI) * Math3D.INV_PI2;
         }
 
         return true;

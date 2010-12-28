@@ -1,16 +1,11 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package AZBIrenderer;
 
 import AZBIrenderer.Vector3.Point3d;
 import java.util.LinkedList;
 
 /**
- *
- * @author user
+ * Monte Carlo lighting.
+ * @author Barak Itkin
  */
 public class LightAreaMc extends Light {
 
@@ -22,6 +17,10 @@ public class LightAreaMc extends Light {
         this.radius = 2;
     }
 
+    /**
+     * Assumption: will be called once for each point, and by the order of rays
+     * as returned by getrays
+     */
     @Override
     public Color EffectFromLight(@Point3d Vector3 point) {
         double d = 1-distances.get().removeFirst();

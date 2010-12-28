@@ -11,10 +11,10 @@ public class Math3D {
     public static final Vector3 Yaxis = new Vector3(0, 1, 0);
     public static final Vector3 Zaxis = new Vector3(0, 0, 1);
 
-    public static final double PI = (double) Math.PI;
-    public static final double PI2 = (double) (2 * Math.PI);
-    public static final double INV_PI = (double) (1 / Math.PI);
-    public static final double INV_PI2 = (double) (1 / (2 * Math.PI));
+    public static final double PI = Math.PI;
+    public static final double PI2 = (2 * Math.PI);
+    public static final double INV_PI = (1 / Math.PI);
+    public static final double INV_PI2 = (1 / (2 * Math.PI));
 
     public static final double GEOM_EPSILON = 0.03;
     public static final double GEOM_MINUS_EPSILON = -GEOM_EPSILON;
@@ -30,7 +30,7 @@ public class Math3D {
         double temp = InnerProduct(r.direction, M);
         double temp3 = InnerProduct(M, M) - temp*temp;
         double temp2 = Math.sqrt(Math.abs(temp3));
-        return (double) temp2;
+        return temp2;
     }
 
     /**
