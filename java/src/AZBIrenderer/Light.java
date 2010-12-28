@@ -10,7 +10,7 @@ import AZBIrenderer.Vector3.Point3d;
 public abstract class Light implements ReflectionConstructed {
 
     /**
-     * The light's color
+     * The lights' color
      */
     public Color color;
 
@@ -18,7 +18,12 @@ public abstract class Light implements ReflectionConstructed {
     {
         this.color = new Color(1, 1, 1, 1);
     }
-    
+    /*
+     * returns the color that the light (without consideration for the material)
+     * contributes to a point in space
+     * @param point the point in space
+     * @return the color
+     */
     public abstract Color EffectFromLight(@Point3d Vector3 point);
 
     /**

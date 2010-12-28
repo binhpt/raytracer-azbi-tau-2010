@@ -39,6 +39,8 @@ public class LightPoint extends Light{
 
     public void fillMissing() { }
 
+    /* light effect lost with distance from the point light */
     public Vector3 attenuation;
+    /* position of the point light */
     public @Point3d Vector3 pos;
 }
