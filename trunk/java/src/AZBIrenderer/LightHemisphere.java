@@ -4,6 +4,7 @@
  */
 
 package AZBIrenderer;
+import java.util.LinkedList;
 
 /**
  *
@@ -56,7 +57,7 @@ public class LightHemisphere extends Light{
     }
 
     @Override
-    public double GetRay(Vector3 point, Ray ray) {
+    public double GetRay(Vector3 point, LinkedList<Ray> lightrays) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 

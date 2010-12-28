@@ -4,6 +4,7 @@ import java.awt.Graphics2D;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -312,7 +313,7 @@ public class Render {
      */
     public Color ShootRay(Ray r, int raybounces) {
         IntersectionData intersect = new IntersectionData();
-        Ray lightray = new Ray();
+        LinkedList<Ray> lightrays = new LinkedList<Ray>();
 
         Color color = new Color(0, 0, 0, 1);
         Color tc, mtlDiffuse, mtlSpecular;
@@ -345,49 +346,53 @@ public class Render {
                     /// explanation                                          ///
                     ////////////////////////////////////////////////////////////
 
-                    dist = light.GetRay(intersect.point, lightray);
-                    if (ShootLightAtSurfaces(lightray, dist))
+                    dist = light.GetRay(intersect.point, lightrays);
+                    for (Ray lightray : lightrays)
                     {
-                        tc = light.EffectFromLight(intersect.point); //I(L) in the presentation
+                        if (ShootLightAtSurfaces(lightray, dist))
+                        {
+                            tc = light.EffectFromLight(intersect.point); //I(L) in the presentation
 
-                        // diffuse component: K(d) * NL * I(L)
-                        // Note that lightray.direction is the direction from
-                        // from the point to the light source!
-                        diffuse = InnerProduct(intersect.normal, lightray.direction); //N*L
+                            // diffuse component: K(d) * NL * I(L)
+                            // Note that lightray.direction is the direction from
+                            // from the point to the light source!
+                            diffuse = InnerProduct(intersect.normal, lightray.direction); //N*L
 
-                        //////////////////////////////////////////////////
-                        /// PRETEST - start                            ///
-                        //////////////////////////////////////////////////
+                            //////////////////////////////////////////////////
+                            /// PRETEST - start                            ///
+                            //////////////////////////////////////////////////
 
-                        // sign(-diffuse) = whether the light to the point (from the source) is
-                        //                  the same direction as the normal
-                        // sign(<N,R>) = whether the ray from the camera is the same direction
-                        //               as the normal
-                        // We want to check that both the light and viewer are on the front side
-                        // of the surface
-                        if (- diffuse > 0 || InnerProduct(intersect.normal, r.direction) > 0) continue;
+                            // sign(-diffuse) = whether the light to the point (from the source) is
+                            //                  the same direction as the normal
+                            // sign(<N,R>) = whether the ray from the camera is the same direction
+                            //               as the normal
+                            // We want to check that both the light and viewer are on the front side
+                            // of the surface
+                            if (- diffuse > 0 || InnerProduct(intersect.normal, r.direction) > 0) continue;
 
-                        //////////////////////////////////////////////////
-                        /// PRETEST - end                              ///
-                        //////////////////////////////////////////////////
+                            //////////////////////////////////////////////////
+                            /// PRETEST - end                              ///
+                            //////////////////////////////////////////////////
 
-//                        // cheap specular component: K(s) * (HN)^n *I(L)
-//                        H = Normalize(sub(r.direction, lightray.direction));
-//                        specular1 = InnerProduct(H, intersect.normal);
-                        
-                        // expensive specular component: K(s) * (VR)^n *I(L)
-                        Vector3 ref = Vector3.sub(Vector3.mul(InnerProduct(lightray.direction, intersect.normal) * 2, intersect.normal), lightray.direction);
-                        specular1 = Vector3.InnerProduct(r.direction, ref);
-                        specular2 = Math.pow(Math.abs(specular1), intersect.surface.getMtl_shininess());
+    //                        // cheap specular component: K(s) * (HN)^n *I(L)
+    //                        H = Normalize(sub(r.direction, lightray.direction));
+    //                        specular1 = InnerProduct(H, intersect.normal);
 
-                        //////////////////////////////////////////////////
-                        /// POSTTEST - put here                        ///
-                        //////////////////////////////////////////////////
+                            // expensive specular component: K(s) * (VR)^n *I(L)
+                            Vector3 ref = Vector3.sub(Vector3.mul(InnerProduct(lightray.direction, intersect.normal) * 2, intersect.normal), lightray.direction);
+                            specular1 = Vector3.InnerProduct(r.direction, ref);
+                            specular2 = Math.pow(Math.abs(specular1), intersect.surface.getMtl_shininess());
 
-                        color.r += tc.r * (mtlDiffuse.r * diffuse + specular2 * mtlSpecular.r);
-                        color.g += tc.g * (mtlDiffuse.g * diffuse + specular2 * mtlSpecular.g);
-                        color.b += tc.b * (mtlDiffuse.b * diffuse + specular2 * mtlSpecular.b);
+                            //////////////////////////////////////////////////
+                            /// POSTTEST - put here                        ///
+                            //////////////////////////////////////////////////
+
+                            color.r += tc.r * (mtlDiffuse.r * diffuse + specular2 * mtlSpecular.r);
+                            color.g += tc.g * (mtlDiffuse.g * diffuse + specular2 * mtlSpecular.g);
+                            color.b += tc.b * (mtlDiffuse.b * diffuse + specular2 * mtlSpecular.b);
+                        }
                     }
+                    lightrays.clear();
                 }
             }
 
