@@ -172,12 +172,13 @@ public class MeshParser {
      * Parse a mesh file (either a PLY or an OFF file)
      */
     public static RawMesh parse(String filename) {
+        filename = filename.trim();
         RawMesh mesh = null;
         FileInputStream input = null;
         try {
             byte[] format = new byte[longestFormatName];
 
-            input = new FileInputStream(filename);
+            input = new FileInputStream(FileHandling.forPath(filename));
 
             if (input.read(format) != 3) {
                 throw new ParsingException("Mesh file is too short to be parsed... ");
@@ -186,7 +187,7 @@ public class MeshParser {
             input.close();
             input = null;
 
-            input = new FileInputStream(filename);
+            input = new FileInputStream(FileHandling.forPath(filename));
             if (new String(format, Charset.forName("ASCII")).equals("OFF")) {
                 mesh = parseOFF(input);
             } else {

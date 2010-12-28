@@ -137,6 +137,8 @@ public class Render {
         }
 
         System.out.println("Start Rendering");
+        System.out.println(this.surfaces.size() + " faces");
+        System.out.println(this.lights.size() + " lights");
         /* Create the rendering threads */
         for (int i = 0; i < threads.length; i++) {
             threads[i] = new Thread(new Runnable() {
@@ -228,7 +230,7 @@ public class Render {
                                 im.setRGB(j - im.xStart, i - im.yStart, color);
                             }
                         }
-                    System.out.println("Finished part " + part + "/" + (xParts * yParts));
+                    System.out.println("Finished part " + (part+1) + "/" + (xParts * yParts));
                     }
                     System.out.println("Thread finished");
                 }
