@@ -17,7 +17,8 @@ import static AZBIrenderer.Vector3.*;
  */
 public class Render {
 
-    public static double min_intersect_T = 0.00001;
+    //minimum distance that must be passed to accept an intersection with an object (to avoid self-collision of some objects)
+    public static final double min_intersect_T = 0.00001;
     /**
      * A class for representing a part of an image that should be rendered
      */
